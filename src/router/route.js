@@ -1,4 +1,4 @@
-import adminDashboard from '@/router/admin-dashboard/index'
+// import adminDashboard from '@/router/admin-dashboard/index'
 const routes = [
   {
     path: '/login',
@@ -19,7 +19,6 @@ const routes = [
           breadcrumb: [],
         },
       },
-      ...adminDashboard,
       {
         path: "/calender",
         name: "calender",
