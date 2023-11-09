@@ -1,6 +1,11 @@
 import adminDashboard from '@/router/admin-dashboard/index'
 const routes = [
   {
+    path: '/login',
+    name: 'Login',
+    component: () => import('@/views/auth/login/index.vue')
+  },
+  {
     path: "/admin",
     name: "Layout",
     redirect: "/",

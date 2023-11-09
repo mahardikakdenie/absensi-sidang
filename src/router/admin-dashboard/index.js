@@ -2,7 +2,7 @@ const router = [
     {
         name: "home",
         path: "home",
-        component: () => import("@/views/home/index.vue"),
+        component: () => import("@/views/dashboard/index.vue"),
         meta: {
             groupParents: 'Home Dashboard'
         },
@@ -10,22 +10,22 @@ const router = [
     {
         name: 'CRM Dashboard',
         path: 'crm',
-        component: () => import('@/views/home/crm.vue'),
+        component: () => import('@/views/dashboard/crm.vue'),
     },
     {
         name: 'Ecommerce Dashboard',
         path: 'ecommerce',
-        component: () => import('@/views/home/ecommerce.vue'),
+        component: () => import('@/views/dashboard/ecommerce.vue'),
     },
     {
         name: 'Bangking Dashboard',
         path: 'banking',
-        component: () => import('@/views/home/banking.vue'),
+        component: () => import('@/views/dashboard/banking.vue'),
     },
     {
         name: 'Project Dashboard',
         path: 'project',
-        component: () => import('@/views/home/project.vue'),
+        component: () => import('@/views/dashboard/project.vue'),
         meta: {
             groupParent: 'Home Dashboard'
         },
