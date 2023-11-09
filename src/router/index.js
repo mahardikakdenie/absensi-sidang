@@ -14,23 +14,33 @@ const router = createRouter({
     }
   },
 });
+let isFirstLoad = true;
+
 router.beforeEach((to, from, next) => {
-  if (!to.name) {
+  if (isFirstLoad) {
+    isFirstLoad = false;
     next({
-      path: '/'
+      path: '/login'
     });
-  }
-  const titleText = to?.name;
-  const words = titleText?.split(" ");
-  const wordslength = words?.length;
-  for (let i = 0; i < wordslength; i++) {
-    words[i] = words?.[i]?.[0].toUpperCase() + words[i].substr(1);
-  }
+  } else {
+    if (!to.name) {
+      next({
+        path: '/login'
+      });
+    }
+    const titleText = to?.name;
+    const words = titleText?.split(" ");
+    const wordslength = words?.length;
+    for (let i = 0; i < wordslength; i++) {
+      words[i] = words?.[i]?.[0].toUpperCase() + words[i].substr(1);
+    }
 
-  document.title = "Dashcode  - " + words;
+    document.title = "Dashcode  - " + words;
 
-  next();
+    next();
+  }
 });
+
 
 router.afterEach(() => {
   // Remove initial loading

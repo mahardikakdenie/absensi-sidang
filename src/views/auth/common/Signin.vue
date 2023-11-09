@@ -110,7 +110,7 @@ export default {
         localStorage.setItem("activeUser", JSON.stringify(activeUser));
 
         if (isUser[userIndex].password === values.password) {
-          router.push("/app/home");
+          router.push("/");
           toast.success(" Login  successfully", {
             timeout: 2000,
           });
