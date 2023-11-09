@@ -194,7 +194,7 @@ export default {
 			return this.activeSubmenu === i ? 'open' : '';
 		},
 		isMenuActive(item) {
-			return this.$route.name === item?.link ? 'menu-item-active' : '';
+			return this.$route.path === item?.link ? 'menu-item-active' : '';
 		},
     },
 

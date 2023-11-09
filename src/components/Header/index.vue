@@ -34,7 +34,7 @@
           <handle-mobile-menu
             v-if="window.width < 1280 && window.width > 768"
           />
-          <SearchModal />
+          <!-- <SearchModal /> -->
         </div>
         <div
           v-if="this.$store.themeSettingsStore.menuLayout === 'horizontal'"
@@ -52,12 +52,13 @@
         <div
           class="nav-tools flex items-center lg:space-x-6 space-x-3 rtl:space-x-reverse"
         >
-          <LanguageVue />
-          <SwitchDark />
+          <!-- <LanguageVue />
           <MonochromeMode />
-          <Message v-if="window.width > 768" />
+          <Profile v-if="window.width > 768" /> -->
+          <SwitchDark v-if="window.width > 768" />
           <Notification v-if="window.width > 768" />
-          <Profile v-if="window.width > 768" />
+          <Message v-if="window.width > 768" />
+          <profile v-if="window.width > 768" />
           <handle-mobile-menu v-if="window.width < 768" />
         </div>
       </div>
