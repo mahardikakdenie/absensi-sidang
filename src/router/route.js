@@ -19,10 +19,10 @@ const routes = [
         },
       },
       {
-        path: "/calender",
-        name: "calender",
-        component: () => import("@/views/index.vue"),
-      },
+        path: 'detail/:id',
+        name: 'DetailProject',
+        component: () => import('@/views/pages/detail-project.vue'),
+      }
     ],
   },
 ];
