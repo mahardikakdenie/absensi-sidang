@@ -2,8 +2,14 @@
 <div>
     <div class="grid grid-rows-1">
         <div class="grid lg:grid-cols-3 grid-cols-2 gap-2">
-            <div v-for="i in 6" :key="i">
-                <card className="hover:shadow-md cursor-pointer">
+            <div 
+                v-for="i in 6" 
+                :key="i"
+                @click="$router.push(`/detail-project/${i}`)"
+            >
+                <card 
+                    className="hover:shadow-md cursor-pointer"
+                >
                     <div class="flex justify-between">
                         <div class="flex items-center">
                             <span class="lg:text-2xl text-sm">

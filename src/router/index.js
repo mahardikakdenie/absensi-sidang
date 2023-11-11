@@ -14,11 +14,11 @@ const router = createRouter({
     }
   },
 });
-let isFirstLoad = true;
+
+let isFirstLoad = false;
 
 router.beforeEach((to, from, next) => {
   if (isFirstLoad) {
-    isFirstLoad = false;
     next({
       path: '/login'
     });

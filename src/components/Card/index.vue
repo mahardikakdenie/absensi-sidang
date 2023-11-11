@@ -1,15 +1,15 @@
 <template>
   <div
+    v-if="!overlay"
     :class="`card rounded-md bg-white dark:bg-slate-800 lg:h-full  ${
       this.$store.themeSettingsStore.skin === 'bordered'
         ? ' border border-gray-5002 dark:border-slate-700'
         : 'shadow-base'
     }
-   
     ${className}
     
     `"
-    v-if="!overlay"
+    @click="handleClick"
   >
     <div class="card-body flex flex-col" :class="bodyClass">
       <header
@@ -153,6 +153,11 @@ export default {
     bodyClass: {
       type: String,
       default: 'p-6',
+    },
+  },
+  methods: {
+    handleClick() {
+      this.$emit('click');
     },
   },
 };
