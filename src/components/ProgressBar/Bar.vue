@@ -2,7 +2,7 @@
   <Transition appear @before-appear="beforeEnter" @after-appear="enter">
     <div
       class="flex flex-col text-center whitespace-nowrap justify-center h-full"
-      :class="`${barColor} ${animate ? 'animated-strip' : ''}`"
+      :class="`${barColor} ${animate ? 'animated-strip' : ''} w-[${value}%]`"
     >
       <span v-if="showValue" class="text-[10px] text-white font-bold">{{
         value + "%"

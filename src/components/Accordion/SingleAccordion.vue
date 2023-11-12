@@ -43,7 +43,7 @@
 import { ref } from "vue";
 import Icon from '@/components/Icon'
 
-defineProps({
+const props = defineProps({
 	parentClass: {
 		tyepe: String,
 		default: '',
@@ -52,9 +52,13 @@ defineProps({
 		tyepe: String,
 		default: '',
 	},
+    isOpen: {
+        type: Boolean,
+        default: false,
+    }
 });
 
-const isVisible = ref(false);
+const isVisible = ref(props.isOpen);
 
 const toggleAccordionVisibility = () => {
     isVisible.value = !isVisible.value;

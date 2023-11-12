@@ -1,5 +1,5 @@
 <template>
-  <div class="relative">
+  <div class="relative" :class="parentClass">
     <span
       class="block text-slate-500 font-medium text-lg tracking-[0.01em] mb-2"
       v-if="title"
@@ -70,6 +70,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    parentClass: {
+      type: String,
+      default: '',
+    }
   },
 };
 </script>

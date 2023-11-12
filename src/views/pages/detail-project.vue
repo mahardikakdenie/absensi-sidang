@@ -31,15 +31,26 @@
                 </div>
             </div>
 
-            <single-accordion parentClass="mt-3" title="Project Name">
+            <single-accordion 
+                title="Project Name"
+                parentClass="mt-3"
+                isOpen
+            >
                 <template #content>
-                    <div class="legend-ring px-0">
-                        <apexchart
-                            type="bar"
-                            height="420"
-                            :options="columnCharthomeComputed.chartOptions"
-                            :series="columnCharthomeComputed.series"
-                        />
+                    <div>
+                        <span>Progress</span>
+                        <ProgressBar height="h-3" parentClass="mt-2">
+                            <Bar 
+                                :value="80" 
+                                barColor="bg-[#CE7722]" 
+                                showValue 
+                            />
+                            <Bar 
+                                :value="10" 
+                                barColor="bg-[#FFE5B4]" 
+                                showValue 
+                            />
+                        </ProgressBar>
                     </div>
                 </template>
             </single-accordion>
@@ -51,7 +62,9 @@
 <script setup>
 import InformationColor from '@/components/attandance-pages/InformationColor.vue';
 import Card from '@/components/Card';
-import SingleAccordion from '@/components/Accordion/SingleAccordion.vue'
+import SingleAccordion from '@/components/Accordion/SingleAccordion.vue';
+import ProgressBar from '@/components/ProgressBar';
+import Bar from '@/components/ProgressBar/Bar';
 import {
     formatInformations
 } from '@/constant/static';
