@@ -37,6 +37,11 @@
                 isOpen
             >
                 <template #content>
+                    <div class="mb-3">
+                        <span class="font-bold text-lg">
+                            Progress
+                        </span>
+                    </div>
                     <div>
                         <span>Progress</span>
                         <ProgressBar height="h-3" parentClass="mt-2">
@@ -48,9 +53,67 @@
                             <Bar 
                                 :value="10" 
                                 barColor="bg-[#FFE5B4]" 
-                                showValue 
+                                showValue
+                                colorTextClass="text-black"
                             />
                         </ProgressBar>
+                    </div>
+                    <div class="mt-3">
+                        <span>Deviasi</span>
+                        <ProgressBar height="h-3" parentClass="mt-2">
+                            <Bar 
+                                :value="40" 
+                                barColor="bg-[#CE7722]" 
+                                showValue
+                            />
+                            <Bar 
+                                :value="40" 
+                                barColor="bg-[#FFE5B4]" 
+                                showValue
+                                colorTextClass="text-black"
+                            />
+                        </ProgressBar>
+                    </div>
+                </template>
+            </single-accordion>
+            <single-accordion title="Keterangan" isOpen parentClass="mt-2">
+                <template #content>
+                    <div>
+                        <div>
+                            <span>
+                                Pengawas : Budi Raharja
+                            </span>
+                        </div>
+                        <div>
+                            <span>
+                                Sisa Hari : 61 Hari
+                            </span>
+                        </div>
+                        <div class="flex justify-between">
+                            <div class="flex items-center">
+                                <span class="text-sm font-bold">
+                                    Task
+                                </span>
+                            </div>
+                            <div class="">
+                                <vue-button 
+                                    text="Edit Task" 
+                                    btnClass="py-2 px-2" 
+                                    icon="typcn:edit" 
+                                />
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap space-x-rb mt-4">
+                            <Checkbox
+                                v-for="(option, index) in options"
+                                :key="index"
+                                :label="option.label"
+                                :value="option.value"
+                                v-model="selected"
+                                activeClass="ring-primary-500 bg-primary-500"
+                                class="ml-2"
+                            />
+                        </div>
                     </div>
                 </template>
             </single-accordion>
@@ -65,13 +128,32 @@ import Card from '@/components/Card';
 import SingleAccordion from '@/components/Accordion/SingleAccordion.vue';
 import ProgressBar from '@/components/ProgressBar';
 import Bar from '@/components/ProgressBar/Bar';
+import VueButton from '@/components/Button/index.vue';
+import Checkbox from '@/components/Checkbox/index.vue'
 import {
     formatInformations
 } from '@/constant/static';
-import { computed } from 'vue';
-import { useThemeSettingsStore } from '@/store/themeSettings'
+import { computed, ref } from 'vue';
+import { useThemeSettingsStore } from '@/store/themeSettings';
 
 const store = useThemeSettingsStore();
+
+const options = [
+    {
+        value: "Orange",
+        label: "Orange",
+    },
+    {
+        value: "Apple",
+        label: "Apple",
+    },
+    {
+        value: "Banana",
+        label: "Banana",
+    },
+];
+
+const selected = ref([]);
 
 const columnCharthomeComputed = computed(() => {
     return {

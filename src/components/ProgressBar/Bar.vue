@@ -4,9 +4,12 @@
       class="flex flex-col text-center whitespace-nowrap justify-center h-full"
       :class="`${barColor} ${animate ? 'animated-strip' : ''} w-[${value}%]`"
     >
-      <span v-if="showValue" class="text-[10px] text-white font-bold">{{
-        value + "%"
-      }}</span>
+      <span 
+        v-if="showValue" 
+        :class="`text-[10px] ${colorTextClass} font-bold`"
+      >
+        {{ value + "%" }}
+      </span>
     </div>
   </Transition>
 </template>
@@ -17,7 +20,6 @@ export default {
       type: Number,
       default: 50,
     },
-
     barColor: {
       type: String,
       default: "bg-slate-900",
@@ -33,6 +35,10 @@ export default {
     animate: {
       type: Boolean,
       default: false,
+    },
+    colorTextClass: {
+      type: String,
+      default: 'text-white'
     },
   },
   methods: {
