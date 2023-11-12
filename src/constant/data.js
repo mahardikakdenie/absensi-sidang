@@ -9,7 +9,7 @@ export const menuItems = [
     title: "Admin Dashboard",
   },
   {
-    title: 'Absensi',
+    title: 'Home',
     icon: "heroicons-outline:home",
     link: '/'
 

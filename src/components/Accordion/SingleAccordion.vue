@@ -27,10 +27,13 @@
             @after-leave="afterLeave"
         >
             <div
-                v-if="isVisible.value"
+                v-if="isVisible"
                 class="text-sm text-slate-600 font-normal bg-white dark:bg-slate-900 dark:text-slate-300 rounded-b-md"
+                :class="[updateAccordionStyle]"
             >
-
+                <slot class="px-0 py-2" name="content">
+                    Content
+                </slot>
             </div>
         </Transition>
 	</div>
@@ -61,9 +64,15 @@ const updateAccordionStyle = (type) => {
     let visibleStyle = 'bg-slate-50 dark:bg-slate-700 dark:bg-opacity-60 rounded-t-md';
     let closeStyle = 'bg-white dark:bg-slate-700 rounded-md';
 
-    if (type === 'icon-chevron-side') {
-        visibleStyle = 'rotate-180 transform';
-        closeStyle = '';
+    switch (type) {
+        case 'icon-chevron-side':
+            visibleStyle = 'rotate-180 transform';
+            closeStyle = '';
+            break;
+        case 'content-section':
+            visibleStyle = 'dark:border dark:border-slate-700 dark:border-t-0';
+            closeStyle = 'l';
+            break;
     }
 
     return isVisible.value ? visibleStyle : closeStyle;
