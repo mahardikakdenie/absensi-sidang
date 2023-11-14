@@ -115,17 +115,24 @@
                             />
                         </div>
 
-                        <div class="mt-4">
-                            <div class="text-md font-bold">
-                                Desctipription : 
-                            </div>
-                            <div class="font-light text-justify">
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit, veniam!
-                            </div>
-                        </div>
+
                     </div>
                 </template>
             </single-accordion>
+            <div class="mt-4">
+                <div class="text-md font-bold">
+                    Desctipription : 
+                </div>
+                <div class="font-light text-justify">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit, veniam!
+                </div>
+            </div>
+            <div class="mt-4">
+                <div class="flex justify-center gap-2">
+                    <vue-button text="ClockIn" btnClass="btn-outline-primary btn-sm" />
+                    <vue-button text="ClockOut" btnClass="btn-outline-primary btn-sm" />
+                </div>
+            </div>
         </card>
     </div>
 </div>
