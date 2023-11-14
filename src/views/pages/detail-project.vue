@@ -114,6 +114,15 @@
                                 class="ml-2"
                             />
                         </div>
+
+                        <div class="mt-4">
+                            <div class="text-md font-bold">
+                                Desctipription : 
+                            </div>
+                            <div class="font-light text-justify">
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit, veniam!
+                            </div>
+                        </div>
                     </div>
                 </template>
             </single-accordion>
