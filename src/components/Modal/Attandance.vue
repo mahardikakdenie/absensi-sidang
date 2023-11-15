@@ -2,8 +2,7 @@
 	<modal :active-modal="activeModal" @close="$emit('close')">
 		<div>
 			<p v-if="location">
-				Latitude: {{ location.latitude }}, Longitude:
-				{{ location.longitude }}
+				fullAddress : {{ fullAddress }}
 			</p>
 			<div class="relative aspect-w-16 aspect-h-9">
 				<video
@@ -38,6 +37,7 @@
 </template>
 
 <script setup>
+import axios from 'axios';
 import VueButton from '@/components/Button';
 import Modal from '@/components/Modal/index.vue';
 import { onBeforeMount, onMounted, ref, watch } from 'vue';
@@ -46,9 +46,14 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	type: {
+		type: String,
+		default: 'clockin',
+	},
 });
 
 const location = ref(null);
+const fullAddress = ref('');
 
 const getLocation = () => {
 	if (navigator.geolocation) {
@@ -59,6 +64,7 @@ const getLocation = () => {
 };
 
 const handleSuccess = (position) => {
+	getAddressFromCoords(position.coords.latitude, position.coords.longitude);
 	location.value = {
 		latitude: position.coords.latitude,
 		longitude: position.coords.longitude,
@@ -89,8 +95,52 @@ const videoState = ref(null);
 const imgState = ref(null);
 const imgUrlState = ref(null);
 
+const emit = defineEmits(['close', 'upload']);
+
+const getAddressFromCoords = async (lat, long) => {
+	const response = await axios.get(
+		`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${long}`
+	);
+
+	if (response.data.display_name) {
+		const { display_name, address } = response.data;
+		fullAddress.value = display_name;
+		console.log("🚀 ~ file: Attandance.vue:106 ~ getAddressFromCoords ~ response.data:", response.data)
+		return { formatted: display_name, components: address };
+	} else {
+		throw new Error('No address found for the given coordinates.');
+	}
+};
+
 // ...
-const upload = () => {};
+const upload = async () => {
+	try {
+		if (imgState.value) {
+			// Assuming you have an API endpoint for image upload
+			const apiUrl = 'https://example.com/upload';
+
+			// Convert the image to a Blob
+			const img = await fetch(imgState.value.src).then((res) =>
+				res.blob()
+			);
+			const data = {
+				img,
+				type: props.type,
+				fullAddress: fullAddress.value,
+				lat: location.value.latitude,
+				long: location.value.longitude,
+			};
+			emit('close');
+			emit('upload', data);
+			imgState.value = null;
+			imgUrlState.value = null;
+		}
+	} catch (error) {
+		console.error('Error uploading image:', error);
+		alert('An error occurred. Please try again.');
+	}
+};
+
 const take = () => {
 	if (videoElement.value) {
 		const width = videoElement.value.offsetWidth;
@@ -120,7 +170,8 @@ watch(
 	(newVal, oldVal) => {
 		// Callback yang akan dijalankan ketika prop berubah
 		if (newVal) {
-			const video = document.getElementById('video-webcam') || videoElement;
+			const video =
+				document.getElementById('video-webcam') || videoElement;
 
 			if (video) {
 				navigator.getUserMedia =

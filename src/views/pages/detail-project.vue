@@ -95,7 +95,8 @@
 									:value="option.value"
 									:label="option.label"
 									activeClass="ring-primary-500 bg-primary-500"
-									class="ml-2" />
+									class="ml-2" 
+								/>
 							</div>
 						</div>
 					</template>
@@ -112,15 +113,25 @@
 						<vue-button
 							text="ClockIn"
 							btnClass="btn-outline-primary btn-sm"
-							@click="startCamera" />
+							@click="startCamera('clockin')" 
+						/>
 						<vue-button
 							text="ClockOut"
-							btnClass="btn-outline-primary btn-sm" />
+							btnClass="btn-outline-primary btn-sm"
+							@click="startCamera('clockout')"
+						/>
 					</div>
 				</div>
 			</card>
 		</div>
-        <ModalAttendance v-if="isOpenCamera" :active-modal="isOpenCamera" @close="isOpenCamera = false" />
+        <ModalAttendance 
+			v-if="isOpenCamera" 
+			sizeClass="max-w-2xl"
+			:active-modal="isOpenCamera"
+			:type="typeAttendance"
+			@close="isOpenCamera = false"
+			@upload="upload"
+		/>
 	</div>
 </template>
 
@@ -164,10 +175,15 @@ const videoElement = ref(null);
 const isOpenCamera = ref(false);
 const videoState = ref(null);
 const imgState = ref(null);
+const typeAttendance = ref('');
 
-const startCamera = () => {
+const startCamera = (type) => {
 	isOpenCamera.value = true;
+	typeAttendance.value = type;
 };
+const upload = (img) => {
+	console.log('img => ', img);
+}
 </script>
 
 <style></style>
