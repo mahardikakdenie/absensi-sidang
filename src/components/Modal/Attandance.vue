@@ -1,7 +1,10 @@
 <template>
 	<modal :active-modal="activeModal" @close="$emit('close')">
 		<div>
-            <p v-if="location">Latitude: {{ location.latitude }}, Longitude: {{ location.longitude }}</p>
+			<p v-if="location">
+				Latitude: {{ location.latitude }}, Longitude:
+				{{ location.longitude }}
+			</p>
 			<div class="relative aspect-w-16 aspect-h-9">
 				<video
 					id="video-webcam"
@@ -20,17 +23,15 @@
 
 			<div class="mt-4">
 				<vue-button
-                    v-if="!imgUrlState"
+					v-if="!imgUrlState"
 					text="Take"
 					btnClass="btn-outline-primary btn-sm"
-					@click="take" 
-                />
+					@click="take" />
 				<vue-button
-                    v-if="imgUrlState"
+					v-if="imgUrlState"
 					text="Upload"
 					btnClass="btn-outline-primary btn-sm"
-					@click="upload"
-                />
+					@click="upload" />
 			</div>
 		</div>
 	</modal>
@@ -47,44 +48,40 @@ const props = defineProps({
 	},
 });
 
-
 const location = ref(null);
 
 const getLocation = () => {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      handleSuccess,
-      handleError
-    );
-  } else {
-    alert('Geolocation is not supported by your browser.');
-  }
+	if (navigator.geolocation) {
+		navigator.geolocation.getCurrentPosition(handleSuccess, handleError);
+	} else {
+		alert('Geolocation is not supported by your browser.');
+	}
 };
 
 const handleSuccess = (position) => {
-  location.value = {
-    latitude: position.coords.latitude,
-    longitude: position.coords.longitude
-  };
+	location.value = {
+		latitude: position.coords.latitude,
+		longitude: position.coords.longitude,
+	};
 };
 
 const handleError = (error) => {
-  switch (error.code) {
-    case error.PERMISSION_DENIED:
-      alert('User denied the request for Geolocation.');
-      break;
-    case error.POSITION_UNAVAILABLE:
-      alert('Location information is unavailable.');
-      break;
-    case error.TIMEOUT:
-      alert('The request to get user location timed out.');
-      break;
-    case error.UNKNOWN_ERROR:
-      alert('An unknown error occurred.');
-      break;
-    default:
-      alert('An unknown error occurred.');
-  }
+	switch (error.code) {
+		case error.PERMISSION_DENIED:
+			alert('User denied the request for Geolocation.');
+			break;
+		case error.POSITION_UNAVAILABLE:
+			alert('Location information is unavailable.');
+			break;
+		case error.TIMEOUT:
+			alert('The request to get user location timed out.');
+			break;
+		case error.UNKNOWN_ERROR:
+			alert('An unknown error occurred.');
+			break;
+		default:
+			alert('An unknown error occurred.');
+	}
 };
 
 const videoState = ref(null);
@@ -93,7 +90,7 @@ const imgState = ref(null);
 const imgUrlState = ref(null);
 
 // ...
-const upload =  () => {};
+const upload = () => {};
 const take = () => {
 	if (videoElement.value) {
 		const width = videoElement.value.offsetWidth;
@@ -121,12 +118,9 @@ const videoElement = ref(null);
 watch(
 	() => props.activeModal, // Mengamati prop activeModal
 	(newVal, oldVal) => {
-		console.log('🚀 ~ file: Attandance.vue:52 ~ newVal:', newVal);
 		// Callback yang akan dijalankan ketika prop berubah
 		if (newVal) {
-			const video =
-				document.getElementById('video-webcam') || videoElement;
-			console.log('🚀 ~ file: Attandance.vue:56 ~ video:', video);
+			const video = document.getElementById('video-webcam') || videoElement;
 
 			if (video) {
 				navigator.getUserMedia =
@@ -159,10 +153,8 @@ watch(
 );
 
 onBeforeMount(() => {
-	console.log('🚀 ~ file: Attandance.vue:90 ~ videoElement:', videoElement);
 	if (props.activeModal) {
 		const video = document.getElementById('video-webcam') || videoElement;
-		console.log('🚀 ~ file: Attandance.vue:56 ~ video:', video);
 
 		if (video) {
 			navigator.getUserMedia =
@@ -182,10 +174,6 @@ onBeforeMount(() => {
 
 			function handleVideo(stream) {
 				const videoTag = document.getElementById('video-webcam');
-				console.log(
-					'🚀 ~ file: Attandance.vue:112 ~ handleVideo ~ videoTag:',
-					videoTag
-				);
 				videoTag.srcObject = stream;
 				videoState.value = video;
 			}
@@ -194,7 +182,7 @@ onBeforeMount(() => {
 				alert('Allow using the webcam for the demo!');
 			}
 		}
-        getLocation();
+		getLocation();
 	}
 });
 </script>
