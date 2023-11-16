@@ -6,6 +6,21 @@ import user4Img from "@/assets/images/all-img/user4.png";
 export const menuItems = [
   {
     isHeadr: true,
+    title: 'Admin',
+  },
+  {
+    title: "Dashboard",
+    icon: "heroicons-outline:home",
+    isOpen: true,
+    child: [
+      {
+        childtitle: "Project  Dashbaord",
+        childlink: "/project",
+      },
+    ],
+  },
+  {
+    isHeadr: true,
     title: "Home Attendance System",
   },
   {

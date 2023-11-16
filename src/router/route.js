@@ -1,3 +1,4 @@
+import adminRoute from '@/router/admin-dashboard/index.js'
 const routes = [
   {
     path: '/login',
@@ -10,6 +11,7 @@ const routes = [
     redirect: "/",
     component: () => import("@/Layout/index.vue"),
     children: [
+      ...adminRoute,
       {
         name: 'home',
         path: '/',
@@ -25,7 +27,7 @@ const routes = [
         meta: {
           groupParent: 'Project',
         }
-      }
+      },
     ],
   },
 ];

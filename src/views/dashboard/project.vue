@@ -439,7 +439,7 @@ export default {
       ],
       statistics: [
         {
-          title: "Total Task",
+          title: "Total Project",
           count: "64",
           bg: "bg-info-500",
           text: "text-info-500",
@@ -447,7 +447,7 @@ export default {
           icon: "heroicons-outline:menu-alt-1",
         },
         {
-          title: "Completed ",
+          title: "Completed",
           count: "45",
 
           bg: "bg-warning-500",
