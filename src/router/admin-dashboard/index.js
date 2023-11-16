@@ -1,7 +1,7 @@
 const router = [
     {
         name: 'Project Dashboard',
-        path: '/dashboard',
+        path: '/admin/dashboard',
         component: () => import('@/views/dashboard/project.vue'),
         meta: {
             groupParent: 'Home Dashboard'
@@ -9,7 +9,7 @@ const router = [
     },
     {
         name: 'Project',
-        path: '/project',
+        path: '/admin/project',
         component: () => import('@/views/pages/admin/project.vue'),
         meta: {
             groupParent: 'Project List',
@@ -17,10 +17,18 @@ const router = [
     },
     {
         name: 'Attendance List',
-        path: '/attendance-list',
+        path: '/admin/attendance-list',
         component: () => import('@/views/pages/admin/attendance-list.vue'),
         meta: {
             groupParent: 'Attendance List'
+        }
+    },
+    {
+        name: 'User',
+        path: '/admin/user',
+        component: () => import('@/views/pages/admin/user.vue'),
+        meta: {
+            groupParent: 'User List'
         }
     }
 ];

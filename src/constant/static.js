@@ -15,20 +15,25 @@ export const menuItems = [
 		isHeadr: true,
 		title: 'Admin',
 	},
-	{
-		title: 'Dashbaord',
-		icon: 'heroicons-outline:home',
-		link: '/dashboard',
-	},
+    {
+        title: 'Dashbaord',
+        icon: 'heroicons-outline:home',
+        link: '/admin/dashboard',
+    },
+    {
+        title: 'User',
+        icon: 'mdi:user-outline',
+        link: '/admin/user'
+    },
     {
         title: 'Project',
         icon: 'eos-icons:project-outlined',
-        link: '/project',
+        link: '/admin/project',
     },
     {
         title: 'Attendance List',
         icon: 'gg:list',
-        link: '/attendance-list'
+        link: '/admin/attendance-list'
     },
     // Attendance System
 	{
