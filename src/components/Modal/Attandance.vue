@@ -1,9 +1,7 @@
 <template>
 	<modal :active-modal="activeModal" @close="$emit('close')">
 		<div>
-			<p v-if="location">
-				fullAddress : {{ fullAddress }}
-			</p>
+			<p v-if="location">fullAddress : {{ fullAddress }}</p>
 			<div class="relative aspect-w-16 aspect-h-9">
 				<video
 					id="video-webcam"
@@ -87,7 +85,9 @@ const handleError = (error) => {
 			break;
 		default:
 			alert('An unknown error occurred.');
-	}
+	};
+
+	emit('close');
 };
 
 const videoState = ref(null);
@@ -98,27 +98,16 @@ const imgUrlState = ref(null);
 const emit = defineEmits(['close', 'upload']);
 
 const getAddressFromCoords = async (lat, long) => {
-	const response = await axios.get(
-		`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${long}`
-	);
-
-	if (response.data.display_name) {
-		const { display_name, address } = response.data;
-		fullAddress.value = display_name;
-		console.log("🚀 ~ file: Attandance.vue:106 ~ getAddressFromCoords ~ response.data:", response.data)
-		return { formatted: display_name, components: address };
-	} else {
-		throw new Error('No address found for the given coordinates.');
-	}
+	const endpointMaps = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${long}`;
+	const response = await axios.get(endpointMaps);
+	const { display_name } = response?.data ?? '';
+	fullAddress.value = display_name;
 };
 
 // ...
 const upload = async () => {
 	try {
 		if (imgState.value) {
-			// Assuming you have an API endpoint for image upload
-			const apiUrl = 'https://example.com/upload';
-
 			// Convert the image to a Blob
 			const img = await fetch(imgState.value.src).then((res) =>
 				res.blob()
@@ -165,75 +154,46 @@ const take = () => {
 };
 
 const videoElement = ref(null);
-watch(
-	() => props.activeModal, // Mengamati prop activeModal
-	(newVal, oldVal) => {
-		// Callback yang akan dijalankan ketika prop berubah
-		if (newVal) {
-			const video =
-				document.getElementById('video-webcam') || videoElement;
-
-			if (video) {
-				navigator.getUserMedia =
-					navigator.getUserMedia ||
-					navigator.webkitGetUserMedia ||
-					navigator.mozGetUserMedia ||
-					navigator.msGetUserMedia ||
-					navigator.oGetUserMedia;
-
-				if (navigator.getUserMedia) {
-					navigator.getUserMedia(
-						{ video: true },
-						handleVideo,
-						videoError
-					);
-				}
-
-				function handleVideo(stream) {
-					video.srcObject = stream;
-					videoState.value = video;
-				}
-
-				function videoError(e) {
-					alert('Allow using the webcam for the demo!');
-				}
-			}
-		}
-	},
-	{ immediate: true } // Opsi agar watch dijalankan saat komponen di-render pertama kali
-);
+// watch(() => props.activeModal, (newVal) => {
+// 		if (newVal) {
+// 			setupWebcam();
+// 		}
+// 	},
+// 	{ immediate: true }
+// );
 
 onBeforeMount(() => {
 	if (props.activeModal) {
-		const video = document.getElementById('video-webcam') || videoElement;
-
-		if (video) {
-			navigator.getUserMedia =
-				navigator.getUserMedia ||
-				navigator.webkitGetUserMedia ||
-				navigator.mozGetUserMedia ||
-				navigator.msGetUserMedia ||
-				navigator.oGetUserMedia;
-
-			if (navigator.getUserMedia) {
-				navigator.getUserMedia(
-					{ video: true },
-					handleVideo,
-					videoError
-				);
-			}
-
-			function handleVideo(stream) {
-				const videoTag = document.getElementById('video-webcam');
-				videoTag.srcObject = stream;
-				videoState.value = video;
-			}
-
-			function videoError(e) {
-				alert('Allow using the webcam for the demo!');
-			}
-		}
-		getLocation();
+		setupWebcam();
 	}
 });
+
+const setupWebcam = () => {
+	const video = document.getElementById('video-webcam') || videoElement;
+
+	if (video) {
+		navigator.getUserMedia =
+			navigator.getUserMedia ||
+			navigator.webkitGetUserMedia ||
+			navigator.mozGetUserMedia ||
+			navigator.msGetUserMedia ||
+			navigator.oGetUserMedia;
+
+		if (navigator.getUserMedia) {
+			navigator.getUserMedia({ video: true }, handleVideo, videoError);
+		}
+
+		function handleVideo(stream) {
+			const videoTag = document.getElementById('video-webcam');
+			videoTag.srcObject = stream;
+			videoState.value = video;
+		}
+
+		function videoError(e) {
+			alert('Izinkan kami mengakses kamera untuk kehadiran');
+			emit('close');
+		}
+	}
+	getLocation();
+};
 </script>
