@@ -107,6 +107,14 @@
 						Lorem ipsum dolor sit amet consectetur adipisicing elit.
 						Velit, veniam!
 					</div>
+					<div class="my-3">
+						<div class="my-2">
+							<span class="font-bold text-sm pb-2">
+								Upload Proof Of Work
+							</span>
+						</div>
+						<DropZoneVue />
+					</div>
 				</div>
 				<div class="mt-4">
 					<div class="flex justify-center gap-2">
@@ -148,7 +156,8 @@ import Checkbox from '@/components/Checkbox/index.vue';
 import { formatInformations } from '@/constant/static';
 import { computed, onMounted, ref } from 'vue';
 import { useThemeSettingsStore } from '@/store/themeSettings';
-import ModalAttendance from '@/components/Modal/Attandance.vue'
+import ModalAttendance from '@/components/Modal/Attandance.vue';
+import DropZoneVue from "@/components/Fileinput/DropZone.vue";
 
 const store = useThemeSettingsStore();
 
