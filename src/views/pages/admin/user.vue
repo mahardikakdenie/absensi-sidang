@@ -1,7 +1,7 @@
 <template>
 <div>
     <card>
-    <data-table title="Project" />
+    <data-table title="List User" />
 </card>
 </div>
 </template>

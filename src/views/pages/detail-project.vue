@@ -102,11 +102,8 @@
 					</template>
 				</single-accordion>
 				<div class="mt-4">
-					<div class="text-md font-bold">Desctipription :</div>
-					<div class="font-light text-justify">
-						Lorem ipsum dolor sit amet consectetur adipisicing elit.
-						Velit, veniam!
-					</div>
+					<div class="text-md font-bold mb-2">Desctipription</div>
+					<TextAreaInput />
 					<div class="my-3">
 						<div class="my-2">
 							<span class="font-bold text-sm pb-2">
@@ -120,12 +117,12 @@
 					<div class="flex justify-center gap-2">
 						<vue-button
 							text="ClockIn"
-							btnClass="btn-outline-primary btn-sm"
+							btnClass="btn-success light btn-sm"
 							@click="startCamera('clockin')" 
 						/>
 						<vue-button
 							text="ClockOut"
-							btnClass="btn-outline-primary btn-sm"
+							btnClass="btn-success light btn-sm"
 							@click="startCamera('clockout')"
 						/>
 					</div>
@@ -145,6 +142,7 @@
 
 <script setup>
 // import { useMediaRecorder } from 'vue-media-recorder';
+import TextAreaInput from '@/components/Textarea'
 import InformationColor from '@/components/attandance-pages/InformationColor.vue';
 import Card from '@/components/Card';
 import Modal from '@/components/Modal';
