@@ -3,9 +3,7 @@
 		<div>
 			<p v-if="location">fullAddress : {{ fullAddress }}</p>
 			<div v-if="isLoading" class="loading">
-				<div class="effect-1 effects"></div>
-				<div class="effect-2 effects"></div>
-				<div class="effect-3 effects"></div>
+				<PageLoader />
 			</div>
 			<div class="relative aspect-w-16 aspect-h-9">
 				<video
@@ -30,7 +28,7 @@
 					v-if="!imgUrlState"
 					text="Take"
 					btnClass="btn-outline-primary btn-sm"
-					:isDisabled="isLoading"
+					:isDisabled="isLoading && !videoState"
 					@click="take" 
 				/>
 				<vue-button
@@ -49,6 +47,14 @@ import axios from 'axios';
 import VueButton from '@/components/Button';
 import Modal from '@/components/Modal/index.vue';
 import { onBeforeMount, onMounted, ref, watch } from 'vue';
+
+import { useToast } from "vue-toastification";
+import PageLoader from '@/components/Loader/pageLoader.vue';
+import {
+	genereteNotification
+} from '@/constant/helpers';
+
+const toast = useToast();
 const props = defineProps({
 	activeModal: {
 		type: Boolean,
@@ -180,34 +186,35 @@ onBeforeMount(() => {
 	}
 });
 
+/**
+ * This function Used to setup Webcam
+ * Request permission to access the camera
+ * 
+ */
 const setupWebcam = () => {
-	const video = document.getElementById('video-webcam') || videoElement;
+	isLoading.value = true;
+	navigator.getUserMedia =
+		navigator.getUserMedia ||
+		navigator.webkitGetUserMedia ||
+		navigator.mozGetUserMedia ||
+		navigator.msGetUserMedia ||
+		navigator.oGetUserMedia;
 
-	if (video) {
-		isLoading.value = true;
-		navigator.getUserMedia =
-			navigator.getUserMedia ||
-			navigator.webkitGetUserMedia ||
-			navigator.mozGetUserMedia ||
-			navigator.msGetUserMedia ||
-			navigator.oGetUserMedia;
+	if (navigator.getUserMedia) {
+		navigator.getUserMedia({ video: true }, handleVideo, videoError);
+	}
 
-		if (navigator.getUserMedia) {
-			navigator.getUserMedia({ video: true }, handleVideo, videoError);
-		}
+	function handleVideo(stream) {
+		const videoTag = document.getElementById('video-webcam');
+		videoTag.srcObject = stream;
+		isLoading.value = videoTag?.srcObject ? false : true;
+		videoState.value = videoTag;
+	}
 
-		function handleVideo(stream) {
-			isLoading.value = false;
-			const videoTag = document.getElementById('video-webcam');
-			videoTag.srcObject = stream;
-			videoState.value = video;
-		}
-
-		function videoError(e) {
-			isLoading.value = false;
-			alert('Izinkan kami mengakses kamera untuk kehadiran');
-			emit('close');
-		}
+	function videoError(e) {
+		isLoading.value = false;
+		genereteNotification('error', 2000, 'Allow us to access the camera for attendance');
+		emit('close');
 	}
 	getLocation();
 };
