@@ -2,19 +2,26 @@
 	<modal :active-modal="activeModal" @close="$emit('close')">
 		<div>
 			<p v-if="location">fullAddress : {{ fullAddress }}</p>
+			<div v-if="isLoading" class="loading">
+				<div class="effect-1 effects"></div>
+				<div class="effect-2 effects"></div>
+				<div class="effect-3 effects"></div>
+			</div>
 			<div class="relative aspect-w-16 aspect-h-9">
 				<video
 					id="video-webcam"
 					ref="videoElement"
 					autoplay
-					class="object-cover w-full h-full" />
+					class="object-cover w-full h-full" 
+				/>
 				<div
 					class="absolute top-0 left-0 w-full h-full flex items-center justify-center">
 					<img
 						v-if="imgUrlState"
 						:src="imgUrlState"
 						alt=""
-						class="object-cover w-full h-full" />
+						class="object-cover w-full h-full" 
+					/>
 				</div>
 			</div>
 
@@ -23,12 +30,15 @@
 					v-if="!imgUrlState"
 					text="Take"
 					btnClass="btn-outline-primary btn-sm"
-					@click="take" />
+					:isDisabled="isLoading"
+					@click="take" 
+				/>
 				<vue-button
 					v-if="imgUrlState"
 					text="Upload"
 					btnClass="btn-outline-primary btn-sm"
-					@click="upload" />
+					@click="upload" 
+				/>
 			</div>
 		</div>
 	</modal>
@@ -94,6 +104,7 @@ const videoState = ref(null);
 
 const imgState = ref(null);
 const imgUrlState = ref(null);
+const isLoading = ref(false);
 
 const emit = defineEmits(['close', 'upload']);
 
@@ -114,6 +125,7 @@ const upload = async () => {
 			);
 			const data = {
 				img,
+				src: imgState.value.src,
 				type: props.type,
 				fullAddress: fullAddress.value,
 				lat: location.value.latitude,
@@ -172,6 +184,7 @@ const setupWebcam = () => {
 	const video = document.getElementById('video-webcam') || videoElement;
 
 	if (video) {
+		isLoading.value = true;
 		navigator.getUserMedia =
 			navigator.getUserMedia ||
 			navigator.webkitGetUserMedia ||
@@ -184,12 +197,14 @@ const setupWebcam = () => {
 		}
 
 		function handleVideo(stream) {
+			isLoading.value = false;
 			const videoTag = document.getElementById('video-webcam');
 			videoTag.srcObject = stream;
 			videoState.value = video;
 		}
 
 		function videoError(e) {
+			isLoading.value = false;
 			alert('Izinkan kami mengakses kamera untuk kehadiran');
 			emit('close');
 		}

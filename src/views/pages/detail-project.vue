@@ -95,8 +95,7 @@
 									:value="option.value"
 									:label="option.label"
 									activeClass="ring-primary-500 bg-primary-500"
-									class="ml-2" 
-								/>
+									class="ml-2" />
 							</div>
 						</div>
 					</template>
@@ -113,36 +112,49 @@
 						<DropZoneVue />
 					</div>
 				</div>
+				<!-- <div v-if="clockInPreview" class="mt-4">
+					<img :src="clockInPreview" alt="" class="max-w-full h-auto rounded shadow-md">
+				</div> -->
+				<div v-if="clockInPreview" class="flex space-x-4">
+					<div class="mb-4 flex-none">
+						<div
+							class="h-[300px] w-[300px] mx-auto mt-6 rounded-md"
+						>
+							<div class="text-md font-bold mb-2">ClockIn Review</div>
+							<img
+								:src="clockInPreview"
+								class="object-cover h-full w-full block rounded-md" 
+							/>
+						</div>
+					</div>
+				</div>
 				<div class="mt-4">
 					<div class="flex justify-center gap-2">
 						<vue-button
 							text="ClockIn"
 							btnClass="btn-success light btn-sm"
-							@click="startCamera('clockin')" 
-						/>
+							@click="startCamera('clockin')" />
 						<vue-button
 							text="ClockOut"
 							btnClass="btn-success light btn-sm"
-							@click="startCamera('clockout')"
-						/>
+							@click="startCamera('clockout')" />
 					</div>
 				</div>
 			</card>
 		</div>
-        <ModalAttendance 
-			v-if="isOpenCamera" 
+		<ModalAttendance
+			v-if="isOpenCamera"
 			sizeClass="max-w-2xl"
 			:active-modal="isOpenCamera"
 			:type="typeAttendance"
 			@close="isOpenCamera = false"
-			@upload="upload"
-		/>
+			@upload="upload" />
 	</div>
 </template>
 
 <script setup>
 // import { useMediaRecorder } from 'vue-media-recorder';
-import TextAreaInput from '@/components/Textarea'
+import TextAreaInput from '@/components/Textarea';
 import InformationColor from '@/components/attandance-pages/InformationColor.vue';
 import Card from '@/components/Card';
 import Modal from '@/components/Modal';
@@ -155,7 +167,7 @@ import { formatInformations } from '@/constant/static';
 import { computed, onMounted, ref } from 'vue';
 import { useThemeSettingsStore } from '@/store/themeSettings';
 import ModalAttendance from '@/components/Modal/Attandance.vue';
-import DropZoneVue from "@/components/Fileinput/DropZone.vue";
+import DropZoneVue from '@/components/Fileinput/DropZone.vue';
 
 const store = useThemeSettingsStore();
 
@@ -188,9 +200,11 @@ const startCamera = (type) => {
 	isOpenCamera.value = true;
 	typeAttendance.value = type;
 };
-const upload = (img) => {
-	console.log('img => ', img);
-}
+const clockInPreview = ref(null);
+const upload = (data) => {
+	console.log('data => ', data);
+	clockInPreview.value = data?.src;
+};
 </script>
 
 <style></style>
