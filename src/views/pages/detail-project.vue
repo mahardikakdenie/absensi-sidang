@@ -140,7 +140,9 @@
 				<div class="mt-4 flex">
 					<vue-button
 						text="Submit"
-						btnClass="btn-success light w-[100%] lg:w-[10%] btn-sm"
+						text-class="text-yellow-600"
+						btnClass="bg-yellow-500 light w-[100%] lg:w-[10%] btn-sm"
+						icon-class="text-yellow-500"
 						icon="formkit:submit"
 						icon-position="right"
 						@click="submit"

@@ -16,14 +16,12 @@
           :class="`
           ${iconPosition === 'right' ? 'order-1 ltr:ml-2 rtl:mr-2' : ' '}
           ${text && iconPosition === 'left' ? 'ltr:mr-2 rtl:ml-2' : ''}
-          
           ${iconClass}
-          
           `"
           v-if="icon"
           ><Icon :icon="icon"
         /></span>
-        <span v-if="text">{{ text }}</span>
+        <span v-if="text" :class="textClass">{{ text }}</span>
       </span>
     </template>
     <template v-if="isLoading">
@@ -78,7 +76,7 @@
           v-if="icon"
           ><Icon :icon="icon"
         /></span>
-        <span v-if="text">{{ text }}</span>
+        <span v-if="text" :class="textClass">{{ text }}</span>
       </span>
     </template>
     <template v-if="isLoading">
@@ -211,6 +209,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    textClass: {
+      type: String,
+      default: '',
+    }
   },
 };
 </script>
