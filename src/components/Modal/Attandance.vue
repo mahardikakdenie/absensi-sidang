@@ -51,7 +51,7 @@ import { onBeforeMount, onMounted, ref, watch } from 'vue';
 import { useToast } from "vue-toastification";
 import PageLoader from '@/components/Loader/pageLoader.vue';
 import {
-	genereteNotification
+	generateNotification
 } from '@/constant/helpers';
 
 const toast = useToast();
@@ -86,23 +86,7 @@ const handleSuccess = (position) => {
 };
 
 const handleError = (error) => {
-	switch (error.code) {
-		case error.PERMISSION_DENIED:
-			alert('User denied the request for Geolocation.');
-			break;
-		case error.POSITION_UNAVAILABLE:
-			alert('Location information is unavailable.');
-			break;
-		case error.TIMEOUT:
-			alert('The request to get user location timed out.');
-			break;
-		case error.UNKNOWN_ERROR:
-			alert('An unknown error occurred.');
-			break;
-		default:
-			alert('An unknown error occurred.');
-	};
-
+	generateNotification('error', 2000,'Pengguna menolak permintaan Geolokasi. Tolong izinkan kami untuk mengakses Lokasi Anda');
 	emit('close');
 };
 
@@ -172,13 +156,6 @@ const take = () => {
 };
 
 const videoElement = ref(null);
-// watch(() => props.activeModal, (newVal) => {
-// 		if (newVal) {
-// 			setupWebcam();
-// 		}
-// 	},
-// 	{ immediate: true }
-// );
 
 onBeforeMount(() => {
 	if (props.activeModal) {
@@ -213,7 +190,7 @@ const setupWebcam = () => {
 
 	function videoError(e) {
 		isLoading.value = false;
-		genereteNotification('error', 2000, 'Allow us to access the camera for attendance');
+		generateNotification('error', 2000, 'Allow us to access the camera for attendance');
 		emit('close');
 	}
 	getLocation();

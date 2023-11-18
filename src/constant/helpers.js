@@ -7,7 +7,7 @@ import { useToast } from 'vue-toastification';
  * @param {Number} duration - The duration of the toast message in milliseconds.
  * @param { String } message - Message of the the toast
  */
-export const genereteNotification = (type, duration, message) => {
+export const generateNotification = (type, duration, message) => {
     const toastInstance = useToast();
 
     // Ensure the provided type is one of the supported types

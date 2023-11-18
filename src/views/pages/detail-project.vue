@@ -112,9 +112,6 @@
 						<DropZoneVue />
 					</div>
 				</div>
-				<!-- <div v-if="clockInPreview" class="mt-4">
-					<img :src="clockInPreview" alt="" class="max-w-full h-auto rounded shadow-md">
-				</div> -->
 				<div v-if="clockInPreview" class="flex space-x-4">
 					<div class="mb-4 flex-none">
 						<div
@@ -140,6 +137,15 @@
 							@click="startCamera('clockout')" />
 					</div>
 				</div>
+				<div class="mt-4 flex">
+					<vue-button
+						text="Submit"
+						btnClass="btn-success light w-[100%] lg:w-[10%] btn-sm"
+						icon="formkit:submit"
+						icon-position="right"
+						@click="submit"
+					/>
+				</div>
 			</card>
 		</div>
 		<ModalAttendance
@@ -153,7 +159,6 @@
 </template>
 
 <script setup>
-// import { useMediaRecorder } from 'vue-media-recorder';
 import TextAreaInput from '@/components/Textarea';
 import InformationColor from '@/components/attandance-pages/InformationColor.vue';
 import Card from '@/components/Card';
@@ -205,6 +210,8 @@ const upload = (data) => {
 	console.log('data => ', data);
 	clockInPreview.value = data?.src;
 };
+
+const submit = () => {};
 </script>
 
 <style></style>
