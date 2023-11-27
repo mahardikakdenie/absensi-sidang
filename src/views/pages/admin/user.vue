@@ -1,8 +1,8 @@
 <template>
 <div>
     <card>
-    <data-table title="List User" />
-</card>
+        <data-table title="Akun" />
+    </card>
 </div>
 </template>
 

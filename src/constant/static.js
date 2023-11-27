@@ -15,6 +15,11 @@ export const menuItems = [
 		isHeadr: true,
 		title: 'Admin',
 	},
+	{
+		title: 'Divisi',
+		icon: 'fluent:group-20-filled',
+		link: '/admin/division',
+	},
     {
         title: 'Project',
         icon: 'eos-icons:project-outlined',

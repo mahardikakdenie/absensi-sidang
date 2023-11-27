@@ -30,12 +30,8 @@ router.beforeEach((to, from, next) => {
     }
     const titleText = to?.name;
     const words = titleText?.split(" ");
-    const wordslength = words?.length;
-    for (let i = 0; i < wordslength; i++) {
-      words[i] = words?.[i]?.[0].toUpperCase() + words[i].substr(1);
-    }
-
-    document.title = "Absen  - " + words;
+    const titlePage = words.join(" ");
+    document.title = "Absen  - " + titlePage;
 
     next();
   }

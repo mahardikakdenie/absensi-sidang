@@ -1,8 +1,8 @@
 <template>
 <div>
     <card>
-    <data-table title="Project" />
-</card>
+        <data-table title="Project" />
+    </card>
 </div>
 </template>
 

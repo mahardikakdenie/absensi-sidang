@@ -6,7 +6,7 @@
 				: 'shadow-base'
 		}   `">
 		<div class="logo-segment flex justify-between items-center px-4 py-1">
-			<router-link :to="{ name: 'home' }">
+			<router-link :to="{ name: 'Home' }">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					xmlns:xlink="http://www.w3.org/1999/xlink"

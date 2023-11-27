@@ -13,7 +13,7 @@ const routes = [
     children: [
       ...adminRoute,
       {
-        name: 'home',
+        name: 'Home',
         path: '/',
         component: () => import('@/views/pages/index.vue'),
         meta: {

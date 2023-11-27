@@ -1,6 +1,6 @@
 const router = [
     {
-        name: 'Project Dashboard',
+        name: 'Admin Project Dashboard',
         path: '/admin/dashboard',
         component: () => import('@/views/dashboard/project.vue'),
         meta: {
@@ -29,6 +29,14 @@ const router = [
         component: () => import('@/views/pages/admin/user.vue'),
         meta: {
             groupParent: 'User List'
+        }
+    },
+    {
+        name: 'Admin Division',
+        path: '/admin/division',
+        component: () => import('@/views/pages/admin/division.vue'),
+        meta: {
+            groupParent: 'List Division'
         }
     }
 ];
