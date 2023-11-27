@@ -16,19 +16,14 @@ export const menuItems = [
 		title: 'Admin',
 	},
     {
-        title: 'Dashbaord',
-        icon: 'heroicons-outline:home',
-        link: '/admin/dashboard',
+        title: 'Project',
+        icon: 'eos-icons:project-outlined',
+        link: '/admin/project',
     },
     {
         title: 'User',
         icon: 'mdi:user-outline',
         link: '/admin/user'
-    },
-    {
-        title: 'Project',
-        icon: 'eos-icons:project-outlined',
-        link: '/admin/project',
     },
     {
         title: 'Attendance List',
