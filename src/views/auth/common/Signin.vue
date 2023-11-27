@@ -1,140 +1,144 @@
 <template>
-  <form @submit.prevent="onSubmit" class="space-y-4">
-    <Textinput
-      label="Email"
-      type="email"
-      placeholder="Type your email"
-      name="emil"
-      v-model="email"
-      :error="emailError"
-      classInput="h-[48px]"
-    />
-    <Textinput
-      label="Password"
-      type="password"
-      placeholder="8+ characters, 1 capitat letter "
-      name="password"
-      v-model="password"
-      :error="passwordError"
-      hasicon
-      classInput="h-[48px]"
-    />
+	<form @submit.prevent="onSubmit" class="space-y-4">
+		<Textinput
+			label="Email"
+			type="email"
+			placeholder="Type your email"
+			name="emil"
+			v-model="email"
+			:error="emailError"
+			classInput="h-[48px]" />
+		<Textinput
+			label="Password"
+			type="password"
+			placeholder="8+ characters, 1 capitat letter "
+			name="password"
+			v-model="password"
+			hasicon
+			classInput="h-[48px]" />
 
-    <div class="flex justify-between">
-      <label class="cursor-pointer flex items-start">
-        <input
-          type="checkbox"
-          class="hidden"
-          @change="() => (checkbox = !checkbox)"
-        />
-        <span
-          class="h-4 w-4 border rounded flex-none inline-flex mr-3 relative top-1 transition-all duration-150"
-          :class="
-            checkbox
-              ? 'ring-2 ring-black-500 dark:ring-offset-slate-600 dark:ring-slate-900  dark:bg-slate-900 ring-offset-2 bg-slate-900'
-              : 'bg-slate-100 dark:bg-slate-600 border-slate-100 dark:border-slate-600 '
-          "
-        >
-          <img
-            src="@/assets/images/icon/ck-white.svg"
-            alt=""
-            class="h-[10px] w-[10px] block m-auto"
-            v-if="checkbox"
-          />
-        </span>
-        <span class="text-slate-500 dark:text-slate-400 text-sm leading-6"
-          >Keep me signed in</span
-        >
-      </label>
-      <router-link
-        to="/forgot-password"
-        class="text-sm text-slate-800 dark:text-slate-400 leading-6 font-medium"
-        >Forgot Password?</router-link
-      >
-    </div>
+		<div class="flex justify-between">
+			<label class="cursor-pointer flex items-start">
+				<input
+					type="checkbox"
+					class="hidden"
+					@change="() => (checkbox = !checkbox)" />
+				<span
+					class="h-4 w-4 border rounded flex-none inline-flex mr-3 relative top-1 transition-all duration-150"
+					:class="
+						checkbox
+							? 'ring-2 ring-black-500 dark:ring-offset-slate-600 dark:ring-slate-900  dark:bg-slate-900 ring-offset-2 bg-slate-900'
+							: 'bg-slate-100 dark:bg-slate-600 border-slate-100 dark:border-slate-600 '
+					">
+					<img
+						src="@/assets/images/icon/ck-white.svg"
+						alt=""
+						class="h-[10px] w-[10px] block m-auto"
+						v-if="checkbox" />
+				</span>
+				<span
+					class="text-slate-500 dark:text-slate-400 text-sm leading-6"
+					>Keep me signed in</span
+				>
+			</label>
+			<router-link
+				to="/forgot-password"
+				class="text-sm text-slate-800 dark:text-slate-400 leading-6 font-medium"
+				>Forgot Password?</router-link
+			>
+		</div>
 
-    <button type="submit" class="btn btn-dark block w-full text-center">
-      Sign in
-    </button>
-  </form>
+		<button type="submit" class="btn btn-dark block w-full text-center">
+			Sign in
+		</button>
+	</form>
 </template>
 <script>
-import Textinput from "@/components/Textinput";
-import { useField, useForm } from "vee-validate";
-import * as yup from "yup";
+import Textinput from '@/components/Textinput';
+import { useField, useForm } from 'vee-validate';
+import * as yup from 'yup';
 
-import { useRouter } from "vue-router";
-import { useToast } from "vue-toastification";
+import { useRouter } from 'vue-router';
+import { useToast } from 'vue-toastification';
+import authApi from '@/helpers/auth.js';
+import client from '@/helpers/http-client';
 export default {
-  components: {
-    Textinput,
-  },
-  data() {
-    return {
-      checkbox: false,
-    };
-  },
-  setup() {
-    // Define a validation schema
-    const schema = yup.object({
-      email: yup.string().required("Email is required").email(),
-      password: yup.string().required("Password is required").min(8),
-    });
+	components: {
+		Textinput,
+	},
+	data() {
+		return {
+			checkbox: false,
+		};
+	},
+	setup() {
+		// Define a validation schema
+		const schema = yup.object({
+			email: yup.string().required('Email is required').email(),
+			password: yup.string().required('Password is required').min(8),
+		});
 
-    const toast = useToast();
-    const router = useRouter();
+		const toast = useToast();
+		const router = useRouter();
 
-    const formValues = {
-      email: "dashcode@gmail.com",
-      password: "dashcode",
-    };
+		const formValues = {
+			email: 'admin@mail.com',
+			password: '123456',
+		};
 
-    const { handleSubmit } = useForm({
-      validationSchema: schema,
-      initialValues: formValues,
-    });
-    // No need to define rules for fields
+		const { handleSubmit } = useForm({
+			validationSchema: schema,
+			initialValues: formValues,
+		});
+		// No need to define rules for fields
 
-    const { value: email, errorMessage: emailError } = useField("email");
-    const { value: password, errorMessage: passwordError } =
-      useField("password");
+		const { value: email, errorMessage: emailError } = useField('email');
+		const { value: password, errorMessage: passwordError } =
+			useField('password');
 
-    const onSubmit = handleSubmit((values) => {
-      let isUser = localStorage.users;
-      isUser = JSON.parse(isUser);
+		const onSubmit = handleSubmit((values) => {
+			const email = values.email;
+			const password = values.password;
 
-      let userIndex = isUser.findIndex((user) => user.email === values.email);
+			const params = {
+				email,
+				password,
+			};
 
-      if (userIndex > -1) {
-        let activeUser = isUser.find((user) => user.email === values.email);
-        localStorage.setItem("activeUser", JSON.stringify(activeUser));
+			const callback = (res) => {
+				const data = res.data;
+				if (data.meta.status) {
+					router.push('/');
+					toast.success(' Login  successfully', {
+						timeout: 2000,
+					});
 
-        if (isUser[userIndex].password === values.password) {
-          router.push("/");
-          toast.success(" Login  successfully", {
-            timeout: 2000,
-          });
-        } else {
-          toast.error(" Password not match ", {
-            timeout: 2000,
-          });
-        }
-      } else {
-        toast.error(" User not found", {
-          timeout: 2000,
-        });
-      }
-    });
+					const token = data.data.access_token;
+					localStorage.setItem('token', token);
+					client.defaults.headers.Authorization = `Bearer ${token}`;
+				} else {
+					toast.error(data.meta.message, {
+						timeout: 2000,
+					});
+				}
+			};
 
-    return {
-      email,
+			const err = (e) => {
+				console.log(e);
+			};
 
-      emailError,
-      password,
-      passwordError,
-      onSubmit,
-    };
-  },
+			authApi.login(params, callback, err);
+		});
+
+		return {
+			email,
+
+			emailError,
+			password,
+			passwordError,
+			onSubmit,
+		};
+	},
 };
 </script>
 <style lang="scss"></style>
