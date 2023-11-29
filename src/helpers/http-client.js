@@ -14,6 +14,7 @@ const globalErrorHandler = (error) => {
 		// localStorage.removeItem('token');
 		const originalRequest = error.config;
 		delete originalRequest.headers.Authorization;
+		window.location = '/login';
 	}
 	return Promise.reject(error);
 };

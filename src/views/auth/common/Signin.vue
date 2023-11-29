@@ -7,7 +7,8 @@
 			name="emil"
 			v-model="email"
 			:error="emailError"
-			classInput="h-[48px]" />
+			classInput="h-[48px]" 
+		/>
 		<Textinput
 			label="Password"
 			type="password"
@@ -15,7 +16,8 @@
 			name="password"
 			v-model="password"
 			hasicon
-			classInput="h-[48px]" />
+			classInput="h-[48px]" 
+		/>
 
 		<div class="flex justify-between">
 			<label class="cursor-pointer flex items-start">
@@ -83,7 +85,7 @@ export default {
 
 		const formValues = {
 			email: 'admin@mail.com',
-			password: '123456',
+			password: '123456789',
 		};
 
 		const { handleSubmit } = useForm({
@@ -93,8 +95,7 @@ export default {
 		// No need to define rules for fields
 
 		const { value: email, errorMessage: emailError } = useField('email');
-		const { value: password, errorMessage: passwordError } =
-			useField('password');
+		const { value: password, errorMessage: passwordError } = useField('password');
 
 		const onSubmit = handleSubmit((values) => {
 			const email = values.email;
