@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 
 export const useThemeSettingsStore = defineStore('themeSettings',{
     state: () => ({
-        sidebarCollaspe: true,
+        sidebarCollasp: true,
         sidebarHidden: false,
         mobielSidebar: false,
         semidark: false,

@@ -21,6 +21,14 @@ const routes = [
         },
       },
       {
+        name: 'Projects',
+        path: '/division/:division_id',
+        component: () => import('@/views/pages/projects.vue'),
+        meta: {
+          groupParent: 'List Projects'
+        },
+      },
+      {
         path: '/detail-project/:id',
         name: 'detail-project',
         component: () => import('@/views/pages/detail-project.vue'),

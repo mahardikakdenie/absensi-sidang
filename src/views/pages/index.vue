@@ -1,46 +1,41 @@
 <template>
 <div>
     <div class="grid grid-rows-1">
-        <div class="grid lg:grid-cols-3 grid-cols-2 gap-2">
+        <div class="grid lg:grid-cols-5 grid-cols-2 gap-2">
             <div 
-                v-for="i in 6" 
+                v-for="(division, i) in divisions" 
                 :key="i"
-                @click="$router.push(`/detail-project/${i}`)"
+                @click="$router.push(`/division/${division.id}`)"
             >
-                <card 
-                    className="hover:shadow-md cursor-pointer"
-                >
-                    <div class="flex justify-between">
-                        <div class="flex items-center">
-                            <span class="lg:text-2xl text-sm">
-                                Bagian {{ i }}
-                            </span>
-                        </div>
-                        <div>
-                            <div>
-                                <span class="text-sm">
-                                    Progress
-                                </span>
-                            </div>
-                            <div class="text-sm block mb-[2px] text-primary-500">
-                                100%
-                            </div>
-                        </div>
-                    </div>
-                </card>
+                <box-list :item="division" />
             </div>
         </div>
     </div>
 </div>
 </template>
 
-<script>
-import Card from '@/components/Card';
-export default {
-    components: {
-        Card,
-    }
-}
+<script setup>
+import BoxList from '@/components/Card/box-list.vue';
+import divisionApi from '@/helpers/division.js';
+import { onMounted, ref } from 'vue';
+
+const divisions = ref([]);
+
+const getData = () => {
+    const callback = (response) => {
+        divisions.value = response.data.data;
+    };
+
+    const err = (e) => {
+        console.log('e => ', e);
+    };
+
+    divisionApi.getData({}, callback, err);
+};
+
+onMounted(() => {
+    getData();
+});
 </script>
 
 <style>

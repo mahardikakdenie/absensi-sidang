@@ -67,6 +67,9 @@ import Sidebar from "../components/Sidebar/";
 import window from "@/mixins/window";
 import MobileSidebar from "@/components/Sidebar/MobileSidebar.vue";
 import FooterMenu from "@/components/Footer/FooterMenu.vue";
+import userApi from '@/helpers/user.js'
+import { onMounted } from 'vue';
+import { useUserStore } from '@/store/user'
 
 export default {
   mixins: [window],
@@ -92,6 +95,24 @@ export default {
         return "ltr:ml-[248px] rtl:mr-[248px]";
       }
     },
+  },
+  setup() {
+    const store = useUserStore();
+    const getUser = () => {
+      const callback = (response) => {
+        const users = response?.data?.data;
+        store.setUser(users);
+      };
+      const err = (e) => {
+        console.log(e);
+      };
+
+      userApi.getMe({}, callback, err);
+    };
+
+    onMounted(() => {
+      getUser();
+    })
   },
 };
 </script>

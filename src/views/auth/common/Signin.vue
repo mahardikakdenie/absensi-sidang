@@ -50,13 +50,21 @@
 			>
 		</div>
 
-		<button type="submit" class="btn btn-dark block w-full text-center">
+		<!-- <button type="submit" class="btn btn-dark block w-full text-center">
 			Sign in
-		</button>
+		</button> -->
+		<vue-button 
+			text="SIgn In" 
+			btn-class="btn btn-dark block w-full text-center"
+			:is-loading="isLoading"
+			:is-Disabled="isLoading"
+			@click.prevent="onSubmit" 
+		/>
 	</form>
 </template>
 <script>
 import Textinput from '@/components/Textinput';
+import VueButton from '@/components/Button/index.vue'
 import { useField, useForm } from 'vee-validate';
 import * as yup from 'yup';
 
@@ -64,8 +72,10 @@ import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
 import authApi from '@/helpers/auth.js';
 import client from '@/helpers/http-client';
+import { ref } from 'vue';
 export default {
 	components: {
+		VueButton,
 		Textinput,
 	},
 	data() {
@@ -74,6 +84,7 @@ export default {
 		};
 	},
 	setup() {
+		const isLoading = ref(false);
 		// Define a validation schema
 		const schema = yup.object({
 			email: yup.string().required('Email is required').email(),
@@ -98,6 +109,7 @@ export default {
 		const { value: password, errorMessage: passwordError } = useField('password');
 
 		const onSubmit = handleSubmit((values) => {
+			isLoading.value = true;
 			const email = values.email;
 			const password = values.password;
 
@@ -107,6 +119,7 @@ export default {
 			};
 
 			const callback = (res) => {
+				isLoading.value = false;
 				const data = res.data;
 				if (data.meta.status) {
 					router.push('/');
@@ -118,6 +131,7 @@ export default {
 					localStorage.setItem('token', token);
 					client.defaults.headers.Authorization = `Bearer ${token}`;
 				} else {
+					isLoading.value = false;
 					toast.error(data.meta.message, {
 						timeout: 2000,
 					});
@@ -125,6 +139,7 @@ export default {
 			};
 
 			const err = (e) => {
+				isLoading.value = false;
 				console.log(e);
 			};
 
@@ -138,6 +153,7 @@ export default {
 			password,
 			passwordError,
 			onSubmit,
+			isLoading,
 		};
 	},
 };
