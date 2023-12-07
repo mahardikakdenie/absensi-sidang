@@ -10,7 +10,7 @@ const globalResponseHandler = response => response;
 const globalErrorHandler = (error) => {
 	const status = error.response.status;
 	const isTokenExpired = status === 401;
-	if (isTokenExpired) {
+	if (isTokenExpired || token === undefined || token === null) {
 		// localStorage.removeItem('token');
 		const originalRequest = error.config;
 		delete originalRequest.headers.Authorization;

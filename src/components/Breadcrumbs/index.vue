@@ -18,14 +18,16 @@
 			:sectionName="sectionName"
 		/>
 	</div>
-	<date-picker-section />
+	<date-picker-section v-if="window.width > 768" />
 </div>
 </template>
 <script>
 import Icon from "@/components/Icon";
 import Group from "@/components/Breadcrumbs/Group.vue";
-import DatePickerSection from '@/components/Breadcrumbs/DatePicker.vue'
+import DatePickerSection from '@/components/Breadcrumbs/DatePicker.vue';
+import window from "@/mixins/window";
 export default {
+    mixins: [window],
     components: {
         Icon,
         Group,

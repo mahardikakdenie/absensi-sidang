@@ -49,10 +49,6 @@
 				>Forgot Password?</router-link
 			>
 		</div>
-
-		<!-- <button type="submit" class="btn btn-dark block w-full text-center">
-			Sign in
-		</button> -->
 		<vue-button 
 			text="SIgn In" 
 			btn-class="btn btn-dark block w-full text-center"

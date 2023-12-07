@@ -241,6 +241,10 @@ export default {
     .menu-icon {
         @apply icon-box inline-flex items-center text-slate-600 dark:text-slate-300 text-lg ltr:mr-3 rtl:ml-3;
     }
+
+    &:hover {
+        @apply bg-black-200
+    }
 }
 // menu item has chilren
 .item-has-children {

@@ -1,12 +1,33 @@
 <template>
 	<div>
+		<card title="Laporan Harian" class-name="my-4">
+			<div class="grid grid-cols-2 gap-4">
+				<vue-button
+					text="Clock In"
+					btnClass="btn btn-primary hover:light"
+					@click="setType('clockin')"
+				/>
+				<vue-button
+					text="Clock Out"
+					btnClass="btn btn-success hover:light"
+					@click="setType('clockout')"
+				/>
+			</div>
+			<div class="mt-3">
+				<router-link to="/" class="hover:underline text-sm">
+					Catatan Kehadiran
+				</router-link>
+			</div>
+		</card>
 		<div
-			class="bg-white lg:w-[200px] border rounded-md flex p-2 justify-around">
+			class="bg-white lg:w-[200px] border rounded-md flex p-2 justify-around"
+		>
 			<information-color
 				v-for="(information, index) in formatInformations"
 				:key="index"
 				:color-code="information.colorCode"
-				:label="information.label" />
+				:label="information.label" 
+			/>
 		</div>
 
 		<div class="">
@@ -30,7 +51,8 @@
 				<single-accordion
 					title="Project Name"
 					parentClass="mt-3"
-					isOpen>
+					isOpen
+				>
 					<template #content>
 						<div class="mb-3">
 							<span class="font-bold text-lg"> Progress </span>
@@ -74,78 +96,11 @@
 							<div>
 								<span> Sisa Hari : 61 Hari </span>
 							</div>
-							<div class="flex justify-between">
-								<div class="flex items-center">
-									<span class="text-sm font-bold">
-										Task
-									</span>
-								</div>
-								<div class="">
-									<vue-button
-										text="Edit Task"
-										btnClass="py-2 px-2"
-										icon="typcn:edit" />
-								</div>
-							</div>
-							<div class="flex flex-wrap space-x-rb mt-4">
-								<Checkbox
-									v-for="(option, index) in options"
-									:key="index"
-									v-model="selected"
-									:value="option.value"
-									:label="option.label"
-									activeClass="ring-primary-500 bg-primary-500"
-									class="ml-2" />
-							</div>
 						</div>
 					</template>
 				</single-accordion>
-				<div class="mt-4">
-					<div class="text-md font-bold mb-2">Desctipription</div>
-					<TextAreaInput />
-					<div class="my-3">
-						<div class="my-2">
-							<span class="font-bold text-sm pb-2">
-								Upload Proof Of Work
-							</span>
-						</div>
-						<DropZoneVue />
-					</div>
-				</div>
-				<div v-if="clockInPreview" class="flex space-x-4">
-					<div class="mb-4 flex-none">
-						<div
-							class="h-[300px] w-[300px] mx-auto mt-6 rounded-md"
-						>
-							<div class="text-md font-bold mb-2">ClockIn Review</div>
-							<img
-								:src="clockInPreview"
-								class="object-cover h-full w-full block rounded-md" 
-							/>
-						</div>
-					</div>
-				</div>
-				<div class="mt-4">
-					<div class="flex justify-center gap-2">
-						<vue-button
-							text="ClockIn"
-							btnClass="btn-success light btn-sm"
-							@click="startCamera('clockin')" />
-						<vue-button
-							text="ClockOut"
-							btnClass="btn-success light btn-sm"
-							@click="startCamera('clockout')" />
-					</div>
-				</div>
 			</card>
 		</div>
-		<ModalAttendance
-			v-if="isOpenCamera"
-			sizeClass="max-w-2xl"
-			:active-modal="isOpenCamera"
-			:type="typeAttendance"
-			@close="isOpenCamera = false"
-			@upload="upload" />
 	</div>
 </template>
 
@@ -162,10 +117,13 @@ import Checkbox from '@/components/Checkbox/index.vue';
 import { formatInformations } from '@/constant/static';
 import { computed, onMounted, ref } from 'vue';
 import { useThemeSettingsStore } from '@/store/themeSettings';
-import ModalAttendance from '@/components/Modal/Attandance.vue';
 import DropZoneVue from '@/components/Fileinput/DropZone.vue';
+import { useRoute, useRouter } from 'vue-router';
 
 const store = useThemeSettingsStore();
+
+const router = useRouter();
+const route = useRoute();
 
 const selected = ref([]);
 
@@ -184,23 +142,26 @@ const options = [
 	},
 ];
 
+
 // Ref for video element
 const videoElement = ref(null);
 
-const isOpenCamera = ref(false);
 const videoState = ref(null);
 const imgState = ref(null);
 const typeAttendance = ref('');
 
+const setType = (type) => {
+	typeAttendance.value = type;
+	router.push(`/attendance/${type}/${route.params.id}`)
+};
+
+const isOpenCamera = ref(false);
 const startCamera = (type) => {
 	isOpenCamera.value = true;
 	typeAttendance.value = type;
 };
 const clockInPreview = ref(null);
-const upload = (data) => {
-	console.log('data => ', data);
-	clockInPreview.value = data?.src;
-};
+
 
 const submit = () => {};
 </script>
