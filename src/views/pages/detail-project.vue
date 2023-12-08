@@ -14,7 +14,7 @@
 				/>
 			</div>
 			<div class="mt-3">
-				<router-link to="/" class="hover:underline text-sm">
+				<router-link :to="`/attendance-log/${route.params.id}`" class="hover:underline text-sm">
 					Catatan Kehadiran
 				</router-link>
 			</div>

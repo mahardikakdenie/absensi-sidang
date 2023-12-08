@@ -42,6 +42,11 @@ const routes = [
         component: () => import('@/views/pages/attendance.vue'),
         meta: {
         }
+      },
+      {
+        path: '/attendance-log/:project_id',
+        name: 'Attendance Logs',
+        component: () => import('@/views/pages/attandance-log.vue'),
       }
     ],
   },

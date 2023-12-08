@@ -136,6 +136,18 @@ const checkValidRoute = () => {
     }
 };
 
+const formattedCurrentTime = computed(() => {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const seconds = now.getSeconds().toString().padStart(2, '0');
+
+    const timeString = `${hours}:${minutes}:${seconds}`;
+
+    return timeString;
+})
+
+
 onMounted(() => {
     checkValidRoute();
 });
@@ -148,11 +160,10 @@ const SubmitAttendance = () => {
         latitude: attendances.value.lat,
         longtitude: attendances.value.long,
         action: route.params.type,
+        time: formattedCurrentTime.value,
     };
-    console.log("🚀 ~ file: attendance.vue:152 ~ SubmitAttendance ~ form:", form)
 
     const callback = (response) => {
-        console.log('response => ', response);
         if (response.data.meta.status) {
             router.push(`/detail-project/${route.params.project_id}`);
             toast.success('Laporan Kehadiran Berhasil Di simpan', {
