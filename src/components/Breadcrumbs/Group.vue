@@ -8,7 +8,10 @@
             <Icon icon="heroicons:chevron-right" />
         </span>
     </li>
-    <li class="text-primary-500">
+    <li 
+        v-if="typeof groupParent === 'string' || typeof groupParent === 'object'" 
+        class="text-primary-500"
+    >
         <button type="button" class="capitalize">
             {{ groupParent }}
         </button>
@@ -26,7 +29,7 @@
 import Icon from "@/components/Icon";
 defineProps({
     groupParent: {
-        type: String,
+        type: [String, Object, Array],
         default: '',
     },
     icon: {

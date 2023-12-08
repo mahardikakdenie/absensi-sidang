@@ -25,7 +25,7 @@ router.beforeEach((to, from, next) => {
   } else {
     if (!to.name) {
       next({
-        path: '/login'
+        path: '/error'
       });
     }
     const titleText = to?.name;

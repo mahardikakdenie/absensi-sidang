@@ -3,14 +3,14 @@
     <card :title="route.params.type">
         <div class="mt-4">
             <div class="text-md font-bold mb-2">Description</div>
-            <TextAreaInput />
+            <TextAreaInput v-model="description" />
             <div class="my-3">
                 <div class="my-2">
                     <span class="font-bold text-sm pb-2">
                         Upload Proof Of Work
                     </span>
                 </div>
-                <DropZoneVue />
+                <DropZoneVue @upload="uploadImageWorkOfProof" />
             </div>
             <vue-button 
                 v-if="!clockInPreview"
@@ -39,7 +39,11 @@
                 btn-class="btn btn-danger light rounded-lg"
                 @click="removeAttendance"
             />
-            <vue-button text="Submit" btn-class="btn btn-dark rounded-lg" />
+            <vue-button 
+                text="Submit" 
+                btn-class="btn btn-dark rounded-lg"
+                @click.prevent="SubmitAttendance"
+            />
         </div>
     </card>
     <ModalAttendance
@@ -57,24 +61,64 @@
 import Card from '@/components/Card';
 import TextAreaInput from '@/components/Textarea';
 import DropZoneVue from '@/components/Fileinput/DropZone.vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import ModalAttendance from '@/components/Modal/Attandance.vue';
 import VueButton from '@/components/Button/index.vue';
-import { ref } from 'vue';
+import { computed, onBeforeMount, onMounted, ref } from 'vue';
 import { useToast } from 'vue-toastification';
-const toast = useToast();
+import { uploadMedia } from '@/helpers/media.js';
+import { attendance } from '@/helpers/attendances.js';
 
+const toast = useToast();
 const route = useRoute();
+const router = useRouter();
+
+const typeAction = computed(() => route.params.type);
 
 const isOpenCamera = ref(false);
 const startCamera = (type) => {
 	isOpenCamera.value = true;
 };
 
+const description = ref('');
+const mediaWorkProofId = ref(null);
+const attendances = ref(null);
+
 
 const clockInPreview = ref(null);
 const upload = (data) => {
-	clockInPreview.value = data?.src;
+    const callback = (res) => {
+        clockInPreview.value = res.data.data.url;
+        attendances.value = {
+            ...data,
+            mediaAttendaceId: res.data.data.id
+        };
+    };
+    const err = (e) => {
+        console.log('e => ', e);
+    };
+
+    const formData = new FormData();
+    formData.append('media', data.img);
+    formData.append('type', 'attendance');
+    uploadMedia(formData, callback, err);
+};
+
+const uploadImageWorkOfProof = (media) => {
+    const formData = new FormData();
+    formData.append('media', media[0]);
+    formData.append('type', 'workOfProof');
+
+    const callback = (res) => {
+        mediaWorkProofId.value = res.data.data.id;
+    };
+    const err = (e) => {
+        console.log('e => ', e);
+    };
+
+    uploadMedia(formData, callback, err);
+
+
 };
 
 const removeAttendance = () => {
@@ -83,6 +127,45 @@ const removeAttendance = () => {
         timeout: 2000,
     });
 }
+
+const checkValidRoute = () => {
+    const validTypes = ['clockin', 'clockout'];
+    const typeParam = route.params.type;
+    if (!validTypes.includes(typeParam)) {
+        router.replace('/error')
+    }
+};
+
+onMounted(() => {
+    checkValidRoute();
+});
+
+const SubmitAttendance = () => {
+    const form = {
+        mediaAttendaceId: attendances.value.mediaAttendaceId,
+        mediaOfWorkId: mediaWorkProofId.value,
+        projectId: route.params.project_id,
+        latitude: attendances.value.lat,
+        longtitude: attendances.value.long,
+        action: route.params.type,
+    };
+    console.log("🚀 ~ file: attendance.vue:152 ~ SubmitAttendance ~ form:", form)
+
+    const callback = (response) => {
+        console.log('response => ', response);
+        if (response.data.meta.status) {
+            router.push(`/detail-project/${route.params.project_id}`);
+            toast.success('Laporan Kehadiran Berhasil Di simpan', {
+                timeout: 2000,
+            }); 
+        }
+    };
+    const err = (e) => {
+        console.log(e);
+    };
+
+    attendance(form, callback, err);
+};
 
 
 </script>

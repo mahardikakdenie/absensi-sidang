@@ -18,7 +18,7 @@
 			:sectionName="sectionName"
 		/>
 	</div>
-	<date-picker-section v-if="window.width > 768" />
+	<date-picker-section v-if="isDatePickerIsAvalaible" />
 </div>
 </template>
 <script>
@@ -42,6 +42,9 @@ export default {
          */
         groupParent() {
             return this.$route?.meta?.groupParent;
+        },
+        isDatePickerIsAvalaible() {
+            return this.window.width > 768 && this.$route.meta.showDatePicker;
         },
     },
 };
