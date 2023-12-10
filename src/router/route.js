@@ -44,7 +44,7 @@ const routes = [
         }
       },
       {
-        path: '/attendance-log/:project_id',
+        path: '/attendance-log/division/:division_id/project/:project_id',
         name: 'Attendance Logs',
         component: () => import('@/views/pages/attandance-log.vue'),
       }

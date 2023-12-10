@@ -156,7 +156,7 @@ const fields = ['Project', 'Phone', 'Email Address', 'Divisi', 'Lokasi'];
 const valueField = {
 	Project: 'Project Name',
 	Phone: '620876557892',
-	'Email Address': 'test@email.com',
+	'Email Address': profile.value.email,
 	Divisi: 'Jalan RAYA',
 	Lokasi: 'Jalan Jakarta, Bandung',
 };

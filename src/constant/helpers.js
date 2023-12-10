@@ -1,4 +1,5 @@
 import { useToast } from 'vue-toastification';
+import client from '@/helpers/http-client.js'
 
 /**
  * Display a toast message.
@@ -31,4 +32,14 @@ export const generateNotification = (type, duration, message) => {
 
     // Use dynamic property to select the appropriate toast method based on the provided type
     toastInstance[type](message, toastOptions);
+};
+
+export const axiosHit = (endpoint, params, type, callback, errCallback) => {
+    const param = type === 'get' ? { params } : params;
+    client[type](endpoint, param)
+        .then(res => {
+            if (callback) callback(res);
+        }).catch(e => {
+            if (errCallback) errCallback(e);
+        })
 };

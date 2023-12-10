@@ -1,12 +1,13 @@
 import client from "./http-client";
+import { axiosHit } from '@/constant/helpers.js'
 const endpoint = '/project';
 export default {
     getData(params, callback, errCB) {
-        client.get(endpoint, { params })
-            .then(res => {
-                if (callback) callback(res);
-            }).catch(e => {
-                if (errCB) errCB(e);
-            })
+        axiosHit(endpoint, params, 'get', callback, errCB);
     },
+    
+    getDetailProject(id,params, callback, errCb) {
+        const url = `${endpoint}/${id}`;
+        axiosHit(url, params, 'get', callback, errCB);
+    }, 
 };

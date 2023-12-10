@@ -26,9 +26,8 @@
 				</div>
 			</header>
 			<!-- description -->
-			<div class="text-slate-600 dark:text-slate-400 text-sm pt-4 pb-8">
-				Lorem, ipsum dolor sit amet consectetur adipisicing elit. Atque,
-				nostrum.
+			<div v-if="element.description" class="text-slate-600 dark:text-slate-400 text-sm pt-4 pb-8 h-[120px]">
+				{{ truncateText(element?.description ?? 'description', 120) }}
 			</div>
 			<!--  date -->
 			<div
@@ -45,7 +44,7 @@
 				<div>
 					<span class="block date-label">Start date</span>
 					<span class="block date-text">{{
-						formatedDate(element.updated_at)
+						formatedDate(element.targetdate)
 					}}</span>
 				</div>
 			</div>
@@ -84,9 +83,14 @@
 						<div
 							class="h-6 w-6 rounded-full ring-1 ring-slate-100"
 							v-for="(user, userIndex) in assignto"
-							:key="userIndex">
+							:key="userIndex"
+                        >
 							<img
 								:src="user.image"
+                                :content="user.title"
+                                v-tippy="{
+                                    placement: 'top'
+                                }"
 								:alt="user.title"
 								class="w-full h-full rounded-full" />
 						</div>
@@ -105,7 +109,7 @@
 						class="inline-flex items-center space-x-1 bg-danger-500 bg-opacity-[0.16] text-danger-500 text-xs font-normal px-2 py-1 rounded-full rtl:space-x-reverse">
 						<span> <Icon icon="heroicons-outline:clock" /></span>
 						<span>{{
-							totalDate(element.startdate, element.updated_at)
+							totalDate(element.startdate, element.targetdate)
 						}}</span>
 						<span>days left</span></span
 					>
@@ -180,6 +184,9 @@ export default {
 		];
 
 		const formatedDate = (date) => dayjs(date).format('DD/MM/YYYY');
+        const truncateText = (text, maxLength) => {
+            return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
+        }
 
 		const totalDate = (start, end) => {
 			const startDate = new Date(start);
@@ -209,6 +216,7 @@ export default {
 			actions,
 			assignto,
 			formatedDate,
+            truncateText
 		};
 	},
 };
