@@ -1,34 +1,223 @@
 <template>
-    <card className="hover:shadow-md cursor-pointer">
-        <div class="flex justify-between">
-            <div class="flex items-center">
-                <span class="lg:text-2xl text-sm">
-                    {{ title }}
-                </span>
-            </div>
-            <div>
-                <div>
-                    <span class="text-sm"> Progress </span>
-                </div>
-                <div class="text-sm block mb-[2px] text-primary-500">100%</div>
-            </div>
-        </div>
-    </card>
+	<div>
+		<Card className=" cursor-pointer">
+			<!-- header -->
+			<header class="flex justify-between items-center">
+				<div class="flex space-x-3 items-center rtl:space-x-reverse">
+					<div class="flex-none">
+						<div
+							class="h-10 w-10 rounded-md text-lg bg-slate-100 text-slate-900 dark:bg-slate-600 dark:text-slate-200 flex flex-col items-center justify-center font-normal capitalize">
+							{{
+								element?.name?.charAt(0) +
+								element?.name?.charAt(1)
+							}}
+						</div>
+					</div>
+					<div class="flex-1 font-medium text-base leading-6">
+						<div
+							:content="element.name ?? 'name'"
+							v-tippy="{
+								placement: 'top',
+							}"
+							class="board-title dark:text-slate-200 text-slate-900 max-w-[160px] truncate">
+							{{ element?.name ?? 'name' }}
+						</div>
+					</div>
+				</div>
+			</header>
+			<!-- description -->
+			<div class="text-slate-600 dark:text-slate-400 text-sm pt-4 pb-8">
+				Lorem, ipsum dolor sit amet consectetur adipisicing elit. Atque,
+				nostrum.
+			</div>
+			<!--  date -->
+			<div
+				v-if="element.startdate"
+				class="flex space-x-4 rtl:space-x-reverse">
+				<!-- start date -->
+				<div>
+					<span class="block date-label">Start date</span>
+					<span class="block date-text">{{
+						formatedDate(element.startdate)
+					}}</span>
+				</div>
+				<!-- end date -->
+				<div>
+					<span class="block date-label">Start date</span>
+					<span class="block date-text">{{
+						formatedDate(element.updated_at)
+					}}</span>
+				</div>
+			</div>
+			<!-- progress -->
+			<div v-if="type === 'project-list'" class="mt-3">
+				<span class="text-sm">Progress</span>
+				<ProgressBar height="h-3" parentClass="mt-2">
+					<Bar :value="80" barColor="bg-[#CE7722]" showValue />
+					<Bar
+						:value="10"
+						barColor="bg-[#FFE5B4]"
+						showValue
+						colorTextClass="text-black" />
+				</ProgressBar>
+			</div>
+			<div v-if="type === 'project-list'" class="mt-3">
+				<span>Deviasi</span>
+				<ProgressBar height="h-3" parentClass="mt-2">
+					<Bar :value="40" barColor="bg-[#CE7722]" showValue />
+					<Bar
+						:value="40"
+						barColor="bg-[#FFE5B4]"
+						showValue
+						colorTextClass="text-black" />
+				</ProgressBar>
+			</div>
+			<!-- assign and time count -->
+			<div class="grid grid-cols-2 gap-4 mt-6">
+				<!-- assign -->
+				<div>
+					<div
+						class="text-slate-400 dark:text-slate-400 text-sm font-normal mb-3">
+						Assigned to
+					</div>
+					<div class="flex justify-start -space-x-1.5">
+						<div
+							class="h-6 w-6 rounded-full ring-1 ring-slate-100"
+							v-for="(user, userIndex) in assignto"
+							:key="userIndex">
+							<img
+								:src="user.image"
+								:alt="user.title"
+								class="w-full h-full rounded-full" />
+						</div>
+						<div
+							class="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-300 text-xs ring-2 ring-slate-100 dark:ring-slate-700 rounded-full h-6 w-6 flex flex-col justify-center items-center">
+							+2
+						</div>
+					</div>
+				</div>
+
+				<!-- total date -->
+				<div
+					v-if="element.startdate"
+					class="ltr:text-right rtl:text-left">
+					<span
+						class="inline-flex items-center space-x-1 bg-danger-500 bg-opacity-[0.16] text-danger-500 text-xs font-normal px-2 py-1 rounded-full rtl:space-x-reverse">
+						<span> <Icon icon="heroicons-outline:clock" /></span>
+						<span>{{
+							totalDate(element.startdate, element.updated_at)
+						}}</span>
+						<span>days left</span></span
+					>
+				</div>
+			</div>
+		</Card>
+	</div>
 </template>
+<script>
+import dayjs from 'dayjs';
+import Card from '@/components/Card';
+import Dropdown from '@/components/Dropdown';
+import Icon from '@/components/Icon';
+import ProgressBar from '@/components/ProgressBar';
+import Bar from '@/components/ProgressBar/Bar';
+import { MenuItem } from '@headlessui/vue';
+import { ref } from 'vue';
+import { useKanbanStore } from '@/store/kanban';
+import av1Img from '@/assets/images/avatar/av-1.svg';
+import av2Img from '@/assets/images/avatar/av-2.svg';
 
-<script setup lang="ts">
-import { computed } from "vue";
-import Card from '@/components/Card/index.vue'
+import 'tippy.js/animations/perspective-extreme.css';
+import 'tippy.js/animations/perspective-subtle.css';
+import 'tippy.js/animations/perspective.css';
+import 'tippy.js/animations/scale-extreme.css';
+import 'tippy.js/animations/scale-subtle.css';
+import 'tippy.js/animations/scale.css';
+import 'tippy.js/animations/shift-away-extreme.css';
+import 'tippy.js/animations/shift-away-subtle.css';
+import 'tippy.js/animations/shift-away.css';
+import 'tippy.js/animations/shift-toward-extreme.css';
+import 'tippy.js/animations/shift-toward-subtle.css';
+import 'tippy.js/animations/shift-toward.css';
+import 'tippy.js/dist/tippy.css';
+import 'tippy.js/themes/light.css';
 
-const props = defineProps({
-    item: {
-        type: Object,
-        default: null,
-    },
-});
+export default {
+	name: 'BoxList',
+	components: {
+		Card,
+		ProgressBar,
+		Icon,
+		Dropdown,
+		MenuItem,
+		Bar,
+	},
+	props: {
+		element: {
+			type: Object,
+			required: true,
+		},
+        type: {
+            type: String,
+        }
+	},
+	setup() {
+		const store = useKanbanStore();
 
-const title = computed(() => props.item?.name ?? 'Name');
+		const assignto = [
+			{
+				image: av1Img,
+				title: 'Mahedi Amin',
+			},
+			{
+				image: av2Img,
+				title: 'Sovo Haldar',
+			},
+			{
+				image: av2Img,
+				title: 'Rakibul Islam',
+			},
+		];
+
+		const formatedDate = (date) => dayjs(date).format('DD/MM/YYYY');
+
+		const totalDate = (start, end) => {
+			const startDate = new Date(start);
+			const endDate = new Date(end);
+			const diffDays = endDate.getDate() - startDate.getDate();
+			return diffDays;
+		};
+
+		const actions = ref([
+			{
+				name: 'Edit',
+				icon: 'heroicons-outline:pencil-alt',
+				doit: (data) => {
+					store.updateTask(data);
+				},
+			},
+			{
+				name: 'Delete',
+				icon: 'heroicons-outline:trash',
+				doit: (data) => {
+					store.removeTask(data);
+				},
+			},
+		]);
+		return {
+			totalDate,
+			actions,
+			assignto,
+			formatedDate,
+		};
+	},
+};
 </script>
-
-<style>
+<style lang="scss" scoped>
+.date-label {
+	@apply text-xs text-slate-400 dark:text-slate-400 mb-1;
+}
+.date-text {
+	@apply text-xs text-slate-600 dark:text-slate-300 font-medium;
+}
 </style>

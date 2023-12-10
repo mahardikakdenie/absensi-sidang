@@ -1,11 +1,17 @@
 <template>
-  <div class="h-20 w-20 mx-auto" v-if="!isLoading">
+  <div :class="customClass" v-if="!isLoading">
     <img src="@/assets/images/svg/loader.svg" alt="" />
   </div>
 </template>
 <script>
 export default {
   name: "LoaderElement",
+  props: {
+    customClass: {
+      type: String,
+      default: 'h-20 w-20 mx-auto',
+    }
+  },
   data() {
     return {
       isLoading: false,

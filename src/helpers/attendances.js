@@ -21,3 +21,13 @@ export const attendance = (params, callback, errCallback) => {
             if (errCallback) errCallback(e)
         })
 };
+
+export const getDataSummary = (params, callback, errCallback) => {
+    const url = `${endpoint}/summary`;
+    client.get(url, {params}).then(res => {
+        if (callback) callback(res);
+    })
+    .catch(e => {
+        if (errCallback) errCallback(e);
+    })
+}

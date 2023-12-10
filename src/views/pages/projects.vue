@@ -3,13 +3,14 @@
 		<div class="grid grid-rows-1">
 			<div
 				v-if="projects.length > 0 && !isLoading"
-				class="grid lg:grid-cols-5 grid-cols-2 gap-2"
+				class="grid lg:grid-cols-5 grid-cols-1 gap-2"
             >
 				<div
-					v-for="(division, i) in projects"
+					v-for="(project, i) in dataProjects"
 					:key="i"
-					@click="$router.push(`/detail-project/${i}`)">
-					<box-list :item="division" />
+					@click="$router.push(`/detail-project/${project.id}`)"
+				>
+					<box-list :element="project" type="project-list" />
 				</div>
 			</div>
             <div v-else-if="isLoading">
@@ -35,7 +36,13 @@ const projects = ref([]);
 const isLoading = ref(false);
 
 const route = useRoute();
-
+const dataProjects = computed(() => {
+	return projects?.value?.map(project => ({
+		...project,
+		name: project?.name ?? 'Name',
+		progress: 69
+	}))
+})
 // Fetch data from API
 const params = computed(() => ({
 	division_id: route.params.division_id,
