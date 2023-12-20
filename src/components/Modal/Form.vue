@@ -12,7 +12,7 @@
         >
             <text-input-field
                 v-if="field?.type === 'text'"
-                :v-model="email"
+                :v-model="field.value"
                 :error="field.error"
                 :type="field.type"
                 :label="field.label"
@@ -37,7 +37,6 @@
             <vue-button 
                 text="Add User"
                 btn-class="btn btn-primary light btn-sm"
-                :disabled="isBtnDisabled"
                 @click="submit" 
             />
         </div>
@@ -96,30 +95,14 @@ watchEffect(() => {
 const emit = defineEmits(['submit']);
 
 const onChangeForm = (event, field, index) => {
-    form.value[field.key] = event.target.value;
-    forms.value[index].value = event.target.value;
+    const value = event.target.value
+    console.log("🚀 ~ file: Form.vue:99 ~ onChangeForm ~ value:", value)
+    forms.value[index].value = value;
+    console.log("🚀 ~ file: Form.vue:101 ~ onChangeForm ~ forms.value[index].value:", forms.value[index].value)
+
 };
-
-const isValidEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return !emailRegex.test(email) ? 'Masukan Email Dengan Benar' : '';
-}
-
-const { value: email, errorMessage: emailError } = useField("email");
-const { value: username, errorMessage: usernameError } = useField("username");
-const schema = yup.object({
-        email: yup.string().required().email(),
-        username: yup.string().required(),
-    });
-
-    const { handleSubmit } = useForm({
-        validationSchema: schema,
-    });
-
-
-const isBtnDisabled = ref(false);
 const submit = () => {
-    console.log('email => ', email);
+    emit('submit', forms.value)
 };
 
 

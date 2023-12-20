@@ -22,6 +22,9 @@ import ModalForm from '@/components/Modal/Form.vue';
 import userApi from '@/helpers/user.js';
 import { onBeforeUnmount, onMounted, ref, watchEffect } from 'vue';
 import { useDataTableStore } from '@/store/data-table.js';
+import user from '@/helpers/user.js';
+
+const userDummyImage = 'https://static.vecteezy.com/system/resources/previews/018/765/757/original/user-profile-icon-in-flat-style-member-avatar-illustration-on-isolated-background-human-permission-sign-business-concept-vector.jpg';
 const store = useDataTableStore();
 // Define Headers
 
@@ -48,6 +51,7 @@ const headers = [
     }
 ];
 
+const users = ref([]);
 const getDataUser = () => {
     const params = {
         entities: 'roles.role',
@@ -55,14 +59,15 @@ const getDataUser = () => {
     const callback = (response) => {
         if (response.data.meta.status) {
             const data = response.data.data;
-            store.setData(data.map(user => {
+            users.value = data.map(user => {
                 return {
                     ...user,
-                    image: 'https://static.vecteezy.com/system/resources/previews/018/765/757/original/user-profile-icon-in-flat-style-member-avatar-illustration-on-isolated-background-human-permission-sign-business-concept-vector.jpg',
+                    image: userDummyImage,
                     roles: user.roles.map(role => role.role.name),
                     status: user?.status ?? '-',
                 }
-            }));
+            });
+            store.setData(users.value);
         }
     };
 
@@ -132,8 +137,23 @@ const toogleModalUser = () => {
 };
 
 const submit = (form) => {
-    console.log("🚀 ~ file: user.vue:80 ~ submit ~ form:", form)
     form.value = form;
+    console.log("🚀 ~ file: user.vue:141 ~ submit ~ form.value:", form.value)
+
+    // const callback = (res) => {
+    //     if (res?.data?.meta?.status) {
+    //         const user = res.data.data;
+    //         console.log("🚀 ~ file: user.vue:145 ~ callback ~ user:", user)
+    //         users.value.push(user);
+    //         isModalAddUser.value = false;
+    //     }
+    // };
+
+    // const err = (e) => {
+    //     console.log(e);
+    // };
+
+    // userApi.createUser(form.value, callback, err);
 };
 
 
