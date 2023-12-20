@@ -43,3 +43,5 @@ export const axiosHit = (endpoint, params, type, callback, errCallback) => {
             if (errCallback) errCallback(e);
         })
 };
+
+export const duplicateVar = value => (value ? JSON.parse(JSON.stringify(value)) : '');

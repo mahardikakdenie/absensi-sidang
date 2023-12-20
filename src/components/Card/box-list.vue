@@ -26,7 +26,7 @@
 				</div>
 			</header>
 			<!-- description -->
-			<div v-if="element.description" class="text-slate-600 dark:text-slate-400 text-sm pt-4 pb-8 h-[120px]">
+			<div class="text-slate-600 dark:text-slate-400 text-sm pt-4 pb-8 h-[120px]">
 				{{ truncateText(element?.description ?? 'description', 120) }}
 			</div>
 			<!--  date -->

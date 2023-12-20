@@ -4,18 +4,26 @@
 			<div
 				class="md:flex justify-between pb-6 md:space-y-0 space-y-3 items-center">
 				<h5>{{ title }}</h5>
-				<InputGroup
-					v-model="searchTerm"
-					placeholder="Search"
-					type="text"
-					prependIcon="heroicons-outline:search"
-					merged />
+				<div class="flex gap-4">
+					<vue-button 
+						text="Create User"
+						btn-class="btn btn-dark px-4 py-2"
+						@click="openModalAdd"
+					/>
+					<InputGroup
+						v-model="searchTerm"
+						placeholder="Search"
+						type="text"
+						prependIcon="heroicons-outline:search"
+						merged 
+					/>
+				</div>
 			</div>
 
 			<vue-good-table
-				:columns="columns"
+				:columns="headers"
 				styleClass="vgt-table bordered centered"
-				:rows="advancedTable"
+				:rows="datas"
 				:pagination-options="{
 					enabled: true,
 					perPage: perpage,
@@ -34,69 +42,13 @@
 					selectAllByGroup: true, // when used in combination with a grouped table, add a checkbox in the header row to check/uncheck the entire group
 				}">
 				<template v-slot:table-row="props">
-					<span v-if="props.column.field == 'customer'" class="flex">
-						<span
-							class="w-7 h-7 rounded-full ltr:mr-3 rtl:ml-3 flex-none">
-							<img
-								:src="props.row.customer.image"
-								:alt="props.row.customer.name"
-								class="object-cover w-full h-full rounded-full" />
+					<column-name v-if="props.column.field === 'name'" :data="props.row" />
+					<column-role v-if="props.column.field === 'roles'" :data="props.row" />
+					<div v-if="isRowNotModify(props)">
+						<span>
+							{{  props.row[props.column.field]  }}
 						</span>
-						<span
-							class="text-sm text-slate-600 dark:text-slate-300 capitalize"
-							>{{ props.row.customer.name }}</span
-						>
-					</span>
-					<span v-if="props.column.field == 'order'">
-						{{ '#' + props.row.order }}
-					</span>
-					<span
-						v-if="props.column.field == 'date'"
-						class="text-slate-500 dark:text-slate-300">
-						{{ props.row.date }}
-					</span>
-					<span
-						v-if="props.column.field == 'status'"
-						class="block w-full">
-						<span
-							class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25"
-							:class="`${
-								props.row.status === 'paid'
-									? 'text-success-500 bg-success-500'
-									: ''
-							} 
-			${props.row.status === 'due' ? 'text-warning-500 bg-warning-500' : ''}
-			${props.row.status === 'cancled' ? 'text-danger-500 bg-danger-500' : ''}
-			
-			`">
-							{{ props.row.status }}
-						</span>
-					</span>
-					<span v-if="props.column.field == 'action'">
-						<Dropdown classMenuItems=" w-[140px]">
-							<span class="text-xl"
-								><Icon icon="heroicons-outline:dots-vertical"
-							/></span>
-							<template v-slot:menus>
-								<MenuItem v-for="(item, i) in actions" :key="i">
-									<div
-										:class="`
-				
-				${
-					item.name === 'delete'
-						? 'bg-danger-500 text-danger-500 bg-opacity-30   hover:bg-opacity-100 hover:text-white'
-						: 'hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50'
-				}
-				w-full border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse `">
-										<span class="text-base"
-											><Icon :icon="item.icon"
-										/></span>
-										<span>{{ item.name }}</span>
-									</div>
-								</MenuItem>
-							</template>
-						</Dropdown>
-					</span>
+					</div>
 				</template>
 				<template #pagination-bottom="props">
 					<div class="py-4 px-3">
@@ -127,6 +79,11 @@ import InputGroup from '@/components/InputGroup';
 import Pagination from '@/components/Pagination';
 import { MenuItem } from '@headlessui/vue';
 import { advancedTable } from '@/constant/basic-tablle-data';
+import VueButton from '@/components/Button';
+import columnName from '@/components/DataTable/column/name.vue'
+import { useDataTableStore } from '@/store/data-table.js';
+import { computed } from 'vue';
+import columnRole from '@/components/DataTable/column/roles.vue';
 const actions = [
 	{
 		name: 'view',
@@ -200,6 +157,9 @@ export default {
 		Icon,
 		Card,
 		MenuItem,
+		VueButton,
+		columnName,
+		columnRole,
 	},
 
 	props: {
@@ -220,6 +180,27 @@ export default {
 			options,
 			columns,
 		};
+	},
+	methods: {
+		openModalAdd() {
+			this.$emit('open-modal-add');
+		},
+	},
+	setup() {
+		const store = useDataTableStore();
+		const headers = computed(() => store.headers);
+		const datas = computed(() => store.datas);
+
+		const isRowNotModify = (props) => {
+			const forbiddenFields = ['name', 'roles'];
+			return !forbiddenFields.includes(props.column.field);
+		};
+
+		return {
+			headers,
+			datas,
+			isRowNotModify,
+		}
 	},
 };
 </script>
