@@ -66,7 +66,7 @@ import ModalAttendance from '@/components/Modal/Attandance.vue';
 import VueButton from '@/components/Button/index.vue';
 import { computed, onBeforeMount, onMounted, ref } from 'vue';
 import { useToast } from 'vue-toastification';
-import { uploadMedia } from '@/helpers/media.js';
+import { uploadMedia,uploadMediaImgur } from '@/helpers/media.js';
 import { attendance } from '@/helpers/attendances.js';
 import axios from 'axios';
 
@@ -108,30 +108,30 @@ const upload = (data) => {
 const uploadImageWorkOfProof = (media) => {
     const formData = new FormData();
     formData.append('image', media[0]);
-    // formData.append('type', 'workOfProof');
+    formData.append('type', 'workOfProof');
 
-    const clientId = 'cb8c5d9613f3073';
+//     const clientId = 'cb8c5d9613f3073';
 
-    axios.post('https://api.imgur.com/3/upload', formData, {
-    headers: {
-        Authorization: `Client-ID ${clientId}`,
-    },
-})
-    .then(res => {
-        console.log(res);
-    })
-    .catch(error => {
-        console.error(error);
-    });
+//     axios.post('https://api.imgur.com/3/upload', formData, {
+//     headers: {
+//         Authorization: `Client-ID ${clientId}`,
+//     },
+// })
+//     .then(res => {
+//         console.log(res);
+//     })
+//     .catch(error => {
+//         console.error(error);
+//     });
 
-    // const callback = (res) => {
-    //     mediaWorkProofId.value = res.data.data.id;
-    // };
-    // const err = (e) => {
-    //     console.log('e => ', e);
-    // };
+    const callback = (res) => {
+        mediaWorkProofId.value = res.data.data.id;
+    };
+    const err = (e) => {
+        console.log('e => ', e);
+    };
 
-    // uploadMedia(formData, callback, err);
+    uploadMedia(formData, callback, err);
 
 
 };
