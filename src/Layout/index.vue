@@ -107,7 +107,9 @@ export default {
         console.log(e);
       };
 
-      userApi.getMe({}, callback, err);
+      userApi.getMe({
+        entities: 'roles.role,profile.medias'
+      }, callback, err);
     };
 
     onMounted(() => {

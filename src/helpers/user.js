@@ -6,7 +6,8 @@ const endpointUser = 'user';
 
 export default {
     getMe(params,cb, errCB) {
-        client.get(endpoint, { params })
+        const url = `${endpoint}/me`;
+        client.get(url, { params })
             .then(res => {
                 cb(res);
             }).catch(e => {
