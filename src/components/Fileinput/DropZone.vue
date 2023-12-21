@@ -16,7 +16,7 @@
 					Drop files here or click to upload.
 				</p>
 			</div>
-			<div class="flex space-x-4">
+			<div v-if="!isFetching" class="flex space-x-4">
 				<div v-for="(file, i) in files" :key="i" class="mb-4 flex-none">
 					<div class="relative mx-auto mt-6 rounded-md overflow-hidden">
 						<img
@@ -26,8 +26,8 @@
                         />
 					</div>
 				</div>
-				
 			</div>
+			<page-loader v-if="isFetching"/>
 		</div>
 		<div
 			v-if="files.length !== 0"
@@ -43,6 +43,13 @@ import { useDropzone } from 'vue3-dropzone';
 import { computed, ref, watch } from 'vue';
 import VueButton from '@/components/Button';
 import Icon from '@/components/Icon';
+import pageLoader from '../Loader/pageLoader.vue';
+const props = defineProps({
+	isFetching: {
+		type: Boolean,
+		default: false
+	}
+});
 const files = ref([]);
 function onDrop(acceptFiles) {
 	files.value = acceptFiles.map((file) =>

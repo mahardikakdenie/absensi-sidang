@@ -10,7 +10,7 @@
                         Upload Proof Of Work
                     </span>
                 </div>
-                <DropZoneVue @upload="uploadImageWorkOfProof" />
+                <DropZoneVue :is-fetching="isFetching" @upload="uploadImageWorkOfProof" />
             </div>
             <vue-button 
                 v-if="!clockInPreview"
@@ -105,29 +105,19 @@ const upload = (data) => {
     uploadMedia(formData, callback, err);
 };
 
+const isFetching = ref(false);
 const uploadImageWorkOfProof = (media) => {
+    isFetching.value = true;
     const formData = new FormData();
-    formData.append('image', media[0]);
+    formData.append('media', media[0]);
     formData.append('type', 'workOfProof');
-
-//     const clientId = 'cb8c5d9613f3073';
-
-//     axios.post('https://api.imgur.com/3/upload', formData, {
-//     headers: {
-//         Authorization: `Client-ID ${clientId}`,
-//     },
-// })
-//     .then(res => {
-//         console.log(res);
-//     })
-//     .catch(error => {
-//         console.error(error);
-//     });
-
+    
     const callback = (res) => {
+        isFetching.value = false;
         mediaWorkProofId.value = res.data.data.id;
     };
     const err = (e) => {
+        isFetching.value = true;
         console.log('e => ', e);
     };
 

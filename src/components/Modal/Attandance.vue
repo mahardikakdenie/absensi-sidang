@@ -46,7 +46,7 @@
 import axios from 'axios';
 import VueButton from '@/components/Button';
 import Modal from '@/components/Modal/index.vue';
-import { onBeforeMount, onMounted, ref, watch } from 'vue';
+import { onBeforeMount, onMounted, ref, watch, onBeforeUnmount } from 'vue';
 
 import { useToast } from "vue-toastification";
 import PageLoader from '@/components/Loader/pageLoader.vue';
@@ -194,5 +194,16 @@ const setupWebcam = () => {
 		emit('close');
 	}
 	getLocation();
+};
+
+onBeforeUnmount(() => {
+  turnOffWebcam();
+});
+
+const turnOffWebcam = () => {
+  const tracks = videoState.value?.srcObject?.getTracks();
+  if (tracks) {
+    tracks.forEach(track => track.stop());
+  }
 };
 </script>
