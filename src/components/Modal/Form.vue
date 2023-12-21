@@ -12,20 +12,18 @@
         >
             <text-input-field
                 v-if="field?.type === 'text'"
-                :v-model="field.value"
+                v-model="forms[index].value"
                 :error="field.error"
                 :type="field.type"
                 :label="field.label"
                 :placeholder="field.placeholder"
-                @change="onChangeForm($event,field, index)"
             />
             <text-input-field
                 v-if="field?.type === 'password'"
-                :v-model="field.value"
+                v-model="forms[index].value"
                 :type="field.type"
                 :label="field.label"
                 :placeholder="field.placeholder"
-                @change="onChangeForm($event,field, index)"
             />
         </div>
         <div class="flex justify-end mt-4 gap-2">
@@ -48,9 +46,8 @@
 import VueButton from '@/components/Button';
 import TextInputField from '@/components/Textinput/index.vue';
 import Modal from '@/components/Modal/index.vue';
-import { onMounted, ref, watchEffect } from 'vue';
+import { ref, watchEffect } from 'vue';
 import { duplicateVar } from '@/constant/helpers';
-import { useField, useForm } from "vee-validate";
 
 import * as yup from "yup";
 
@@ -93,14 +90,6 @@ watchEffect(() => {
 
 
 const emit = defineEmits(['submit']);
-
-const onChangeForm = (event, field, index) => {
-    const value = event.target.value
-    console.log("🚀 ~ file: Form.vue:99 ~ onChangeForm ~ value:", value)
-    forms.value[index].value = value;
-    console.log("🚀 ~ file: Form.vue:101 ~ onChangeForm ~ forms.value[index].value:", forms.value[index].value)
-
-};
 const submit = () => {
     emit('submit', forms.value)
 };

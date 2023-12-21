@@ -68,6 +68,7 @@ import { computed, onBeforeMount, onMounted, ref } from 'vue';
 import { useToast } from 'vue-toastification';
 import { uploadMedia } from '@/helpers/media.js';
 import { attendance } from '@/helpers/attendances.js';
+import axios from 'axios';
 
 const toast = useToast();
 const route = useRoute();
@@ -106,17 +107,31 @@ const upload = (data) => {
 
 const uploadImageWorkOfProof = (media) => {
     const formData = new FormData();
-    formData.append('media', media[0]);
-    formData.append('type', 'workOfProof');
+    formData.append('image', media[0]);
+    // formData.append('type', 'workOfProof');
 
-    const callback = (res) => {
-        mediaWorkProofId.value = res.data.data.id;
-    };
-    const err = (e) => {
-        console.log('e => ', e);
-    };
+    const clientId = 'cb8c5d9613f3073';
 
-    uploadMedia(formData, callback, err);
+axios.post('https://api.imgur.com/3/upload', formData, {
+    // headers: {
+    //     Authorization: `Client-ID ${clientId}`
+    // }
+})
+    .then(res => {
+        console.log(res);
+    })
+    .catch(error => {
+        console.error(error);
+    });
+
+    // const callback = (res) => {
+    //     mediaWorkProofId.value = res.data.data.id;
+    // };
+    // const err = (e) => {
+    //     console.log('e => ', e);
+    // };
+
+    // uploadMedia(formData, callback, err);
 
 
 };

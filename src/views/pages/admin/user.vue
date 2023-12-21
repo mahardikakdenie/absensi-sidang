@@ -63,7 +63,7 @@ const getDataUser = () => {
                 return {
                     ...user,
                     image: userDummyImage,
-                    roles: user.roles.map(role => role.role.name),
+                    roles: user?.roles?.map(role => role?.role?.name) ?? '-',
                     status: user?.status ?? '-',
                 }
             });
@@ -138,8 +138,7 @@ const toogleModalUser = () => {
 
 const submit = (form) => {
     form.value = form;
-    console.log("🚀 ~ file: user.vue:141 ~ submit ~ form.value:", form.value)
-
+    // console.log("🚀 ~ file: user.vue:141 ~ submit ~ form.value:", form.value)
     // const callback = (res) => {
     //     if (res?.data?.meta?.status) {
     //         const user = res.data.data;
