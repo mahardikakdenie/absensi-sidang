@@ -112,10 +112,10 @@ const uploadImageWorkOfProof = (media) => {
 
     const clientId = 'cb8c5d9613f3073';
 
-axios.post('https://api.imgur.com/3/upload', formData, {
-    // headers: {
-    //     Authorization: `Client-ID ${clientId}`
-    // }
+    axios.post('https://api.imgur.com/3/upload', formData, {
+    headers: {
+        Authorization: `Client-ID ${clientId}`,
+    },
 })
     .then(res => {
         console.log(res);
