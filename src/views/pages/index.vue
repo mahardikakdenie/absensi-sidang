@@ -12,7 +12,7 @@
                         <div class="flex justify-center">
                             <div class="flex-0">
                                 <div class="author-img w-[65px] h-[88px] rounded-[40px]">
-                                    <img :src="media.url" alt="" class="w-full h-full object-cover rounded-md" />
+                                    <img v-if="media" :src="media.url" class="w-full h-full object-cover rounded-md" />
                                 </div>
                             </div>
                         </div>
@@ -27,7 +27,14 @@
                                 <span class="font-bold">ID : </span> <span>ABCD - 1213123</span> 
                             </div>
                             <div class="mt-2 text-sm">
-                                <span class="font-bold">Divisi : </span> <span>Jalan</span> 
+                                <span class="font-bold">Divisi </span>
+                                <div class="mt-2">
+                                    <ul>
+                                        <li v-for="(division, index) in divisions" :key="index">
+                                            <vue-badge :label="division?.division?.name" />
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -70,10 +77,15 @@ import VueButton from '@/components/Button/index.vue';
 import VueAllert from '@/components/Alert';
 import { useUserStore } from '@/store/user';
 import { computed } from 'vue';
+import VueBadge from '@/components/Badge/index.vue';
 
 const userStore = useUserStore();
 
 const user = computed(() => userStore.user);
 const media = computed(() => user?.value?.profile?.medias);
+const divisions = computed(() => {
+    const divisionAssign =  user?.value?.divisions?.filter(curr => curr.type === 'assign');
+    return divisionAssign;
+});
 
 </script>

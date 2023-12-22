@@ -108,7 +108,7 @@ export default {
       };
 
       userApi.getMe({
-        entities: 'roles.role,profile.medias'
+        entities: 'roles.role,profile.medias,divisions.division'
       }, callback, err);
     };
 

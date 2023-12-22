@@ -131,21 +131,6 @@ import { useKanbanStore } from '@/store/kanban';
 import av1Img from '@/assets/images/avatar/av-1.svg';
 import av2Img from '@/assets/images/avatar/av-2.svg';
 
-import 'tippy.js/animations/perspective-extreme.css';
-import 'tippy.js/animations/perspective-subtle.css';
-import 'tippy.js/animations/perspective.css';
-import 'tippy.js/animations/scale-extreme.css';
-import 'tippy.js/animations/scale-subtle.css';
-import 'tippy.js/animations/scale.css';
-import 'tippy.js/animations/shift-away-extreme.css';
-import 'tippy.js/animations/shift-away-subtle.css';
-import 'tippy.js/animations/shift-away.css';
-import 'tippy.js/animations/shift-toward-extreme.css';
-import 'tippy.js/animations/shift-toward-subtle.css';
-import 'tippy.js/animations/shift-toward.css';
-import 'tippy.js/dist/tippy.css';
-import 'tippy.js/themes/light.css';
-
 export default {
 	name: 'BoxList',
 	components: {

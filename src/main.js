@@ -19,6 +19,20 @@ import router from "./router";
 import VCalendar from "v-calendar";
 import {createPinia} from 'pinia'
 import "v-calendar/dist/style.css";
+import 'tippy.js/animations/perspective-extreme.css';
+import 'tippy.js/animations/perspective-subtle.css';
+import 'tippy.js/animations/perspective.css';
+import 'tippy.js/animations/scale-extreme.css';
+import 'tippy.js/animations/scale-subtle.css';
+import 'tippy.js/animations/scale.css';
+import 'tippy.js/animations/shift-away-extreme.css';
+import 'tippy.js/animations/shift-away-subtle.css';
+import 'tippy.js/animations/shift-away.css';
+import 'tippy.js/animations/shift-toward-extreme.css';
+import 'tippy.js/animations/shift-toward-subtle.css';
+import 'tippy.js/animations/shift-toward.css';
+import 'tippy.js/dist/tippy.css';
+import 'tippy.js/themes/light.css';
 
 const pinia = createPinia()
 
