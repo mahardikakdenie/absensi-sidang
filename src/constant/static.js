@@ -45,4 +45,9 @@ export const menuItems = [
 		icon: 'heroicons-outline:home',
 		link: '/',
 	},
+	{
+		title: 'Projects',
+		icon: 'grommet-icons:projects',
+		link: '/projects',
+	},
 ];

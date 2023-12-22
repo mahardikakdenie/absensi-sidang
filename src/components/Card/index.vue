@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="!overlay"
-    :class="`card rounded-md bg-white dark:bg-slate-800 lg:h-full  ${
+    :class="`card rounded-md bg-white dark:bg-slate-800 ${
       this.$store.themeSettingsStore.skin === 'bordered'
         ? ' border border-gray-5002 dark:border-slate-700'
         : 'shadow-base'

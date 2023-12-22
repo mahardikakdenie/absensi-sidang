@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div>
-			<profile-box />
+			<profile-box type="attendance-log" />
 		</div>
 		<div class="mt-4">
 			<box-list-attendance />

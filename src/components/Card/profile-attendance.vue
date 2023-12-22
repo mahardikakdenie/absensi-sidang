@@ -70,13 +70,19 @@ import { useRoute, useRouter } from 'vue-router';
 import PageLoader from '@/components/Loader/pageLoader.vue'
 import pageLoader from '@/components/Loader/pageLoader.vue';
 
+const props = defineProps({
+	type: {
+		type: String,
+		default: 'attendance-log',
+	},
+});
+
 const userStore = useUserStore();
 const route = useRoute();
 const router = useRouter();
 const profile = computed(() => userStore.user);
 const isLoading = ref(false);
-
-const statistics = ref([
+const attendanceSummary = ref([
 	{
         key: 'all',
 		title: 'Total Attendance',
@@ -115,36 +121,81 @@ const statistics = ref([
 	},
 ]);
 
+const userSummary = ref([
+{
+        key: 'all',
+		title: 'Total Project',
+		count: '64',
+		bg: 'bg-info-500',
+		text: 'text-info-500',
+		percent: '25.67% ',
+		icon: 'heroicons-outline:menu-alt-1',
+	},
+	{
+        key: 'in-progress',
+		count: '45',
+		title: 'In Progress',
+		bg: 'bg-success-500',
+		text: 'text-success-500',
+		percent: '8.67%',
+		icon: 'heroicons-outline:chart-pie',
+	},
+	{
+        key: 'done',
+		title: 'Done',
+		count: '$3,564',
+		bg: 'bg-warning-500',
+		text: 'text-warning-500',
+		percent: '11.67%  ',
+		icon: 'heroicons-outline:calculator',
+	},
+]);
+
+const statistics = ref([]);
+
 const getDataAttendanceSummary = () => {
-    isLoading.value = true;
+	isLoading.value = true;
     const params = {
-        projectId: route.params.project_id,
+		projectId: route.params.project_id,
     }
     const callback = (response) => {
-        isLoading.value = false;
+		isLoading.value = false;
         if (response.data.meta.status) {
-            const data = response.data.data;
+			const data = response.data.data;
             statistics.value[0].count = data.all;
             statistics.value[1].count = data.clockin;
             statistics.value[2].count = data.clockout;
             statistics.value[3].count = data.late;
         }
     };
-
+	
     const err = (e) => {
-        console.log(e);
+		console.log(e);
     }
-
+	
     getDataSummary(params, callback, err);
 };
 
-const setFilterSummary = (key) => {
-    router.replace({ query: { ...route.query, summary: key } });
+const init = () => {
+	if (props.type === 'attendance-log') {
+		statistics.value = attendanceSummary.value;
+	}
 };
 
+const setFilterSummary = (key) => {
+	router.replace({ query: { ...route.query, summary: key } });
+};
+
+const fetchSummary = () => {
+	if (props.type === 'attendance-log') {
+		getDataAttendanceSummary();
+	}
+};
 const effect = watchEffect(() => {
-    getDataAttendanceSummary();
-})
+    fetchSummary();
+	init();
+});
+
 
 onBeforeMount(() => {
     effect(); 
