@@ -1,4 +1,4 @@
-import client from "./http-client";
+
 import { axiosHit } from '@/constant/helpers.js'
 const endpoint = '/project';
 export default {

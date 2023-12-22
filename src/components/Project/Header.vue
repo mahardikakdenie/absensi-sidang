@@ -16,7 +16,7 @@
                 v-tippy="{
                     placement: 'top',
                 }"
-                class="board-title dark:text-slate-200 text-slate-900 max-w-[160px] truncate">
+                class="board-title dark:text-slate-200 text-slate-900 truncate">
                 {{ element?.name ?? 'name' }}
             </div>
         </div>

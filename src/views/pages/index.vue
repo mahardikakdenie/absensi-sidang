@@ -49,20 +49,21 @@
                             </span>
                         </div>
                         <hr class="my-4">
-                        <div>
-                            <div v-for="i in 3" :key="i" class="mt-6">
-                                <header-project :element="{ name: 'Nama Project' }" />
+                        <div v-if="!isProjectFetching">
+                            <div v-for="(project, i) in projects" :key="i" class="mt-6">
+                                <header-project :element="project" />
                                 <div class="sm:px-2">
                                     <span class="font-bold whitespace-nowrap text-sm">
-                                        Deadline : <span class="font-normal">01-01-2023</span>
+                                        Deadline : <span class="font-normal">{{ dayjs(project.targetdate).format('dddd, D MMMM YYYY') }}</span>
                                     </span>
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
-                                        <vue-button text="Clock In" btn-class="btn btn-sm btn-success light" />
-                                        <vue-button text="Clock out" btn-class="btn btn-sm btn-danger light" />
+                                        <vue-button text="Clock In" btn-class="btn btn-sm btn-success light" @click="setType('clockin', project)" />
+                                        <vue-button text="Clock out" btn-class="btn btn-sm btn-danger light" @click="setType('clockout', project)" />
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <pageLoader v-else />
                     </div>
                 </card>
             </div>
@@ -71,21 +72,52 @@
 </template>
 
 <script setup>
+import dayjs from 'dayjs';
 import card from '@/components/Card';
 import HeaderProject from '@/components/Project/Header.vue';
 import VueButton from '@/components/Button/index.vue';
 import VueAllert from '@/components/Alert';
 import { useUserStore } from '@/store/user';
-import { computed } from 'vue';
+import { computed, watchEffect, ref } from 'vue';
 import VueBadge from '@/components/Badge/index.vue';
+import pageLoader from '@/components/Loader/pageLoader.vue';
+import projectApi from '@/helpers/projects';
+import { useRouter } from 'vue-router';
 
 const userStore = useUserStore();
 
 const user = computed(() => userStore.user);
 const media = computed(() => user?.value?.profile?.medias);
-const divisions = computed(() => {
-    const divisionAssign =  user?.value?.divisions?.filter(curr => curr.type === 'assign');
-    return divisionAssign;
-});
+const divisions = computed(() => user?.value?.divisions?.filter(curr => curr.type === 'assign'));
+const projects = ref('');
+const router = useRouter();
+
+const isProjectFetching = ref(false);
+
+const setType = (type, project) => {
+	router.push(`/attendance/${type}/${project?.id}`)
+};
+
+const getMyProjects = () => {
+    isProjectFetching.value = true;
+    const callback = (res) => {
+        isProjectFetching.value = false;
+        projects.value = res.data.data;
+    }
+    const err = (e) => {
+        isProjectFetching.value = true;
+        console.log(e);
+    }
+
+    const params = {
+        owner_id: user?.value?.id,
+    }
+
+    projectApi.getData(params, callback, err);
+};
+
+watchEffect(() => {
+    getMyProjects();
+})
 
 </script>
