@@ -24,7 +24,7 @@
                                 </span>
                             </div>
                             <div class="mt-2 text-sm">
-                                <span class="font-bold">ID : </span> <span>ABCD - 1213123</span> 
+                                <span class="font-bold">ID : </span> <span>{{ user?.profile_nik ?? '-' }}</span> 
                             </div>
                             <div class="mt-2 text-sm">
                                 <span class="font-bold">Divisi </span>
