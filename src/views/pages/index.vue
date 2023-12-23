@@ -125,7 +125,6 @@ const getMyProjects = () => {
 
 watch(user, (newValue, oldValue) => {
     if (newValue && newValue.id !== undefined) {
-        // Panggil fungsi getMyProjects jika user.id tidak undefined
         getMyProjects();
     }
 });
