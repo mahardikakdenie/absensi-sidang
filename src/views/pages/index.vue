@@ -85,7 +85,7 @@ import HeaderProject from '@/components/Project/Header.vue';
 import VueButton from '@/components/Button/index.vue';
 import VueAllert from '@/components/Alert';
 import { useUserStore } from '@/store/user';
-import { computed, watchEffect, ref, onMounted } from 'vue';
+import { computed, watch, ref } from 'vue';
 import VueBadge from '@/components/Badge/index.vue';
 import pageLoader from '@/components/Loader/pageLoader.vue';
 import projectApi from '@/helpers/projects';
@@ -123,8 +123,11 @@ const getMyProjects = () => {
     projectApi.getData(params, callback, err);
 };
 
-onMounted(() => {
-    getMyProjects();
-})
+watch(user, (newValue, oldValue) => {
+    if (newValue && newValue.id !== undefined) {
+        // Panggil fungsi getMyProjects jika user.id tidak undefined
+        getMyProjects();
+    }
+});
 
 </script>
