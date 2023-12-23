@@ -49,7 +49,7 @@
                             </span>
                         </div>
                         <hr class="my-4">
-                        <div v-if="!isProjectFetching">
+                        <div v-if="!isProjectFetching && projects.length > 0">
                             <div v-for="(project, i) in projects" :key="i" class="mt-6">
                                 <header-project :element="project" />
                                 <div class="sm:px-2">
@@ -61,6 +61,13 @@
                                         <vue-button text="Clock out" btn-class="btn btn-sm btn-danger light" @click="setType('clockout', project)" />
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                        <div v-else-if="!isProjectFetching && projects.length === 0">
+                            <div class="flex justify-center">
+                                <span>
+                                    Tidak ada data
+                                </span>
                             </div>
                         </div>
                         <pageLoader v-else />
