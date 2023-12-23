@@ -11,14 +11,15 @@
             </div>
         </div>
         <div class="flex-1 font-medium sm:text-base text-sm leading-6">
-            <div
+            <router-link
                 :content="element.name ?? 'name'"
                 v-tippy="{
                     placement: 'top',
                 }"
-                class="board-title dark:text-slate-200 text-slate-900 truncate">
+                :to="`/detail-project/${element?.id}`"
+                class="board-title dark:text-slate-200 text-slate-900 truncate hover:text-primary-600">
                 {{ element?.name ?? 'name' }}
-            </div>
+            </router-link>
         </div>
     </div>
 </header>
