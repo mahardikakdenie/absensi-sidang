@@ -13,6 +13,10 @@
     <template v-if="!isLoading && !$slots.default">
       <span class="flex items-center">
         <span
+          v-tippy="{
+            placement: 'top'
+          }"
+          :content="iconTooltip"
           :class="`
           ${iconPosition === 'right' ? 'order-1 ltr:ml-2 rtl:mr-2' : ' '}
           ${text && iconPosition === 'left' ? 'ltr:mr-2 rtl:ml-2' : ''}
@@ -210,6 +214,10 @@ export default {
       default: false,
     },
     textClass: {
+      type: String,
+      default: '',
+    },
+    iconTooltip: {
       type: String,
       default: '',
     }

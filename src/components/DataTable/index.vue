@@ -6,7 +6,8 @@
 				<h5>{{ title }}</h5>
 				<div class="flex gap-4">
 					<vue-button 
-						text="Create User"
+						v-if="btnText"
+						:text="btnText"
 						btn-class="btn btn-dark px-4 py-2"
 						@click="openModalAdd"
 					/>
@@ -44,6 +45,7 @@
 				<template v-slot:table-row="props">
 					<column-name v-if="props.column.field === 'name'" :data="props.row" />
 					<column-role v-if="props.column.field === 'roles'" :data="props.row" />
+					<actionColumn v-if="props.column.field === 'actions'" :data="props.row" />
 					<div v-if="isRowNotModify(props)">
 						<span>
 							{{  props.row[props.column.field]  }}
@@ -84,6 +86,7 @@ import columnName from '@/components/DataTable/column/name.vue'
 import { useDataTableStore } from '@/store/data-table.js';
 import { computed } from 'vue';
 import columnRole from '@/components/DataTable/column/roles.vue';
+import actionColumn from '@/components/DataTable/column/actions.vue'
 const actions = [
 	{
 		name: 'view',
@@ -160,6 +163,7 @@ export default {
 		VueButton,
 		columnName,
 		columnRole,
+		actionColumn
 	},
 
 	props: {
@@ -167,6 +171,10 @@ export default {
 			type: String,
 			default: () => '',
 		},
+		btnText: {
+			type: String,
+			default: ''
+		}
 	},
 
 	data() {

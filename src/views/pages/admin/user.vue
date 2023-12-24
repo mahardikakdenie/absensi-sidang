@@ -9,6 +9,7 @@
     <modal-form 
         :active-modal="isModalAddUser"
         :fields="form"
+        btn-text="Buat Akun"
         @submit="submit"
         @close="isModalAddUser = false" 
     />

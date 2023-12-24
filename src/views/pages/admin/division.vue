@@ -1,7 +1,7 @@
 <template>
 <div>
     <card>
-        <data-table title="Divisi" />
+        <data-table title="Divisi" btn-text="Buat Divisi" />
     </card>
 </div>
 </template>
@@ -10,11 +10,34 @@
 import Card from '@/components/Card/index.vue';
 import DataTable from '@/components/DataTable/index.vue';
 import divisionApi from '@/helpers/division.js';
+import { useDataTableStore } from '@/store/data-table.js';
 import { onMounted } from 'vue';
+
+const store = useDataTableStore();
+
+const headers = [
+    {
+        label: 'Name',
+        field: 'name', 
+    },
+    {
+        label: 'Status',
+        field: 'status'
+    },
+    {
+        label: 'Actions',
+        field: 'actions'
+    }
+];
+
+const actions = [];
+
 
 const getData = () => {
     const callback = (response) => {
-        console.log('responses => ', response);
+        const divisions = response?.data?.data;
+        console.log("🚀 ~ file: division.vue:33 ~ callback ~ divisions:", divisions);
+        store.setData(divisions);
     };
 
     const err = (e) => {
@@ -26,6 +49,7 @@ const getData = () => {
 
 onMounted(() => {
     getData();
+    store.setHeaders(headers)
 });
 </script>
 
