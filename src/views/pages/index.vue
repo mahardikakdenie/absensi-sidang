@@ -85,7 +85,7 @@ import HeaderProject from '@/components/Project/Header.vue';
 import VueButton from '@/components/Button/index.vue';
 import VueAllert from '@/components/Alert';
 import { useUserStore } from '@/store/user';
-import { computed, watch, ref } from 'vue';
+import { computed, watch, ref, onMounted } from 'vue';
 import VueBadge from '@/components/Badge/index.vue';
 import pageLoader from '@/components/Loader/pageLoader.vue';
 import projectApi from '@/helpers/projects';
@@ -125,6 +125,13 @@ const getMyProjects = () => {
 
 watch(user, (newValue, oldValue) => {
     if (newValue && newValue.id !== undefined) {
+        getMyProjects();
+    }
+});
+
+onMounted(() => {
+    console.log(user.value);
+    if (user.value && user.value.id) {
         getMyProjects();
     }
 });
