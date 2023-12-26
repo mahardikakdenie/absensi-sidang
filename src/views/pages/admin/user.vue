@@ -3,6 +3,7 @@
     <card>
         <data-table 
             title="Akun"
+            btn-text="Buat Akun"
             @open-modal-add="toogleModalUser"
         />
     </card>
@@ -20,7 +21,7 @@
 import Card from '@/components/Card/index.vue';
 import DataTable from '@/components/DataTable/index.vue';
 import ModalForm from '@/components/Modal/Form.vue';
-import userApi from '@/helpers/user.js';
+import userApi from '@/helpers/user.js';    
 import { onBeforeUnmount, onMounted, ref, watchEffect } from 'vue';
 import { useDataTableStore } from '@/store/data-table.js';
 import user from '@/helpers/user.js';
@@ -80,9 +81,11 @@ const getDataUser = () => {
 };
 
 const watcherData = watchEffect(() => {
-    store.setHeaders(headers);
     getDataUser();
 });
+onMounted(() => {
+    store.setHeaders(headers);
+}),
 
 onBeforeUnmount(() => {
     watcherData();
