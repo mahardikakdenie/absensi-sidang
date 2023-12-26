@@ -4,7 +4,7 @@
     sizeClass="max-w-2xl"
     @close="$emit('close')"
 >
-    <form @submit.prevent="submit" class="grid grid-cols-1">
+    <div class="grid grid-cols-1">
         <div 
             v-for="(field, index) in forms"
             :key="index" 
@@ -17,13 +17,16 @@
                 :type="field.type"
                 :label="field.label"
                 :placeholder="field.placeholder"
+                @input="onChange($event, field)"
             />
             <text-input-field
                 v-if="field?.type === 'password'"
                 v-model="forms[index].value"
                 :type="field.type"
+                :error="field.error"
                 :label="field.label"
                 :placeholder="field.placeholder"
+                @input="onChange($event, field)"
             />
         </div>
         <div class="flex justify-end mt-4 gap-2">
@@ -34,11 +37,12 @@
             />
             <vue-button 
                 text="Add User"
+                :is-disabled="!noErrors"
                 btn-class="btn btn-primary light btn-sm"
                 @click="submit" 
             />
         </div>
-    </form>
+    </div>
 </modal>
 </template>
 
@@ -46,7 +50,7 @@
 import VueButton from '@/components/Button';
 import TextInputField from '@/components/Textinput/index.vue';
 import Modal from '@/components/Modal/index.vue';
-import { ref, watchEffect } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import { duplicateVar } from '@/constant/helpers';
 
 import * as yup from "yup";
@@ -75,8 +79,8 @@ const form = ref({
 });
 
 const init = () => {
-    forms.value = duplicateVar(props.fields);
-    forms.value = forms.value.map(form => {
+    forms.value = duplicateVar(props?.fields);
+    forms.value = forms?.value?.map(form => {
         return {
             ...form,
             error: '',
@@ -88,11 +92,41 @@ watchEffect(() => {
     init();
 });
 
+const setError = (field) => {
+    const index = forms?.value?.findIndex(form => form?.key === field?.key);
+    forms.value[index].error = field?.value === '' ? 'Inputan Tidak boleh Kosong' : undefined;
+    setErrorPassword(field, index);
+};
 
+const setErrorPassword = (field, index) => {
+    if (field?.type === 'password' || field?.type === 'confirm_password') {
+        const passwordField = forms?.value?.find(form => form?.key === 'password');
+        const confirmPasswordField = forms?.value?.find(form => form?.key === 'confirm_password');
+
+        const passwordMatchError = confirmPasswordField && passwordField && passwordField?.value !== confirmPasswordField?.value;
+
+        forms.value[index].error = passwordMatchError ? 'Kata sandi tidak cocok' : forms?.value?.[index]?.error;
+    }
+};
+
+const onChange = (event, field) => {
+    setError(field);
+};
+
+const noErrors = computed(() => forms?.value?.every(curr => curr?.error === '' || curr?.error === undefined) ?? false);
 const emit = defineEmits(['submit']);
 const submit = () => {
-    emit('submit', forms.value)
+    forms?.value?.forEach(curr => setError(curr));
+    
+    // Check if there are any errors in the forms
+    const noErrors = forms?.value?.every(curr => curr?.error === '' || curr?.error === undefined);
+
+    // Only emit 'submit' if there are no errors
+    if (noErrors) {
+        emit('submit', forms.value);
+    }
 };
+
 
 
 </script>
