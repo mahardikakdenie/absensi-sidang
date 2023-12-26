@@ -29,15 +29,22 @@
                 @input="onInput($event, field)"
             />
             <vue-select 
-                v-if="field?.type === 'multiselect'" 
-                v-model="forms[index].value"
-                :option="field.options"
-                :type="field.type"
+                v-if="field.type === 'multiselect'"
                 :error="field.error"
                 :label="field.label"
-                :placeholder="field.placeholder"
                 @input="onInput($event, field)"
-            />
+                >
+                <vSelect
+                    :placeholder="field.placeholder"
+                    :options="field.options"
+                    v-model="forms[index].value"
+                    multiple
+                >
+                    <template #option="{label}">
+                        {{  label  }}
+                    </template>
+                </vSelect>
+            </vue-select>
         </div>
         <div class="flex justify-end mt-4 gap-2">
             <vue-button 
@@ -63,6 +70,8 @@ import TextInputField from '@/components/Textinput/index.vue';
 import Modal from '@/components/Modal/index.vue';
 import { computed, ref, watchEffect } from 'vue';
 import { duplicateVar } from '@/constant/helpers';
+
+import vSelect from "vue-select";
 
 import * as yup from "yup";
 
@@ -107,16 +116,22 @@ const setError = (field) => {
     const index = forms?.value?.findIndex(form => form?.key === field?.key);
     forms.value[index].error = field?.value === '' ? 'Inputan Tidak boleh Kosong' : undefined;
     setErrorPassword(field, index);
+    setErrorEmail(field, index);
 };
 
 const setErrorPassword = (field, index) => {
     if (field?.type === 'password' || field?.type === 'confirm_password') {
         const passwordField = forms?.value?.find(form => form?.key === 'password');
         const confirmPasswordField = forms?.value?.find(form => form?.key === 'confirm_password');
-
         const passwordMatchError = confirmPasswordField && passwordField && passwordField?.value !== confirmPasswordField?.value;
-
         forms.value[index].error = passwordMatchError ? 'Kata sandi tidak cocok' : forms?.value?.[index]?.error;
+    }
+};
+
+const setErrorEmail = (field, index) => {
+    if (field.key === 'email') {
+        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+        field.error = !emailRegex?.test(field?.value) ? 'Email tidak valid' : field.error; 
     }
 };
 
@@ -128,13 +143,9 @@ const noErrors = computed(() => forms?.value?.every(curr => curr?.error === '' |
 const emit = defineEmits(['submit']);
 const submit = () => {
     forms?.value?.forEach(curr => setError(curr));
-    
-    // Check if there are any errors in the forms
     const noErrors = forms?.value?.every(curr => curr?.error === '' || curr?.error === undefined);
-
-    // Only emit 'submit' if there are no errors
     if (noErrors) {
-        emit('submit', forms.value);
+        emit('submit', forms?.value);
     }
 };
 

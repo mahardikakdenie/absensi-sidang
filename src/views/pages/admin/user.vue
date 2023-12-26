@@ -21,7 +21,8 @@
 import Card from '@/components/Card/index.vue';
 import DataTable from '@/components/DataTable/index.vue';
 import ModalForm from '@/components/Modal/Form.vue';
-import userApi from '@/helpers/user.js';    
+import userApi from '@/helpers/user.js';
+import { getRoles } from '@/helpers/roles.js';
 import { onBeforeUnmount, onMounted, ref, watchEffect } from 'vue';
 import { useDataTableStore } from '@/store/data-table.js';
 import user from '@/helpers/user.js';
@@ -80,11 +81,30 @@ const getDataUser = () => {
     userApi.getAllUsers(params, callback, err);
 };
 
+const getRolesData = () => {
+    const callback = (res) => {
+        const data = res?.data?.data;
+        form.value[3].options = data.map(curr => {
+            return {
+                id: curr?.id,
+                label: curr?.name
+            }
+        });
+
+        console.log(form?.value[5].options);
+    };
+    const err = (e) => {
+        console.log(e);
+    }
+    getRoles({type: 'selected'}, callback, err);
+}
+
 const watcherData = watchEffect(() => {
     getDataUser();
 });
 onMounted(() => {
     store.setHeaders(headers);
+    getRolesData();
 }),
 
 onBeforeUnmount(() => {
@@ -118,6 +138,15 @@ const form = ref([
         placeholder: 'Masukan Username'
     },
     {
+        key: 'roleids',
+        type: 'multiselect',
+        value: null,
+        error: 'asdasd',
+        options: [],
+        label: 'Role',
+        placeholder: 'Masukan Role',
+    },
+    {
         type: 'password',
         value: '',
         error: '',
@@ -133,15 +162,6 @@ const form = ref([
         label: 'Konfirmasi',
         placeholder: 'Masukan Konfirmasi password'
     },
-    {
-        key: 'roleids',
-        type: 'multiselect',
-        value: [],
-        error: '',
-        options: [],
-        label: 'Role',
-        placeholder: 'Masukan Role',
-    }
 ]);
 
 const isModalAddUser = ref(false);
@@ -151,21 +171,21 @@ const toogleModalUser = () => {
 
 const submit = (form) => {
     form.value = form;
-    console.log("🚀 ~ file: user.vue:141 ~ submit ~ form.value:", form.value)
-    const callback = (res) => {
-        if (res?.data?.meta?.status) {
-            const user = res.data.data;
-            users.value.push(user);
-            store.setData(users.value);
-            isModalAddUser.value = false;
-        }
-    };
+    console.log("🚀 ~ file: user.vue:172 ~ submit ~ form.value:", form.value)
+    // const callback = (res) => {
+    //     if (res?.data?.meta?.status) {
+    //         const user = res.data.data;
+    //         users.value.push(user);
+    //         store.setData(users.value);
+    //         isModalAddUser.value = false;
+    //     }
+    // };
 
-    const err = (e) => {
-        console.log(e);
-    };
+    // const err = (e) => {
+    //     console.log(e);
+    // };
 
-    userApi.createUser(form.value, callback, err);
+    // userApi.createUser(form.value, callback, err);
 };
 
 
