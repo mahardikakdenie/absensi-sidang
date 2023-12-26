@@ -133,6 +133,15 @@ const form = ref([
         label: 'Konfirmasi',
         placeholder: 'Masukan Konfirmasi password'
     },
+    {
+        key: 'roleids',
+        type: 'multiselect',
+        value: [],
+        error: '',
+        options: [],
+        label: 'Role',
+        placeholder: 'Masukan Role',
+    }
 ]);
 
 const isModalAddUser = ref(false);
@@ -142,21 +151,21 @@ const toogleModalUser = () => {
 
 const submit = (form) => {
     form.value = form;
-    // console.log("🚀 ~ file: user.vue:141 ~ submit ~ form.value:", form.value)
-    // const callback = (res) => {
-    //     if (res?.data?.meta?.status) {
-    //         const user = res.data.data;
-    //         console.log("🚀 ~ file: user.vue:145 ~ callback ~ user:", user)
-    //         users.value.push(user);
-    //         isModalAddUser.value = false;
-    //     }
-    // };
+    console.log("🚀 ~ file: user.vue:141 ~ submit ~ form.value:", form.value)
+    const callback = (res) => {
+        if (res?.data?.meta?.status) {
+            const user = res.data.data;
+            users.value.push(user);
+            store.setData(users.value);
+            isModalAddUser.value = false;
+        }
+    };
 
-    // const err = (e) => {
-    //     console.log(e);
-    // };
+    const err = (e) => {
+        console.log(e);
+    };
 
-    // userApi.createUser(form.value, callback, err);
+    userApi.createUser(form.value, callback, err);
 };
 
 

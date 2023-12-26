@@ -17,7 +17,7 @@
                 :type="field.type"
                 :label="field.label"
                 :placeholder="field.placeholder"
-                @input="onChange($event, field)"
+                @input="onInput($event, field)"
             />
             <text-input-field
                 v-if="field?.type === 'password'"
@@ -26,7 +26,17 @@
                 :error="field.error"
                 :label="field.label"
                 :placeholder="field.placeholder"
-                @input="onChange($event, field)"
+                @input="onInput($event, field)"
+            />
+            <vue-select 
+                v-if="field?.type === 'multiselect'" 
+                v-model="forms[index].value"
+                :option="field.options"
+                :type="field.type"
+                :error="field.error"
+                :label="field.label"
+                :placeholder="field.placeholder"
+                @input="onInput($event, field)"
             />
         </div>
         <div class="flex justify-end mt-4 gap-2">
@@ -48,6 +58,7 @@
 
 <script setup>
 import VueButton from '@/components/Button';
+import VueSelect from "@/components/Select/VueSelect";
 import TextInputField from '@/components/Textinput/index.vue';
 import Modal from '@/components/Modal/index.vue';
 import { computed, ref, watchEffect } from 'vue';
@@ -109,7 +120,7 @@ const setErrorPassword = (field, index) => {
     }
 };
 
-const onChange = (event, field) => {
+const onInput = (event, field) => {
     setError(field);
 };
 
