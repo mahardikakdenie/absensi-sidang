@@ -1,11 +1,10 @@
 <template>
-<div class="">
-    <ul class="flex flex-wrap gap-2">
-        <li v-for="(role, index) in data.roles" :key="index" class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5">
-            <vue-badge :label="role" />
-        </li>
-    </ul>
+    <div class="flex flex-wrap">
+    <div v-for="(role, index) in data.roles" :key="index" class="flex justify-start items-center p-2">
+        <vue-badge :label="role" />
+    </div>
 </div>
+
 </template>
 
 <script setup>

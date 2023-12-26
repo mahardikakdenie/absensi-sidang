@@ -20,6 +20,15 @@
                 @input="onInput($event, field)"
             />
             <text-input-field
+                v-if="field?.type === 'email'"
+                v-model="forms[index].value"
+                :type="field.type"
+                :error="field.error"
+                :label="field.label"
+                :placeholder="field.placeholder"
+                @input="onInput($event, field)"
+            />
+            <text-input-field
                 v-if="field?.type === 'password'"
                 v-model="forms[index].value"
                 :type="field.type"
@@ -33,7 +42,7 @@
                 :error="field.error"
                 :label="field.label"
                 @input="onInput($event, field)"
-                >
+            >
                 <vSelect
                     :placeholder="field.placeholder"
                     :options="field.options"
@@ -75,6 +84,7 @@ import vSelect from "vue-select";
 
 import * as yup from "yup";
 
+// Props
 const props = defineProps({
     activeModal: {
         type: Boolean,
@@ -93,11 +103,13 @@ const props = defineProps({
     }
 });
 
+// Refs
 const forms = ref([]);
 const form = ref({
     name: '',
 });
 
+// Initialization
 const init = () => {
     forms.value = duplicateVar(props?.fields);
     forms.value = forms?.value?.map(form => {
@@ -105,13 +117,25 @@ const init = () => {
             ...form,
             error: '',
         }
-    })
+    });
+
+    const index = forms?.value?.findIndex(form => form.key === 'password');
+    forms.value[index].value = '';
 }
 
-watchEffect(() => {
-    init();
-});
-
+/**
+ * Set error messages for a field, including password and email validation.
+ * @param {Object} field - The field object to check.
+ * @returns {void}
+ * @typedef {Object} Field
+ * @property {string} key - The key identifier of the field.
+ * @property {string} value - The value of the field.
+ * @property {string} error - The error message associated with the field.
+ * @description This function sets an error message for the specified field if its value is empty.
+ * Additionally, it calls helper functions to perform specific validations for password and email fields.
+ * @example const field = { key: 'username', value: 'JohnDoe', error: '' };
+ * setError(field);
+ */
 const setError = (field) => {
     const index = forms?.value?.findIndex(form => form?.key === field?.key);
     forms.value[index].error = field?.value === '' ? 'Inputan Tidak boleh Kosong' : undefined;
@@ -119,15 +143,54 @@ const setError = (field) => {
     setErrorEmail(field, index);
 };
 
+/**
+ * Set error messages for password and confirm password fields.
+ * @param {Object} field - The field object to check.
+ * @param {number} index - The index of the field in the forms array.
+ * @returns {void}
+ * @typedef {Object} Field
+ * @property {string} type - The type of the field.
+ * @property {string} key - The key identifier of the field.
+ * @typedef {Array<Object>} FormsArray
+ * @description This function checks if the specified field is either 'password' or 'confirm_password'
+ * and sets error messages if the passwords do not match.
+ * @example const field = { type: 'password', key: 'password' };
+ * const index = 0;
+ * setErrorPassword(field, index);
+ */
 const setErrorPassword = (field, index) => {
-    if (field?.type === 'password' || field?.type === 'confirm_password') {
-        const passwordField = forms?.value?.find(form => form?.key === 'password');
-        const confirmPasswordField = forms?.value?.find(form => form?.key === 'confirm_password');
-        const passwordMatchError = confirmPasswordField && passwordField && passwordField?.value !== confirmPasswordField?.value;
-        forms.value[index].error = passwordMatchError ? 'Kata sandi tidak cocok' : forms?.value?.[index]?.error;
+    const isPasswordField = field?.type === 'password' || field?.type === 'confirm_password';
+    const passwordIndex = forms?.value?.findIndex(form => form?.key === 'password');
+    const confirmPasswordIndex = forms?.value?.findIndex(form => form?.key === 'confirm_password');
+
+    const isValidPasswordIndexes = passwordIndex > -1 && confirmPasswordIndex > -1;
+
+    if (isPasswordField && isValidPasswordIndexes) {
+        const password = forms?.value?.[passwordIndex]?.value;
+        const confirmPassword = forms?.value?.[confirmPasswordIndex]?.value;
+
+        const passwordsNotMatch = password !== confirmPassword;
+
+        forms.value[passwordIndex].error = passwordsNotMatch ? 'Password Tidak Sama' : '';
+        forms.value[confirmPasswordIndex].error = passwordsNotMatch ? 'Password Tidak Sama' : '';
     }
 };
 
+/**
+ * Set error message for the email field.
+ * @param {Object} field - The field object to check.
+ * @param {number} index - The index of the field in the forms array.
+ * @returns {void}
+ * @typedef {Object} Field
+ * @property {string} key - The key identifier of the field.
+ * @property {string} value - The value of the field.
+ * @property {string} error - The error message associated with the field.
+ * @description This function checks if the specified field has the key 'email' and sets an error message
+ * if the email value does not match the specified regular expression for a valid email format.
+ * @example const field = { key: 'email', value: 'example@example.com', error: '' };
+ * const index = 0;
+ * setErrorEmail(field, index);
+ */
 const setErrorEmail = (field, index) => {
     if (field.key === 'email') {
         const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
@@ -135,12 +198,18 @@ const setErrorEmail = (field, index) => {
     }
 };
 
+// Event handlers
 const onInput = (event, field) => {
     setError(field);
 };
 
+// Computed property
 const noErrors = computed(() => forms?.value?.every(curr => curr?.error === '' || curr?.error === undefined) ?? false);
+
+// Emit definition
 const emit = defineEmits(['submit']);
+
+// Submit function
 const submit = () => {
     forms?.value?.forEach(curr => setError(curr));
     const noErrors = forms?.value?.every(curr => curr?.error === '' || curr?.error === undefined);
@@ -149,10 +218,9 @@ const submit = () => {
     }
 };
 
-
+// Watch effect
+watchEffect(() => {
+    init();
+});
 
 </script>
-
-<style>
-
-</style>

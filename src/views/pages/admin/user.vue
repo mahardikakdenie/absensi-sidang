@@ -12,7 +12,7 @@
         :fields="form"
         btn-text="Buat Akun"
         @submit="submit"
-        @close="isModalAddUser = false" 
+        @close="close" 
     />
 </div>
 </template>
@@ -84,7 +84,7 @@ const getDataUser = () => {
 const getRolesData = () => {
     const callback = (res) => {
         const data = res?.data?.data;
-        form.value[3].options = data.map(curr => {
+        form.value[2].options = data.map(curr => {
             return {
                 id: curr?.id,
                 label: curr?.name
@@ -117,14 +117,6 @@ const form = ref([
         type: 'text',
         value: '',
         error: '',
-        key: 'email',
-        label: 'Email',
-        placeholder: 'Masukan Email',
-    },
-    {
-        type: 'text',
-        value: '',
-        error: '',
         key: 'name',
         label: 'Nama',
         placeholder: 'Masukan Nama'
@@ -147,6 +139,14 @@ const form = ref([
         placeholder: 'Masukan Role',
     },
     {
+        type: 'email',
+        value: '',
+        error: '',
+        key: 'email',
+        label: 'Email',
+        placeholder: 'Masukan Email',
+    },
+    {
         type: 'password',
         value: '',
         error: '',
@@ -167,25 +167,41 @@ const form = ref([
 const isModalAddUser = ref(false);
 const toogleModalUser = () => {
     isModalAddUser.value = !isModalAddUser.value;
+    store.setDisableSearch(true);
+};
+
+const close = () => {
+    isModalAddUser.value = false;
+    store.setDisableSearch(false);
 };
 
 const submit = (form) => {
     form.value = form;
-    console.log("🚀 ~ file: user.vue:172 ~ submit ~ form.value:", form.value)
-    // const callback = (res) => {
-    //     if (res?.data?.meta?.status) {
-    //         const user = res.data.data;
-    //         users.value.push(user);
-    //         store.setData(users.value);
-    //         isModalAddUser.value = false;
-    //     }
-    // };
+    const value = form?.value.map(curr => curr.value);
+    const params = {
+        name: value[0],
+        username: value[1],
+        role_ids: value?.[2].map(curr => curr.id),
+        email: value[3],
+        password: value[4],
+    };
+    const callback = (res) => {
+        if (res?.data?.meta?.status) {
+            const user = {
+                ...res.data.data,
+                image: userDummyImage,
+                roles: value?.[2]?.map(role => role?.label) ?? '-',
+            }
+            store.insertData(user);
+            isModalAddUser.value = false;
+        }
+    };
 
-    // const err = (e) => {
-    //     console.log(e);
-    // };
+    const err = (e) => {
+        console.log(e);
+    };
 
-    // userApi.createUser(form.value, callback, err);
+    userApi.createUser(params, callback, err);
 };
 
 

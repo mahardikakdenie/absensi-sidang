@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 
 const wrapper = {
     state: () => ({
+        isDisabledSearch: false,
         headers: [],
         datas: [],
         actions: [
@@ -26,8 +27,14 @@ const wrapper = {
         },
         setActions(actions) {
             this.actions = actions;
+        },
+        insertData(data) {
+            this.datas.push(data);
+        },
+        setDisableSearch(action) {
+            this.isDisabledSearch = action;
         }
     },
 };
 
-export const useDataTableStore = defineStore('data-table-store', wrapper);
+export const useDataTableStore = defineStore('dataTableStore', wrapper);

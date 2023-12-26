@@ -12,6 +12,7 @@
 						@click="openModalAdd"
 					/>
 					<InputGroup
+						:disabled="isDisabled"
 						v-model="searchTerm"
 						placeholder="Search"
 						type="text"
@@ -187,6 +188,7 @@ export default {
 			actions,
 			options,
 			columns,
+			isModalActive: false,
 		};
 	},
 	methods: {
@@ -198,6 +200,7 @@ export default {
 		const store = useDataTableStore();
 		const headers = computed(() => store.headers);
 		const datas = computed(() => store.datas);
+		const isDisabled = computed(() => store.isDisabledSearch);
 
 		const isRowNotModify = (props) => {
 			const forbiddenFields = ['name', 'roles'];
@@ -208,6 +211,7 @@ export default {
 			headers,
 			datas,
 			isRowNotModify,
+			isDisabled,
 		}
 	},
 };
