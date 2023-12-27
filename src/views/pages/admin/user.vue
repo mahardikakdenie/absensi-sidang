@@ -1,5 +1,10 @@
 <template>
 <div>
+    <card title="Summary" class-name="mb-4">
+        <div class="grid md:grid-cols-4 sm:grid-cols-2 grid-cols-2 gap-3">
+            <boxSummary :statistics="summaries" />
+        </div>
+    </card>
     <card>
         <data-table 
             title="Akun"
@@ -23,8 +28,9 @@ import DataTable from '@/components/DataTable/index.vue';
 import ModalForm from '@/components/Modal/Form.vue';
 import userApi from '@/helpers/user.js';
 import { getRoles } from '@/helpers/roles.js';
-import { onBeforeUnmount, onMounted, ref, watchEffect } from 'vue';
+import { onBeforeUnmount, onMounted, ref, watchEffect,watch } from 'vue';
 import { useDataTableStore } from '@/store/data-table.js';
+import boxSummary from '@/components/Card/box-summary.vue';
 import user from '@/helpers/user.js';
 
 const userDummyImage = 'https://static.vecteezy.com/system/resources/previews/018/765/757/original/user-profile-icon-in-flat-style-member-avatar-illustration-on-isolated-background-human-permission-sign-business-concept-vector.jpg';
@@ -51,13 +57,87 @@ const headers = [
     {
         label: 'Status',
         field: 'status'
+    },
+    {
+        label: 'Actions',
+        field: 'actions',
     }
 ];
 
+const summaries = ref([
+    {
+        key: 'all',
+		title: 'Total Akun',
+		count: '0',
+		bg: 'bg-info-500',
+		text: 'text-info-500',
+		percent: '25.67% ',
+		icon: 'heroicons-outline:menu-alt-1',
+	},
+    {
+        key: 'all',
+		title: 'Akun Aktif',
+		count: '0',
+		bg: 'bg-info-500',
+		text: 'text-info-500',
+		percent: '25.67% ',
+		icon: 'heroicons-outline:menu-alt-1',
+	},
+    {
+        key: 'all',
+		title: 'Akun Tidak Active',
+		count: '0',
+		bg: 'bg-info-500',
+		text: 'text-info-500',
+		percent: '25.67% ',
+		icon: 'heroicons-outline:menu-alt-1',
+	},
+    {
+        key: 'all',
+		title: 'Superadmin',
+		count: '0',
+		bg: 'bg-info-500',
+		text: 'text-info-500',
+		percent: '25.67% ',
+		icon: 'heroicons-outline:menu-alt-1',
+	},
+    {
+        key: 'all',
+		title: 'Admin',
+		count: '0',
+		bg: 'bg-info-500',
+		text: 'text-info-500',
+		percent: '25.67% ',
+		icon: 'heroicons-outline:menu-alt-1',
+	},
+    {
+        key: 'all',
+		title: 'User',
+		count: '0',
+		bg: 'bg-info-500',
+		text: 'text-info-500',
+		percent: '25.67% ',
+		icon: 'heroicons-outline:menu-alt-1',
+	},
+    {
+        key: 'all',
+		title: 'Supervisor',
+		count: '0',
+		bg: 'bg-info-500',
+		text: 'text-info-500',
+		percent: '25.67% ',
+		icon: 'heroicons-outline:menu-alt-1',
+	},
+]);
+
 const users = ref([]);
+const currentPage = ref(1);
+const perPage = ref(10);
 const getDataUser = () => {
     const params = {
         entities: 'roles.role',
+        paginate: perPage.value,
+        page: currentPage?.value
     };
     const callback = (response) => {
         if (response.data.meta.status) {
@@ -70,6 +150,7 @@ const getDataUser = () => {
                     status: user?.status ?? '-',
                 }
             });
+            store.setMeta(response.data.meta);
             store.setData(users.value);
         }
     };
@@ -79,6 +160,23 @@ const getDataUser = () => {
     }
 
     userApi.getAllUsers(params, callback, err);
+};
+
+const getUserSummary = () => {
+    const params = {};
+    const callback = (res) => {
+        console.log('res => ', res);
+        const data = res.data.data;
+        summaries.value[0].count = data?.all;
+        summaries.value[1].count = data?.active;
+        summaries.value[2].count = data?.not_active;
+        summaries.value[3].count = data?.superadmin;
+        summaries.value[4].count = data?.admin;
+        summaries.value[5].count = data?.user;
+        summaries.value[6].count = data?.supervisor;
+    }
+    const err = () => {};
+    userApi.getUserSummary(params, callback, err);
 };
 
 const getRolesData = () => {
@@ -102,9 +200,19 @@ const getRolesData = () => {
 const watcherData = watchEffect(() => {
     getDataUser();
 });
+
+watch(() => store?.meta?.current_page, (value) => {
+    currentPage.value = value;
+});
+
+watch(() => store?.meta?.per_page, (value) => {
+    perPage.value = value;
+})
+
 onMounted(() => {
     store.setHeaders(headers);
     getRolesData();
+    getUserSummary();
 }),
 
 onBeforeUnmount(() => {

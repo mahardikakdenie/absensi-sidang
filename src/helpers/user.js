@@ -20,4 +20,8 @@ export default {
     createUser(params, cb, errCB) {
         axiosHit(endpointUser, params, 'post', cb, errCB);
     },
+    getUserSummary(params, cb, errCb) {
+        const url = `${endpointUser}/summary`;
+        axiosHit(url, params, 'get', cb, errCb);
+    }
 }
