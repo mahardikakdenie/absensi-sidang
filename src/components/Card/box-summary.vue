@@ -32,6 +32,7 @@ import Icon from '@/components/Icon';
 import pageLoader from '../Loader/pageLoader.vue';
 import { ref } from "vue";
 
+
 const router = useRouter();
 const route = useRoute();
 const isLoading = ref(false);
@@ -43,7 +44,9 @@ const props = defineProps({
     }
 });
 
-const setFilterSummary = () => {};
+const setFilterSummary = (key) => {
+    router.replace({query: { ...route.query, summary: key }})
+};
 </script>
 
 <style lang="scss">

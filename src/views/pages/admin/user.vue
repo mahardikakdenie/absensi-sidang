@@ -32,11 +32,13 @@ import { onBeforeUnmount, onMounted, ref, watchEffect,watch } from 'vue';
 import { useDataTableStore } from '@/store/data-table.js';
 import boxSummary from '@/components/Card/box-summary.vue';
 import user from '@/helpers/user.js';
+import { useRoute, useRouter } from 'vue-router';
 
 const userDummyImage = 'https://static.vecteezy.com/system/resources/previews/018/765/757/original/user-profile-icon-in-flat-style-member-avatar-illustration-on-isolated-background-human-permission-sign-business-concept-vector.jpg';
 const store = useDataTableStore();
+const router = useRouter()
+const route = useRoute()
 // Define Headers
-
 const headers = [
     {
         label: 'Name',
@@ -75,7 +77,7 @@ const summaries = ref([
 		icon: 'heroicons-outline:menu-alt-1',
 	},
     {
-        key: 'all',
+        key: 'active',
 		title: 'Akun Aktif',
 		count: '0',
 		bg: 'bg-info-500',
@@ -84,7 +86,7 @@ const summaries = ref([
 		icon: 'heroicons-outline:menu-alt-1',
 	},
     {
-        key: 'all',
+        key: 'not_active',
 		title: 'Akun Tidak Active',
 		count: '0',
 		bg: 'bg-info-500',
@@ -93,7 +95,7 @@ const summaries = ref([
 		icon: 'heroicons-outline:menu-alt-1',
 	},
     {
-        key: 'all',
+        key: 'superadmin',
 		title: 'Superadmin',
 		count: '0',
 		bg: 'bg-info-500',
@@ -102,7 +104,7 @@ const summaries = ref([
 		icon: 'heroicons-outline:menu-alt-1',
 	},
     {
-        key: 'all',
+        key: 'admin',
 		title: 'Admin',
 		count: '0',
 		bg: 'bg-info-500',
@@ -111,7 +113,7 @@ const summaries = ref([
 		icon: 'heroicons-outline:menu-alt-1',
 	},
     {
-        key: 'all',
+        key: 'user',
 		title: 'User',
 		count: '0',
 		bg: 'bg-info-500',
@@ -120,7 +122,7 @@ const summaries = ref([
 		icon: 'heroicons-outline:menu-alt-1',
 	},
     {
-        key: 'all',
+        key: 'supervisor',
 		title: 'Supervisor',
 		count: '0',
 		bg: 'bg-info-500',
@@ -135,9 +137,10 @@ const currentPage = ref(1);
 const perPage = ref(10);
 const getDataUser = () => {
     const params = {
-        entities: 'roles.role',
+        entities: 'roles.role,profile.medias',
         paginate: perPage.value,
-        page: currentPage?.value
+        page: currentPage?.value,
+        summary: route?.query?.summary
     };
     const callback = (response) => {
         if (response.data.meta.status) {
@@ -145,7 +148,7 @@ const getDataUser = () => {
             users.value = data.map(user => {
                 return {
                     ...user,
-                    image: userDummyImage,
+                    image: user?.profile?.medias?.url ?? userDummyImage,
                     roles: user?.roles?.map(role => role?.role?.name) ?? '-',
                     status: user?.status ?? '-',
                 }

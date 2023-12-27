@@ -25,6 +25,15 @@ const wrapper = {
             to: 1,
             total: 1,
         },
+        nameConfig: {
+            icons: [
+                {
+                    icon: 'mdi:email-send',
+                    tooltipText: 'Send Email to activate this account',
+                    btnClass: 'btn-sm btn hover:text-success-600',
+                }
+            ],
+        }
     }),
     actions: {
         setHeaders(headers) {

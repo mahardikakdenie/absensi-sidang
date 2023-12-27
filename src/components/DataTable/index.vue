@@ -49,7 +49,7 @@
 					<column-status v-if="props.column.field === 'status'" :data="props.row" />
 					<action-column v-if="props.column.field === 'actions'" :data="props.row" />
 					<div v-if="isRowNotModify(props)">
-						<span>
+						<span class="normal-case">
 							{{  props.row[props.column.field]  }}
 						</span>
 					</div>
