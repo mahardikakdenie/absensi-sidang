@@ -19,6 +19,7 @@ export default {
             });
     },
     createDivision(params, callback, errCb) {
-        axiosHit(endpoint, params, 'post', callback, errCb);
+        const url = `${endpoint}/store`;
+        axiosHit(url, params, 'post', callback, errCb);
     }
 }

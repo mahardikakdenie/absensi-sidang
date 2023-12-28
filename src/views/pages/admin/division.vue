@@ -8,7 +8,7 @@
         :fields="form"
         btn-text="Buat Divisi"
         @submit="submit"
-        @close="toogleModalForm" 
+        @close="close" 
     />
 </div>
 </template>
@@ -71,16 +71,21 @@ const actions = [];
 
 
 const getData = () => {
+    const params = {
+        paginate: 5,
+    }
     const callback = (response) => {
         const divisions = response?.data?.data;
         store.setData(divisions);
+        const meta = response?.data?.meta;
+        store.setMeta(meta);
     };
 
     const err = (e) => {
         console.log('e => ', e);
     };
 
-    divisionApi.getData({}, callback, err);
+    divisionApi.getData(params, callback, err);
 };
 
 const getDataUser = () => {
@@ -112,10 +117,24 @@ const getDataUser = () => {
 
 const submit = (value) => {
     console.log('value => ', value);
-    const params = {};
-    divisionApi.createDivision();
+    const params = {
+        name: value?.[0]?.value,
+        usersIdsAssignTo: value?.[1]?.value.map(curr => curr.id),
+        description: value?.[2]?.value,
+    };
+    const callback = (res) => {
+        const data = res?.data?.data;
+        store.insertData(data);
+        close();
+    };
+    const err = (e) => {
+        console.log(e);
+    }
+    divisionApi.createDivision(params, callback, err);
 };
-const close = () => {};
+const close = () => {
+    isModalForm.value = false;
+};
 
 const isModalForm = ref(false);
 const toogleModalForm = () => {
