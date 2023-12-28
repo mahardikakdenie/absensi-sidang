@@ -33,7 +33,7 @@ const wrapper = {
                     btnClass: 'btn-sm btn hover:text-success-600',
                 }
             ],
-        }
+        },
     }),
     actions: {
         setHeaders(headers) {
@@ -54,6 +54,9 @@ const wrapper = {
         setMeta(meta) {
             this.meta = meta;
         },
+        setNameConfig(config) {
+            this.nameConfig = config;
+        }
     },
 };
 

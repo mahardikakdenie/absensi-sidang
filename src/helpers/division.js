@@ -1,3 +1,4 @@
+import { axiosHit } from "@/constant/helpers.js";
 import client from "./http-client.js";
 const endpoint = '/devision';
 
@@ -17,4 +18,7 @@ export default {
                 if (errCB) errCB(e);
             });
     },
+    createDivision(params, callback, errCb) {
+        axiosHit(endpoint, params, 'post', callback, errCb);
+    }
 }

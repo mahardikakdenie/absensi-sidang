@@ -33,11 +33,13 @@ import { useDataTableStore } from '@/store/data-table.js';
 import boxSummary from '@/components/Card/box-summary.vue';
 import user from '@/helpers/user.js';
 import { useRoute, useRouter } from 'vue-router';
+import { useToast } from 'vue-toastification';
 
 const userDummyImage = 'https://static.vecteezy.com/system/resources/previews/018/765/757/original/user-profile-icon-in-flat-style-member-avatar-illustration-on-isolated-background-human-permission-sign-business-concept-vector.jpg';
 const store = useDataTableStore();
 const router = useRouter()
 const route = useRoute()
+const toast = useToast();
 // Define Headers
 const headers = [
     {
@@ -132,96 +134,20 @@ const summaries = ref([
 	},
 ]);
 
-const users = ref([]);
-const currentPage = ref(1);
-const perPage = ref(10);
-const getDataUser = () => {
-    const params = {
-        entities: 'roles.role,profile.medias',
-        paginate: perPage.value,
-        page: currentPage?.value,
-        summary: route?.query?.summary
-    };
-    const callback = (response) => {
-        if (response.data.meta.status) {
-            const data = response.data.data;
-            users.value = data.map(user => {
-                return {
-                    ...user,
-                    image: user?.profile?.medias?.url ?? userDummyImage,
-                    roles: user?.roles?.map(role => role?.role?.name) ?? '-',
-                    status: user?.status ?? '-',
-                }
-            });
-            store.setMeta(response.data.meta);
-            store.setData(users.value);
+const setNameConfig = ref({
+    icons: [
+        {
+            icon: 'mdi:email-send',
+            tooltipText: 'Kirim email untuk mengaktivasi akun ini',
+            btnClass: 'btn-sm btn hover:text-success-600 p-0',
+        },
+        {
+            icon: 'octicon:log-16',
+            tooltipText: 'Lihat catatan Kehadiran',
+            btnClass: 'btn-sm btn hover:text-success-600 p-0',
         }
-    };
-
-    const err = (e) => {
-        console.log(e);
-    }
-
-    userApi.getAllUsers(params, callback, err);
-};
-
-const getUserSummary = () => {
-    const params = {};
-    const callback = (res) => {
-        console.log('res => ', res);
-        const data = res.data.data;
-        summaries.value[0].count = data?.all;
-        summaries.value[1].count = data?.active;
-        summaries.value[2].count = data?.not_active;
-        summaries.value[3].count = data?.superadmin;
-        summaries.value[4].count = data?.admin;
-        summaries.value[5].count = data?.user;
-        summaries.value[6].count = data?.supervisor;
-    }
-    const err = () => {};
-    userApi.getUserSummary(params, callback, err);
-};
-
-const getRolesData = () => {
-    const callback = (res) => {
-        const data = res?.data?.data;
-        form.value[2].options = data.map(curr => {
-            return {
-                id: curr?.id,
-                label: curr?.name
-            }
-        });
-
-        console.log(form?.value[5].options);
-    };
-    const err = (e) => {
-        console.log(e);
-    }
-    getRoles({type: 'selected'}, callback, err);
-}
-
-const watcherData = watchEffect(() => {
-    getDataUser();
+    ],
 });
-
-watch(() => store?.meta?.current_page, (value) => {
-    currentPage.value = value;
-});
-
-watch(() => store?.meta?.per_page, (value) => {
-    perPage.value = value;
-})
-
-onMounted(() => {
-    store.setHeaders(headers);
-    getRolesData();
-    getUserSummary();
-}),
-
-onBeforeUnmount(() => {
-    watcherData();
-});
-// end Define Headers
 
 const form = ref([
     {
@@ -275,6 +201,96 @@ const form = ref([
     },
 ]);
 
+
+const users = ref([]);
+const currentPage = ref(1);
+const perPage = ref(10);
+const getDataUser = () => {
+    const params = {
+        entities: 'roles.role,profile.medias',
+        paginate: perPage.value,
+        page: currentPage?.value,
+        summary: route?.query?.summary
+    };
+    const callback = (response) => {
+        if (response.data.meta.status) {
+            const data = response.data.data;
+            users.value = data.map(user => {
+                return {
+                    ...user,
+                    image: user?.profile?.medias?.url ?? userDummyImage,
+                    roles: user?.roles?.map(role => role?.role?.name) ?? '-',
+                    status: user?.status ?? '-',
+                }
+            });
+            store.setMeta(response.data.meta);
+            store.setData(users.value);
+        }
+    };
+
+    const err = (e) => {
+        console.log(e);
+    }
+
+    userApi.getAllUsers(params, callback, err);
+};
+
+const getUserSummary = () => {
+    const params = {};
+    const callback = (res) => {
+        const data = res.data.data;
+        summaries.value[0].count = data?.all;
+        summaries.value[1].count = data?.active;
+        summaries.value[2].count = data?.not_active;
+        summaries.value[3].count = data?.superadmin;
+        summaries.value[4].count = data?.admin;
+        summaries.value[5].count = data?.user;
+        summaries.value[6].count = data?.supervisor;
+    }
+    const err = () => {};
+    userApi.getUserSummary(params, callback, err);
+};
+
+const getRolesData = () => {
+    const callback = (res) => {
+        const data = res?.data?.data;
+        form.value[2].options = data.map(curr => {
+            return {
+                id: curr?.id,
+                label: curr?.name
+            }
+        });
+
+        console.log(form?.value[5].options);
+    };
+    const err = (e) => {
+        console.log(e);
+    }
+    getRoles({type: 'selected'}, callback, err);
+}
+
+const watcherData = watchEffect(() => {
+    getDataUser();
+});
+
+watch(() => store?.meta?.current_page, (value) => {
+    currentPage.value = value;
+});
+
+watch(() => store?.meta?.per_page, (value) => {
+    perPage.value = value;
+})
+
+onMounted(() => {
+    store.setHeaders(headers);
+    store.setNameConfig(setNameConfig?.value);
+    getRolesData();
+    getUserSummary();
+}),
+
+onBeforeUnmount(() => {
+    watcherData();
+});
 const isModalAddUser = ref(false);
 const toogleModalUser = () => {
     isModalAddUser.value = !isModalAddUser.value;
@@ -286,9 +302,18 @@ const close = () => {
     store.setDisableSearch(false);
 };
 
-const submit = (form) => {
+const submit = (form, type) => {
     form.value = form;
     const value = form?.value.map(curr => curr.value);
+   
+    if (type === 'create') {
+        createUser(value);
+    } else if(type === 'update') {
+        updateUser(value);
+    }
+};
+
+const createUser = (value) => {
     const params = {
         name: value[0],
         username: value[1],
@@ -298,12 +323,17 @@ const submit = (form) => {
     };
     const callback = (res) => {
         if (res?.data?.meta?.status) {
+            const data = res?.data?.data;
             const user = {
-                ...res.data.data,
+                ...data,
                 image: userDummyImage,
                 roles: value?.[2]?.map(role => role?.label) ?? '-',
+                username: data?.username ?? value?.[1],
             }
             store.insertData(user);
+            toast.success('User berhasil di tambahkan lakukan aktivasi agar bisa di gunakan', {
+                timeout: 2000,
+            });
             isModalAddUser.value = false;
         }
     };
@@ -314,6 +344,8 @@ const submit = (form) => {
 
     userApi.createUser(params, callback, err);
 };
+
+const updateUser = (value) => {};
 
 
 </script>

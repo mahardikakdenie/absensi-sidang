@@ -75,6 +75,7 @@
 		</Card>
 	</div>
 </template>
+
 <script>
 import Dropdown from '@/components/Dropdown';
 import Card from '@/components/Card';

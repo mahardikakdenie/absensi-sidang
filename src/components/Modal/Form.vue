@@ -1,10 +1,10 @@
 <template>
 <modal 
     :active-modal="activeModal" 
-    sizeClass="max-w-2xl"
+    sizeClass="max-w-2xl max-h-2xl"
     @close="$emit('close')"
 >
-    <div class="grid grid-cols-1">
+    <div class="grid grid-cols-1 h-auto">
         <div 
             v-for="(field, index) in forms"
             :key="index" 
@@ -12,6 +12,15 @@
         >
             <text-input-field
                 v-if="field?.type === 'text'"
+                v-model="forms[index].value"
+                :error="field.error"
+                :type="field.type"
+                :label="field.label"
+                :placeholder="field.placeholder"
+                @input="onInput($event, field)"
+            />
+            <text-area-field
+                v-if="field?.type === 'textarea'"
                 v-model="forms[index].value"
                 :error="field.error"
                 :type="field.type"
@@ -49,8 +58,23 @@
                     v-model="forms[index].value"
                     multiple
                 >
-                    <template #option="{label}">
-                        {{  label  }}
+                    <template #option="{label, image}">
+                        <div class="flex items-center ">
+                            <span
+                                class="w-10 h-10 rounded-full ltr:mr-4 rtl:ml-4 flex-none">
+                                <img
+                                    v-if="image"
+                                    :src="image"
+                                    :alt="image"
+                                    class="object-cover w-full h-full rounded-full" 
+                                />
+                            </span>
+                            <div class="text-start">
+                                <span class="text-sm text-slate-600 dark:text-slate-300 capitalize text-star">
+                                    {{ label }}
+                                </span>
+                            </div>
+                        </div>
                     </template>
                 </vSelect>
             </vue-select>
@@ -79,6 +103,7 @@ import TextInputField from '@/components/Textinput/index.vue';
 import Modal from '@/components/Modal/index.vue';
 import { computed, ref, watchEffect } from 'vue';
 import { duplicateVar } from '@/constant/helpers';
+import TextAreaField from '@/components/Textarea';
 
 import vSelect from "vue-select";
 
@@ -100,6 +125,10 @@ const props = defineProps({
                 placeholder: 'Masukan Nama'
             }
         ])
+    },
+    type: {
+        type: String,
+        default: 'create',
     }
 });
 
@@ -118,9 +147,6 @@ const init = () => {
             error: '',
         }
     });
-
-    const index = forms?.value?.findIndex(form => form.key === 'password');
-    forms.value[index].value = '';
 }
 
 /**
@@ -214,7 +240,7 @@ const submit = () => {
     forms?.value?.forEach(curr => setError(curr));
     const noErrors = forms?.value?.every(curr => curr?.error === '' || curr?.error === undefined);
     if (noErrors) {
-        emit('submit', forms?.value);
+        emit('submit', forms?.value, props?.type);
     }
 };
 
@@ -224,3 +250,18 @@ watchEffect(() => {
 });
 
 </script>
+
+<style lang="scss">
+    .fromGroup {
+        ul {
+            height: 200px !important;
+            overflow: scroll !important;
+
+            li {
+                &:hover {
+                    background-color: gray;
+                }
+            }
+        }
+    }
+</style>
