@@ -12,6 +12,7 @@
 						@click="openModalAdd"
 					/>
 					<InputGroup
+						:disabled="isDisabled"
 						v-model="searchTerm"
 						placeholder="Search"
 						type="text"
@@ -45,9 +46,10 @@
 				<template v-slot:table-row="props">
 					<column-name v-if="props.column.field === 'name'" :data="props.row" />
 					<column-role v-if="props.column.field === 'roles'" :data="props.row" />
-					<actionColumn v-if="props.column.field === 'actions'" :data="props.row" />
+					<column-status v-if="props.column.field === 'status'" :data="props.row" />
+					<action-column v-if="props.column.field === 'actions'" :data="props.row" />
 					<div v-if="isRowNotModify(props)">
-						<span>
+						<span class="normal-case">
 							{{  props.row[props.column.field]  }}
 						</span>
 					</div>
@@ -55,18 +57,18 @@
 				<template #pagination-bottom="props">
 					<div class="py-4 px-3">
 						<Pagination
-							:total="50"
-							:current="current"
-							:per-page="perpage"
+							:total="meta.total"
+							:current="meta.current_page"
+							:per-page="meta.per_page"
 							:pageRange="pageRange"
-							@page-changed="current = $event"
 							:pageChanged="props.pageChanged"
 							:perPageChanged="props.perPageChanged"
 							enableSearch
 							enableSelect
-							:options="options">
-							>
-						</Pagination>
+							:options="options" 
+							@page-changed="pageChange"
+							@change-per-page="onChangePerPage"
+						/>
 					</div>
 				</template>
 			</vue-good-table>
@@ -86,7 +88,9 @@ import columnName from '@/components/DataTable/column/name.vue'
 import { useDataTableStore } from '@/store/data-table.js';
 import { computed } from 'vue';
 import columnRole from '@/components/DataTable/column/roles.vue';
-import actionColumn from '@/components/DataTable/column/actions.vue'
+import actionColumn from '@/components/DataTable/column/actions.vue';
+import ColumnStatus from '@/components/DataTable/column/status.vue';
+import { duplicateVar } from '@/constant/helpers';
 const actions = [
 	{
 		name: 'view',
@@ -103,16 +107,16 @@ const actions = [
 ];
 const options = [
 	{
-		value: '1',
-		label: '1',
-	},
-	{
-		value: '3',
-		label: '3',
-	},
-	{
 		value: '5',
 		label: '5',
+	},
+	{
+		value: '10',
+		label: '10',
+	},
+	{
+		value: '20',
+		label: '20',
 	},
 ];
 const columns = [
@@ -163,7 +167,8 @@ export default {
 		VueButton,
 		columnName,
 		columnRole,
-		actionColumn
+		actionColumn,
+		ColumnStatus
 	},
 
 	props: {
@@ -187,6 +192,7 @@ export default {
 			actions,
 			options,
 			columns,
+			isModalActive: false,
 		};
 	},
 	methods: {
@@ -198,9 +204,20 @@ export default {
 		const store = useDataTableStore();
 		const headers = computed(() => store.headers);
 		const datas = computed(() => store.datas);
+		const isDisabled = computed(() => store.isDisabledSearch);
+		const meta = computed(() => store.meta);
+		const pageChange = (event) => {
+			console.log('event => ', event);
+			meta.value.current_page = event;
+			store.setMeta(meta.value);
+		};
+
+		const onChangePerPage = (event) => {
+			meta.value.per_page = event;
+		};
 
 		const isRowNotModify = (props) => {
-			const forbiddenFields = ['name', 'roles'];
+			const forbiddenFields = ['name', 'roles', 'status'];
 			return !forbiddenFields.includes(props.column.field);
 		};
 
@@ -208,6 +225,10 @@ export default {
 			headers,
 			datas,
 			isRowNotModify,
+			isDisabled,
+			meta,
+			pageChange,
+			onChangePerPage,
 		}
 	},
 };

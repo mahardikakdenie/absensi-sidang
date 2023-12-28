@@ -2,12 +2,15 @@ import { defineStore } from "pinia";
 
 const __wrapper = {
     state: () => ({
-        user: {},
+        user: [],
     }),
     actions: {
         setUser(user) {
             this.user = user;
         },
+        createUser(user) {
+            this.user.push(user);
+        }
     },
 };
 

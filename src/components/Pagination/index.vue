@@ -26,7 +26,7 @@
       <div class="flex items-center" v-if="enableSearch && enableSelect">
         <Select
           v-model.number="input2"
-          @change="changePage(input2)"
+          @change="$emit('change-per-page', input2)"
           placeholder="Go"
           classInput=" w-[60px] h-9 "
           :options="options"
@@ -34,7 +34,7 @@
         </Select>
 
         <span class="text-sm text-slate-500 inline-block ltr:ml-2 rtl:mr-2">
-          of {{ perPage }} entries</span
+          of {{ total }} entries</span
         >
       </div>
     </div>
