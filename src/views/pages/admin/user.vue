@@ -1,10 +1,5 @@
 <template>
 <div>
-    <card title="Summary" class-name="mb-4">
-        <div class="grid md:grid-cols-4 sm:grid-cols-2 grid-cols-2 gap-3">
-            <boxSummary :statistics="summaries" />
-        </div>
-    </card>
     <card>
         <data-table 
             title="Akun"
@@ -285,7 +280,6 @@ onMounted(() => {
     store.setHeaders(headers);
     store.setNameConfig(setNameConfig?.value);
     getRolesData();
-    getUserSummary();
 }),
 
 onBeforeUnmount(() => {
