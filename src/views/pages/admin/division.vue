@@ -76,7 +76,7 @@ const setFormUpdate = (formValues, type) => {
 
     // If it's an update, set the second field to null; otherwise, update the user field.
     form.value[1] = type === 'update' ? null : createFormField(userFieldConfig);
-    form.value[1]?.value = formValues?.users;
+    form.value[1].value = formValues?.users;
 
     // Update other fields and the divisionId.
     form.value[0].value = formValues?.name;
