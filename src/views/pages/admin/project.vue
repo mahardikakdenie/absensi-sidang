@@ -1,7 +1,7 @@
 <template>
     <div>
         <card>
-            <data-table title="Project" />
+            <data-table title="Project" btn-text="Buat Project" />
         </card>
     </div>
     </template>
@@ -43,7 +43,6 @@
     const getData = () => {
         const callback = (response) => {
             const projects = response?.data?.data;
-            console.log("🚀 ~ file: division.vue:33 ~ callback ~ divisions:", projects);
             store.setData(projects);
         };
     

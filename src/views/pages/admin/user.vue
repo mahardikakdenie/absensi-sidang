@@ -255,8 +255,6 @@ const getRolesData = () => {
                 label: curr?.name
             }
         });
-
-        console.log(form?.value[5].options);
     };
     const err = (e) => {
         console.log(e);

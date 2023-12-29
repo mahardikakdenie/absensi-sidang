@@ -21,5 +21,9 @@ export default {
     createDivision(params, callback, errCb) {
         const url = `${endpoint}/store`;
         axiosHit(url, params, 'post', callback, errCb);
-    }
+    },
+    updateDivision(id,params, callback, errCb) {
+        const url = `${endpoint}/update/${id}`;
+        axiosHit(url, params, 'put', callback, errCb);
+    },
 }

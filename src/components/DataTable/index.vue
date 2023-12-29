@@ -48,6 +48,7 @@
 					<column-role v-if="props.column.field === 'roles'" :data="props.row" />
 					<column-status v-if="props.column.field === 'status'" :data="props.row" />
 					<action-column v-if="props.column.field === 'actions'" :data="props.row" />
+					<ColumnAssign v-if="props.column.field === 'assign'"  :data="props.row" />
 					<div v-if="isRowNotModify(props)">
 						<span class="normal-case">
 							{{  props.row[props.column.field]  }}
@@ -91,6 +92,7 @@ import { computed } from 'vue';
 import columnRole from '@/components/DataTable/column/roles.vue';
 import actionColumn from '@/components/DataTable/column/actions.vue';
 import ColumnStatus from '@/components/DataTable/column/status.vue';
+import ColumnAssign from '@/components/DataTable/column/assign.vue';
 import { duplicateVar } from '@/constant/helpers';
 const actions = [
 	{
@@ -169,7 +171,8 @@ export default {
 		columnName,
 		columnRole,
 		actionColumn,
-		ColumnStatus
+		ColumnStatus,
+		ColumnAssign,
 	},
 
 	props: {

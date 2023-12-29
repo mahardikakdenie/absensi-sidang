@@ -16,6 +16,13 @@ import VueButton from '@/components/Button';
 import { useDataTableStore } from '@/store/data-table';
 import { computed } from 'vue';
 
+const props = defineProps({
+    data: {
+        type: Object,
+        default: null,
+    }
+})
+
 // Using the data-table store
 const store = useDataTableStore();
 
@@ -28,8 +35,11 @@ const actions = computed(() => store.actions);
  * @returns {void}
  */
 const handleClick = (action) => {
-  // Do something with the clicked action
-  // You can implement your logic based on the action parameter
-  console.log(`Button Clicked for action: ${action}`);
+    const params = {
+        key: action?.key,
+        data: props?.data,
+    }
+    store?.trigerAction(params);
 }
+
 </script>

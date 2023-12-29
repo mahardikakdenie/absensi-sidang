@@ -34,6 +34,7 @@ const wrapper = {
                 }
             ],
         },
+        typeAction: null,
     }),
     actions: {
         setHeaders(headers) {
@@ -48,6 +49,13 @@ const wrapper = {
         insertData(data) {
             this.datas.push(data);
         },
+        updateData(data, id) {
+            const index = this.datas.findIndex(curr => curr.id === id);
+            
+            if (index !== -1) {
+                Object.assign(this.datas[index],Object.fromEntries(data.map(item => [item.key, item.value])));
+            };
+        },
         setDisableSearch(action) {
             this.isDisabledSearch = action;
         },
@@ -56,7 +64,10 @@ const wrapper = {
         },
         setNameConfig(config) {
             this.nameConfig = config;
-        }
+        },
+        trigerAction(action) {
+            this.typeAction = action;
+        },
     },
 };
 
