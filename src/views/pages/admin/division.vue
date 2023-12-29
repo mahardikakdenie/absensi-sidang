@@ -24,7 +24,7 @@ import { useDataTableStore } from '@/store/data-table.js';
 import { onBeforeUnmount, onMounted, ref, watch, watchEffect } from 'vue';
 import ModalForm from '@/components/Modal/Form.vue';
 import userApi from '@/helpers/user.js';
-import { duplicateVar } from '@/constant/helpers';
+import { createFormField } from '@/constant/helpers';
 
 const userDummyImage =
 	'https://static.vecteezy.com/system/resources/previews/018/765/757/original/user-profile-icon-in-flat-style-member-avatar-illustration-on-isolated-background-human-permission-sign-business-concept-vector.jpg';
@@ -39,13 +39,6 @@ const headers = [
 	{ label: 'Ditugaskan', field: 'assign' },
 	{ label: 'Actions', field: 'actions' },
 ];
-
-const createFormField = (config) => ({
-	type: config.type,
-	value: '',
-	error: '',
-	...config,
-});
 
 const formConfig = [
 	{
@@ -71,20 +64,26 @@ const formConfig = [
 const form = ref(formConfig.map(createFormField));
 const divisionId = ref(null);
 
+/**
+ * Updates the form based on the provided form values and type.
+ *
+ * @param {Object} formValues - The values to update the form with.
+ * @param {string} type - The type of the update ('update' or other).
+ * @returns {void}
+ */
 const setFormUpdate = (formValues, type) => {
-	const userFieldConfig = formConfig.find((field) => field.key === 'userids');
+    const userFieldConfig = formConfig.find((field) => field.key === 'userids');
 
-	if (type === 'update') {
-		form.value[1] = null;
-	} else {
-		form.value[1] = createFormField(userFieldConfig);
-		form.value[1].value = formValues?.users;
-	}
+    // If it's an update, set the second field to null; otherwise, update the user field.
+    form.value[1] = type === 'update' ? null : createFormField(userFieldConfig);
+    form.value[1]?.value = formValues?.users;
 
-	form.value[0].value = formValues?.name;
-	form.value[2].value = formValues?.description;
-	divisionId.value = formValues?.id;
+    // Update other fields and the divisionId.
+    form.value[0].value = formValues?.name;
+    form.value[2].value = formValues?.description;
+    divisionId.value = formValues?.id;
 };
+
 
 const actions = [
 	{
@@ -110,31 +109,84 @@ const actions = [
 const perPage = ref(10);
 const currentPage = ref(1);
 
+/**
+ * Watches the `current_page` property in the `meta` object of the store and updates the `currentPage` value accordingly.
+ *
+ * @param {Function} getter - A function that returns the value to be watched (e.g., `() => store?.meta?.current_page`).
+ * @param {Function} callback - A callback function to be executed when the watched value changes.
+ * @returns {void}
+ */
 watch(
 	() => store?.meta?.current_page,
 	(value) => {
-		currentPage.value = value;
-	}
-);
-watch(
-	() => store?.meta?.per_page,
-	(value) => {
-		perPage.value = value;
+		/**
+		 * Handles the watch callback by updating the `currentPage` value.
+		 *
+		 * @param {number} value - The value of the `current_page` property in the `meta` object of the store.
+		 * @returns {void}
+		 */
+		const handleCurrentPageChange = (value) => {
+			currentPage.value = value;
+		};
+
+		handleCurrentPageChange(value);
 	}
 );
 
+/**
+ * Watches the `per_page` property in the `meta` object of the store and updates the `perPage` value accordingly.
+ *
+ * @param {Function} getter - A function that returns the value to be watched (e.g., `() => store?.meta?.per_page`).
+ * @param {Function} callback - A callback function to be executed when the watched value changes.
+ * @returns {void}
+ */
+watch(
+	() => store?.meta?.per_page,
+	(value) => {
+		/**
+		 * Handles the watch callback by updating the `perPage` value.
+		 *
+		 * @param {number} value - The value of the `per_page` property in the `meta` object of the store.
+		 * @returns {void}
+		 */
+		const handlePerPageChange = (value) => {
+			perPage.value = value;
+		};
+
+		handlePerPageChange(value);
+	}
+);
+
+/**
+ * Watches the `typeAction` property in the store and performs actions based on its value.
+ *
+ * @param {Function} getter - A function that returns the value to be watched (e.g., `() => store?.typeAction`).
+ * @param {Function} callback - A callback function to be executed when the watched value changes.
+ * @returns {void}
+ */
 watch(
 	() => store?.typeAction,
 	(value) => {
-		if (value !== null) {
-			if (value.key === 'update') {
-				value.data.users = null;
-				setFormUpdate(value?.data, 'update');
-				toogleModalForm('update');
-			} else if (value.key === 'add') {
-				setFormUpdate(value?.data);
+		/**
+		 * Handles the watch callback based on the value of the `typeAction` property.
+		 *
+		 * @param {Object} value - The value of the `typeAction` property in the store.
+		 * @param {string} value.key - The key indicating the type of action ('update' or 'add').
+		 * @param {Object} value.data - Additional data associated with the action.
+		 * @returns {void}
+		 */
+		const handleTypeAction = (value) => {
+			if (value !== null) {
+				if (value.key === 'update') {
+					value.data.users = null;
+					toogleModalForm('update');
+				}
+
+				setFormUpdate(value?.data, value?.key);
 			}
-		}
+		};
+
+		handleTypeAction(value);
 	}
 );
 

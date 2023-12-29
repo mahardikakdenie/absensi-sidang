@@ -45,3 +45,20 @@ export const axiosHit = (endpoint, params, type, callback, errCallback) => {
 };
 
 export const duplicateVar = value => (value ? JSON.parse(JSON.stringify(value)) : '');
+
+/**
+ * Creates a form field object based on the provided configuration.
+ *
+ * @param {Object} config - The configuration for the form field.
+ * @param {string} config.type - The type of the form field (e.g., 'text', 'multiselect', 'textarea').
+ * @param {string} [config.value=''] - The initial value of the form field.
+ * @param {string} [config.error=''] - The error message associated with the form field.
+ * @returns {Object} - The form field object.
+ */
+export const createFormField = (config) => ({
+    type: config.type,
+    value: config.value || '',
+    error: config.error || '',
+    ...config,
+  });
+  

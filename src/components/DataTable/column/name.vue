@@ -10,7 +10,7 @@
         />
     </span>
     <div class="text-start">
-        <span class="text-sm text-slate-600 dark:text-slate-300 capitalize text-start">
+        <span class="text-sm text-slate-600 dark:text-slate-300 capitalize text-start hover:text-primary-600 cursor-pointer">
             {{ data.name }}
         </span>
         <div v-if="config?.icons.length > 0" class="grid grid-cols-4 mt-2 button-icon">
