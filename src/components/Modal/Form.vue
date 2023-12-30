@@ -1,6 +1,6 @@
 <template>
 <modal 
-    :active-modal="activeModal" 
+    :active-modal="activeModal"
     sizeClass="max-w-2xl max-h-2xl"
     @close="$emit('close')"
 >

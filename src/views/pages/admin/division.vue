@@ -12,7 +12,16 @@
 			:type="typeForm"
 			btn-text="Buat Divisi"
 			@submit="submit"
-			@close="close" />
+			@close="close" 
+        />
+        
+		<modal-confirm
+            :activeModal="isModalConfirm"
+            title="Publish Content"
+            :text="textModal"
+            @close="close"
+            @submit="submitConfirm"
+        />
 	</div>
 </template>
 
@@ -25,6 +34,7 @@ import { onBeforeUnmount, onMounted, ref, watch, watchEffect } from 'vue';
 import ModalForm from '@/components/Modal/Form.vue';
 import userApi from '@/helpers/user.js';
 import { createFormField } from '@/constant/helpers';
+import ModalConfirm from '@/components/Modal/Confirm.vue';
 
 const userDummyImage =
 	'https://static.vecteezy.com/system/resources/previews/018/765/757/original/user-profile-icon-in-flat-style-member-avatar-illustration-on-isolated-background-human-permission-sign-business-concept-vector.jpg';
@@ -72,18 +82,19 @@ const divisionId = ref(null);
  * @returns {void}
  */
 const setFormUpdate = (formValues, type) => {
-    const userFieldConfig = formConfig.find((field) => field.key === 'userids');
+	const userFieldConfig = formConfig.find((field) => field.key === 'userids');
 
-    // If it's an update, set the second field to null; otherwise, update the user field.
-    form.value[1] = type === 'update' ? null : createFormField(userFieldConfig);
-    form.value[1].value = formValues?.users;
+	// If it's an update, set the second field to null; otherwise, update the user field.
+	form.value[1] = type === 'update' ? null : createFormField(userFieldConfig);
+	if (form.value[1]) {
+		form.value[1].value = formValues?.users;
+	}
 
-    // Update other fields and the divisionId.
-    form.value[0].value = formValues?.name;
-    form.value[2].value = formValues?.description;
-    divisionId.value = formValues?.id;
+	// Update other fields and the divisionId.
+	form.value[0].value = formValues?.name;
+	form.value[2].value = formValues?.description;
+	divisionId.value = formValues?.id;
 };
-
 
 const actions = [
 	{
@@ -93,7 +104,7 @@ const actions = [
 		btnClass: 'btn btn-sm text-primary-400',
 	},
 	{
-		key: 'unpublish',
+		key: 'draft',
 		icon: 'fluent-mdl2:unpublish-content',
 		tooltipText: 'Ubah Status menjadi draft/unpublish',
 		btnClass: 'btn btn-sm text-danger-400',
@@ -110,6 +121,16 @@ const perPage = ref(10);
 const currentPage = ref(1);
 
 /**
+ * Handles the watch callback by updating the `currentPage` value.
+ *
+ * @param {number} value - The value of the `current_page` property in the `meta` object of the store.
+ * @returns {void}
+ */
+const handleCurrentPageChange = (value) => {
+	currentPage.value = value;
+};
+
+/**
  * Watches the `current_page` property in the `meta` object of the store and updates the `currentPage` value accordingly.
  *
  * @param {Function} getter - A function that returns the value to be watched (e.g., `() => store?.meta?.current_page`).
@@ -119,16 +140,6 @@ const currentPage = ref(1);
 watch(
 	() => store?.meta?.current_page,
 	(value) => {
-		/**
-		 * Handles the watch callback by updating the `currentPage` value.
-		 *
-		 * @param {number} value - The value of the `current_page` property in the `meta` object of the store.
-		 * @returns {void}
-		 */
-		const handleCurrentPageChange = (value) => {
-			currentPage.value = value;
-		};
-
 		handleCurrentPageChange(value);
 	}
 );
@@ -157,6 +168,29 @@ watch(
 	}
 );
 
+const textModal = ref('');
+/**
+ * Handles the watch callback based on the value of the `typeAction` property.
+ *
+ * @param {Object} value - The value of the `typeAction` property in the store.
+ * @param {string} value.key - The key indicating the type of action ('update' or 'add').
+ * @param {Object} value.data - Additional data associated with the action.
+ * @returns {void}
+ */
+const handleTypeAction = (value) => {
+    if (value !== null) {
+        if (value.key === 'update') {
+            value.data.users = null;
+			toogleModalForm('update');
+		} else {
+            toggleModalConfirm();
+            textModal.value = `Apakah anda yakin ingin mengubah status menjadi ${value?.key} di divisi ${value.data.name}`;
+        }
+
+		setFormUpdate(value?.data, value?.key);
+	}
+};
+
 /**
  * Watches the `typeAction` property in the store and performs actions based on its value.
  *
@@ -167,25 +201,6 @@ watch(
 watch(
 	() => store?.typeAction,
 	(value) => {
-		/**
-		 * Handles the watch callback based on the value of the `typeAction` property.
-		 *
-		 * @param {Object} value - The value of the `typeAction` property in the store.
-		 * @param {string} value.key - The key indicating the type of action ('update' or 'add').
-		 * @param {Object} value.data - Additional data associated with the action.
-		 * @returns {void}
-		 */
-		const handleTypeAction = (value) => {
-			if (value !== null) {
-				if (value.key === 'update') {
-					value.data.users = null;
-					toogleModalForm('update');
-				}
-
-				setFormUpdate(value?.data, value?.key);
-			}
-		};
-
 		handleTypeAction(value);
 	}
 );
@@ -249,21 +264,29 @@ const createDivision = (value) => {
 
 const updateDivision = (value) => {
 	const params = {
-		name: value[0].value,
-		description: value[2].value,
+		name: value?.[0]?.value,
+		description: value?.[2].value,
+        value,
 	};
-	const callback = (res) => {
+	hitEndpointUpdate(params);
+};
+
+const hitEndpointUpdate = (params, type = 'form') => {
+    const callback = (res) => {
 		if (res?.data?.meta?.status) {
-			store.updateData(value, divisionId.value);
+			store.updateData(params?.value, divisionId.value, type);
 			close();
 		}
 	};
-	const err = (e) => {};
+	const err = (e) => {
+        console.error(e);
+    };
 	divisionApi.updateDivision(divisionId?.value, params, callback, err);
 };
 
 const close = () => {
 	isModalForm.value = false;
+	isModalConfirm.value = false;
 };
 
 const isModalForm = ref(false);
@@ -273,6 +296,22 @@ const toogleModalForm = (type) => {
 	if (type === 'add') {
 		store.trigerAction({ key: type, data: form.value });
 	}
+};
+
+const isModalConfirm = ref(false);
+const toggleModalConfirm = (type) => {
+	isModalConfirm.value = true;
+};
+
+const submitConfirm = (data, type) => {
+    const params = {
+        status: type,
+        value: {
+            status: type,
+            data,
+        }
+    };
+    hitEndpointUpdate(params, 'confirm');
 };
 
 const getDataUser = () => {

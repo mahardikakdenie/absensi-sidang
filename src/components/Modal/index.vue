@@ -54,7 +54,7 @@
                 <slot />
               </div>
               <div
-                class="px-4 py-3 flex justify-end space-x-3 border-t border-slate-100 dark:border-slate-700"
+                class="p-2 flex justify-end space-x-3 border-t border-slate-100 dark:border-slate-700"
                 v-if="$slots.footer"
               >
                 <slot name="footer"></slot>
