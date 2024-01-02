@@ -63,5 +63,6 @@ export const createFormField = (config) => ({
 	type: config.type,
 	value: config.value || '',
 	error: config.error || '',
+    options: [],
 	...config,
 });

@@ -1,4 +1,6 @@
+import window from '@/mixins/window';
 import { defineStore } from 'pinia';
+import { useRouter } from 'vue-router';
 
 const wrapper = {
 	state: () => ({
@@ -77,6 +79,8 @@ const wrapper = {
 		},
 		trigerAction(action) {
 			this.typeAction = action;
+		},
+		navigateToAbout() {
 		},
 	},
 };

@@ -182,7 +182,7 @@ const handleTypeAction = (value) => {
         if (value.key === 'update') {
             value.data.users = null;
 			toogleModalForm('update');
-		} else {
+		} else if (value?.key !== 'add') {
             toggleModalConfirm();
             textModal.value = `Apakah anda yakin ingin mengubah status menjadi ${value?.key} di divisi ${value.data.name}`;
         }
@@ -294,6 +294,7 @@ const toogleModalForm = (type) => {
 	typeForm.value = type;
 	isModalForm.value = !isModalForm.value;
 	if (type === 'add') {
+        getDataUser();
 		store.trigerAction({ key: type, data: form.value });
 	}
 };
@@ -352,7 +353,6 @@ const init = () => {
 };
 
 onMounted(() => {
-	getDataUser();
 	store.setHeaders(headers);
 	store.setNameConfig(null);
 	init();

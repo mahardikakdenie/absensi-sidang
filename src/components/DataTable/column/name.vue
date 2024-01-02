@@ -10,7 +10,10 @@
         />
     </span>
     <div class="text-start">
-        <span class="text-sm text-slate-600 dark:text-slate-300 capitalize text-start hover:text-primary-600 cursor-pointer">
+        <span
+            class="text-sm text-slate-600 dark:text-slate-300 capitalize text-start hover:text-primary-600 cursor-pointer"
+            @click="nameAction"
+        >
             {{ data.name }}
         </span>
         <div v-if="config?.icons.length > 0" class="grid grid-cols-4 mt-2 button-icon">
@@ -60,13 +63,18 @@ const store = useDataTableStore();
 // Using a computed property to get configuration from the store
 const config = computed(() => store?.nameConfig);
 
+const emit = defineEmits(['name-action'])
+
+const nameAction = () => {
+    store?.navigateToAbout();
+};
+
 /**
  * Function called when the button is clicked.
  * @returns {void}
  */
 const handleButtonClick = () => {
-    // Do something when the button is clicked
-    console.log('Button Clicked!');
+    // 
 };
 </script>
 
