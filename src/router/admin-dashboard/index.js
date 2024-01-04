@@ -16,6 +16,7 @@ const router = [
                 meta: {
                     groupParent: 'Home Dashboard',
                     showDatePicker: true,
+                    requiresAuth: true,
                 },
             },
             {
@@ -25,6 +26,7 @@ const router = [
                 meta: {
                     groupParent: 'Project List',
                     showDatePicker: true,
+                    requiresAuth: true,
                 },
             },
             {
@@ -34,6 +36,7 @@ const router = [
                 meta: {
                     groupParent: 'Attendance List',
                     showDatePicker: true,
+                    requiresAuth: true,
                 }
             },
             {
@@ -43,6 +46,7 @@ const router = [
                 meta: {
                     groupParent: 'User List',
                     showDatePicker: true,
+                    requiresAuth: true,
                 }
             },
             {
@@ -52,6 +56,7 @@ const router = [
                 meta: {
                     groupParent: 'List Division',
                     showDatePicker: true,
+                    requiresAuth: true,
                 }
             }
         ],

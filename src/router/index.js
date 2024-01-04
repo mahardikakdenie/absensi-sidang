@@ -15,26 +15,22 @@ const router = createRouter({
   },
 });
 
-let isFirstLoad = false;
-
 router.beforeEach((to, from, next) => {
-  if (isFirstLoad) {
+  const titleText = to?.name;
+  const words = titleText?.split(" ");
+  const titlePage = words.join(" ");
+  document.title = "Absen  - " + titlePage;
+  // 
+  const token = localStorage.getItem('token');
+  const isHaveRecord = to.matched.some((record) => record.meta.requiresAuth);
+  if (isHaveRecord && token === '' && token === null) {
     next({
-      path: '/login'
+      path: '/login',
+      query: { redirect: to.fullPath },
     });
-  } else {
-    if (!to.name) {
-      next({
-        path: '/error'
-      });
-    }
-    const titleText = to?.name;
-    const words = titleText?.split(" ");
-    const titlePage = words.join(" ");
-    document.title = "Absen  - " + titlePage;
-
-    next();
   }
+
+  next();
 });
 
 
