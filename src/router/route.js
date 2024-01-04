@@ -22,12 +22,12 @@ const routes = [
       },
       {
         name: 'List Projects',
-        path: '/projects',
+        path: '/divisions',
         component: () => import('@/views/pages/divisions'),
       },
       {
         name: 'List SubProjects',
-        path: '/projects/:division_id',
+        path: '/divisions/:division_id',
         component: () => import('@/views/pages/projects.vue'),
         meta: {
           groupParent: 'List Projects'

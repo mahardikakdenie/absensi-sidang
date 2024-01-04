@@ -46,7 +46,7 @@ const typeForm = ref('');
 const headers = [
 	{ label: 'Name', field: 'name' },
 	{ label: 'Status', field: 'status' },
-	{ label: 'Ditugaskan', field: 'assign' },
+	{ label: 'Anggota', field: 'assign' },
 	{ label: 'Actions', field: 'actions' },
 ];
 

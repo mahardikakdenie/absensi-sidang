@@ -4,7 +4,7 @@
       <div class="flex-1 ltr:mr-[10px] rtl:ml-[10px]">
         <div class="lg:h-8 lg:w-8 h-7 w-7 rounded-full">
           <img
-            :src= "profileImg"
+            :src="profileImage"
             alt=""
             class="block w-full h-full object-cover rounded-full"
           />
@@ -124,9 +124,11 @@ export default {
   setup() {
     const userstore = useUserStore();
     const profile = computed(() => userstore?.user);
+    const profileImage = profile?.value?.profile?.medias?.url ?? profileImg;
 
     return {
       profile,
+      profileImage,
     }
   },
 };

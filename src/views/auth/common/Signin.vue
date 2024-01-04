@@ -118,12 +118,12 @@ export default {
 				isLoading.value = false;
 				const data = res.data;
 				if (data.meta.status) {
-					router.push('/');
+					checkCapabilities(data?.data?.access_token?.user);
 					toast.success(' Login  successfully', {
 						timeout: 2000,
 					});
 
-					const token = data.data.access_token;
+					const token = data.data.access_token?.token;
 					localStorage.setItem('token', token);
 					client.defaults.headers.Authorization = `Bearer ${token}`;
 				} else {
@@ -141,6 +141,18 @@ export default {
 
 			authApi.login(params, callback, err);
 		});
+
+		const checkCapabilities = (user) => {
+			const isAdminMode = ['superadmin', 'admin'];
+			
+			const checkCapabilities = user?.roles?.some(role => isAdminMode.includes(role?.role?.name));
+
+			if (checkCapabilities) {
+				router.replace('/admin/division');
+			} else {
+				router.replace('/')
+			}
+		};
 
 		return {
 			email,

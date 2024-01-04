@@ -5,7 +5,7 @@
             <div 
                 v-for="(division, i) in divisions" 
                 :key="i"
-                @click="$router.push(`/projects/${division.id}`)"
+                @click="$router.push(`/divisions/${division.id}`)"
             >
                 <box-list :element="division" />
             </div>

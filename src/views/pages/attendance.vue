@@ -64,7 +64,7 @@ import DropZoneVue from '@/components/Fileinput/DropZone.vue';
 import { useRoute, useRouter } from 'vue-router';
 import ModalAttendance from '@/components/Modal/Attandance.vue';
 import VueButton from '@/components/Button/index.vue';
-import { computed, onBeforeMount, onMounted, ref } from 'vue';
+import { computed, onBeforeMount, onMounted, ref, watch } from 'vue';
 import { useToast } from 'vue-toastification';
 import { uploadMedia,uploadMediaImgur } from '@/helpers/media.js';
 import { attendance } from '@/helpers/attendances.js';
@@ -80,6 +80,10 @@ const isOpenCamera = ref(false);
 const startCamera = (type) => {
 	isOpenCamera.value = true;
 };
+
+watch(() => isOpenCamera, (old, newValue) => {
+console.log("🚀 ~ file: attendance.vue:85 ~ watch ~ old, newValue:", old, newValue)
+})
 
 const description = ref('');
 const mediaWorkProofId = ref(null);

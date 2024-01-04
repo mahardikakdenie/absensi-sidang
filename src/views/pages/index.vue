@@ -130,7 +130,6 @@ watch(user, (newValue, oldValue) => {
 });
 
 onMounted(() => {
-    console.log(user.value);
     if (user.value && user.value.id) {
         getMyProjects();
     }

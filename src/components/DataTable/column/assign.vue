@@ -12,10 +12,16 @@
                     placement: 'top'
                 }"
                 :alt="user.title"
-                class="w-full h-full rounded-full" />
+                class="w-full h-full rounded-full" 
+            />
         </div>
         <div
-            class="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-300 text-xs ring-2 ring-slate-100 dark:ring-slate-700 rounded-full h-6 w-6 flex flex-col justify-center items-center">
+            class="assign-btn"
+            v-tippy="{
+                placement: 'top',
+            }"
+            :content="`Lihat ${data?.assignto?.length} Anggota`"
+        >
             {{ data?.assignto?.length > 0 ? `+${data?.assignto?.length}` : '-'  }}
         </div>
     </div>
@@ -36,3 +42,9 @@ export default {
     }
 }
 </script>
+
+<style lang="scss">
+    .assign-btn {
+        @apply bg-white cursor-pointer dark:bg-slate-800 text-slate-900 dark:text-slate-300 text-xs ring-2 ring-slate-100 dark:ring-slate-700 rounded-full h-6 w-6 flex flex-col justify-center items-center;
+    }
+</style>
