@@ -30,13 +30,13 @@ export const menuItems = [
         allowedRoles: ['superadmin'],
     },
     {
-		title: 'User',
+		title: 'Akun',
         icon: 'mdi:user-outline',
         link: '/admin/user',
         allowedRoles: ['superadmin'],
     },
     {
-		title: 'Attendance List',
+		title: 'Catatan Absensi',
         icon: 'gg:list',
         link: '/admin/attendance-list',
         allowedRoles: ['superadmin'],
