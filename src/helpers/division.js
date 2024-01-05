@@ -11,7 +11,7 @@ export default {
      * @param {Function} errCB - Function to be called if the request results in an error, with the error object as an argument.
      */
     getData(params, callback, errCB) {
-        client.get(endpoint, { params })
+        client.post(endpoint, params)
             .then(res => {
                 if (callback) callback(res);
             }).catch(e => {

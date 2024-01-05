@@ -23,7 +23,7 @@ import DataTable from '@/components/DataTable/index.vue';
 import ModalForm from '@/components/Modal/Form.vue';
 import userApi from '@/helpers/user.js';
 import { getRoles } from '@/helpers/roles.js';
-import { onBeforeUnmount, onMounted, ref, watchEffect,watch } from 'vue';
+import { onBeforeUnmount, onMounted, ref, watchEffect,watch, computed } from 'vue';
 import { useDataTableStore } from '@/store/data-table.js';
 import boxSummary from '@/components/Card/box-summary.vue';
 import user from '@/helpers/user.js';
@@ -35,6 +35,10 @@ const store = useDataTableStore();
 const router = useRouter()
 const route = useRoute()
 const toast = useToast();
+
+const dataUser = computed(() => JSON.parse(localStorage.getItem('users')));
+const roles = computed(() => dataUser?.value?.roles);
+const divisionsIds = ref();
 // Define Headers
 const headers = [
     {
@@ -165,10 +169,19 @@ const form = ref([
         key: 'roleids',
         type: 'multiselect',
         value: null,
-        error: 'asdasd',
+        error: '',
         options: [],
         label: 'Role',
         placeholder: 'Masukan Role',
+    },
+    {
+        key: 'divisionids',
+        type: 'multiselect',
+        value: null,
+        error: '',
+        options: [],
+        label: 'Divisi',
+        placeholder: 'Masukan Divisi',
     },
     {
         type: 'email',
@@ -205,7 +218,8 @@ const getDataUser = () => {
         entities: 'roles.role,profile.medias',
         paginate: perPage.value,
         page: currentPage?.value,
-        summary: route?.query?.summary
+        summary: route?.query?.summary,
+        division_ids: divisionsIds?.value?.map(division => division?.devision_id),
     };
     const callback = (response) => {
         if (response.data.meta.status) {
@@ -230,6 +244,25 @@ const getDataUser = () => {
     userApi.getAllUsers(params, callback, err);
 };
 
+const checkUserCapabilities = () => {
+	const checkIsSuperAdmin = roles?.value?.map(role => role?.role?.name).includes('superadmin');
+	const checkIsAdmin = roles?.value?.map(role => role?.role?.name).includes('admin');
+	const checkIsOnlyAdmin = !checkIsSuperAdmin && checkIsAdmin;
+    const hasDivisions = dataUser?.value?.divisions?.map(division => division) || [];
+	if (checkIsOnlyAdmin && hasDivisions?.length === 0) {
+        localStorage.removeItem('token');
+		router.push('/login');
+		toast?.error('Anda tidak memiliki divisi yang terdaftar, untuk lebih lanjut hubungi Admin');
+	} else if (checkIsOnlyAdmin) {
+        divisionsIds.value = hasDivisions;
+        form.value[3].options = hasDivisions?.map(curr => ({
+            id: curr.devision_id,
+            label: curr?.division?.name,
+        }))
+    }
+	getDataUser();
+};
+
 const getUserSummary = () => {
     const params = {};
     const callback = (res) => {
@@ -248,7 +281,10 @@ const getUserSummary = () => {
 
 const getRolesData = () => {
     const callback = (res) => {
-        const data = res?.data?.data;
+        let data = res?.data?.data;
+        if (divisionsIds?.value?.length > 0) {
+            data.splice(0, 1);
+        }
         form.value[2].options = data.map(curr => {
             return {
                 id: curr?.id,
@@ -262,10 +298,6 @@ const getRolesData = () => {
     getRoles({type: 'selected'}, callback, err);
 }
 
-const watcherData = watchEffect(() => {
-    getDataUser();
-});
-
 watch(() => store?.meta?.current_page, (value) => {
     currentPage.value = value;
 });
@@ -278,11 +310,9 @@ onMounted(() => {
     store.setHeaders(headers);
     store.setNameConfig(setNameConfig?.value);
     getRolesData();
-}),
-
-onBeforeUnmount(() => {
-    watcherData();
+    checkUserCapabilities();
 });
+
 const isModalAddUser = ref(false);
 const toogleModalUser = () => {
     isModalAddUser.value = !isModalAddUser.value;

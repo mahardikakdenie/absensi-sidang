@@ -119,6 +119,7 @@ export default {
 				const data = res.data;
 				if (data.meta.status) {
 					const responseUser = data?.data?.access_token?.user;
+					localStorage.setItem('users', JSON.stringify(responseUser));
 					checkCapabilities(responseUser);
 					toast.success(' Login  successfully', {
 						timeout: 2000,

@@ -1,9 +1,9 @@
 <template>
-	<div>
+	<div v-if="!isLoading">
 		<card>
 			<data-table
 				title="Divisi"
-				btn-text="Buat Divisi"
+				:btn-text="textBtnCreate"
 				@open-modal-add="toogleModalForm('add')" />
 		</card>
 		<modal-form
@@ -30,16 +30,28 @@ import Card from '@/components/Card/index.vue';
 import DataTable from '@/components/DataTable/index.vue';
 import divisionApi from '@/helpers/division.js';
 import { useDataTableStore } from '@/store/data-table.js';
-import { onBeforeUnmount, onMounted, ref, watch, watchEffect } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch, watchEffect } from 'vue';
 import ModalForm from '@/components/Modal/Form.vue';
 import userApi from '@/helpers/user.js';
 import { createFormField } from '@/constant/helpers';
 import ModalConfirm from '@/components/Modal/Confirm.vue';
+import { useRouter } from 'vue-router';
+import { useUserStore } from '@/store/user';
+import { useToast } from 'vue-toastification';
+const router = useRouter();
+const isLoading = ref(false);
 
 const userDummyImage =
 	'https://static.vecteezy.com/system/resources/previews/018/765/757/original/user-profile-icon-in-flat-style-member-avatar-illustration-on-isolated-background-human-permission-sign-business-concept-vector.jpg';
 
 const store = useDataTableStore();
+const userStore = useUserStore();
+
+const user = computed(() => JSON.parse(localStorage.getItem('users')));
+const roles = computed(() => user?.value?.roles);
+const divisionsIds = ref([]);
+
+const toast = useToast();
 
 const typeForm = ref('');
 
@@ -144,6 +156,12 @@ watch(
 	}
 );
 
+watch(() => store?.navigate, (value) => {
+	if (value !== null) {
+		router.push(`/admin/project?division_id=${value?.id}`);
+	}
+});
+
 /**
  * Watches the `per_page` property in the `meta` object of the store and updates the `perPage` value accordingly.
  *
@@ -205,24 +223,31 @@ watch(
 	}
 );
 
-const getData = () => {
+const fetchParams = computed(() => ({
+	paginate: perPage?.value,
+	page: currentPage?.value,
+	division_ids: divisionsIds?.value,
+}))
+
+const getDivisions = () => {
+	isLoading.value = true;
 	const params = {
-		paginate: perPage.value,
-		page: currentPage?.value,
+		...fetchParams?.value,
 		entities: 'users.user.profile.medias',
 	};
-
+	
 	const callback = (response) => {
+		isLoading.value = false;
 		const divisions = response?.data?.data;
 		const divisionMap = divisions.map((division) => ({
 			...division,
 			assignto: division?.users
-				?.filter((user) => user.type !== 'owner')
-				.map((user) => ({
-					id: user?.user?.id,
-					url: user?.user?.profile?.medias?.url ?? userDummyImage,
-					name: user?.user?.name,
-				})),
+			?.filter((user) => user.type !== 'owner')
+			.map((user) => ({
+				id: user?.user?.id,
+				url: user?.user?.profile?.medias?.url ?? userDummyImage,
+				name: user?.user?.name,
+			})),
 		}));
 		store.setData(divisionMap);
 		const meta = response?.data?.meta;
@@ -234,6 +259,24 @@ const getData = () => {
 	};
 
 	divisionApi.getData(params, callback, err);
+};
+
+const textBtnCreate = ref(null);
+const checkCapabilities = () => {
+	const checkIsSuperAdmin = roles?.value?.map(role => role?.role?.name).includes('superadmin');
+	const checkIsAdmin = roles?.value?.map(role => role?.role?.name).includes('admin');
+	const checkIsOnlyAdmin = !checkIsSuperAdmin && checkIsAdmin;
+    const hasDivisions = user?.value?.divisions?.map(division => division?.devision_id) || [];
+	textBtnCreate.value = 'Buat Divisi';
+	if (checkIsOnlyAdmin && hasDivisions?.length === 0) {
+		localStorage.removeItem('token');
+		router.push('/login');
+		toast?.error('Anda tidak memiliki divisi yang terdaftar, untuk lebih lanjut hubungi Admin');
+	} else if (checkIsOnlyAdmin) {
+		textBtnCreate.value = '';
+		divisionsIds.value = hasDivisions;
+	}
+	getDivisions();
 };
 
 const submit = (value, type) => {
@@ -340,19 +383,16 @@ const getDataUser = () => {
 	userApi.getAllUsers(params, callback, err);
 };
 
-const watcherData = watchEffect(() => {
-	getData();
-});
-
 onBeforeUnmount(() => {
-	watcherData();
+	dataMounted();
 });
 
 const init = () => {
 	store?.setActions(actions);
+	checkCapabilities();
 };
 
-onMounted(() => {
+const dataMounted = onMounted(() => {
 	store.setHeaders(headers);
 	store.setNameConfig(null);
 	init();

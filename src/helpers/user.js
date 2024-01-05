@@ -15,7 +15,8 @@ export default {
             })
     },
     getAllUsers(params,cb, errCB) {
-        axiosHit(endpointUser, params, 'get', cb, errCB);
+        const url = `${endpointUser}/all`
+        axiosHit(url, params, 'post', cb, errCB);
     },
     createUser(params, cb, errCB) {
         axiosHit(endpointUser, params, 'post', cb, errCB);

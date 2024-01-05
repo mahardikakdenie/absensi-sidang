@@ -37,6 +37,7 @@ const wrapper = {
 			],
 		},
 		typeAction: null,
+		navigate: null,
 	}),
 	actions: {
 		setHeaders(headers) {
@@ -80,7 +81,8 @@ const wrapper = {
 		trigerAction(action) {
 			this.typeAction = action;
 		},
-		navigateToAbout() {
+		goTo(navigate) {
+			this.navigate = navigate;
 		},
 	},
 };

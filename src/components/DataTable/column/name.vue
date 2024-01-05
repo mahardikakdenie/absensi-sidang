@@ -66,7 +66,7 @@ const config = computed(() => store?.nameConfig);
 const emit = defineEmits(['name-action'])
 
 const nameAction = () => {
-    store?.navigateToAbout();
+    store?.goTo(props?.data);
 };
 
 /**

@@ -54,6 +54,7 @@ const getUser = () => {
     const callback = (response) => {
         isLoading.value = false;
         const users = response?.data?.data;
+        localStorage.setItem('users', JSON.stringify(users));
         userStore.setUser(users);
     };
     const err = (e) => {

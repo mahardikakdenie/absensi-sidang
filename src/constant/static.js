@@ -15,7 +15,7 @@ export const menuItems = [
         isHeader: true,
         title: 'Admin',
 		link: null,
-		allowedRoles: ['Admin', 'superadmin'],
+		allowedRoles: ['admin', 'superadmin'],
     },
     {
 		title: 'Divisi',
@@ -27,19 +27,19 @@ export const menuItems = [
 		title: 'Project',
         icon: 'eos-icons:project-outlined',
         link: '/admin/project',
-        allowedRoles: ['superadmin'],
+        allowedRoles: ['superadmin', 'admin'],
     },
     {
 		title: 'Akun',
         icon: 'mdi:user-outline',
         link: '/admin/user',
-        allowedRoles: ['superadmin'],
+        allowedRoles: ['superadmin', 'admin'],
     },
     {
 		title: 'Catatan Absensi',
         icon: 'gg:list',
         link: '/admin/attendance-list',
-        allowedRoles: ['superadmin'],
+        allowedRoles: ['superadmin', 'admin'],
     },
     // Attendance System
     {
@@ -66,7 +66,7 @@ export const menuItems = [
 export const routeAccessRules = {
     '/admin/user': {
         'superadmin': true,
-        'admin': false,
+        'admin': true,
 		'user': false,
     },
 };

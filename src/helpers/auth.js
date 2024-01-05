@@ -19,7 +19,7 @@ export default {
                 if (cb) cb(res);
             })
             .catch(e => {
-                if (errCB) errCb(e);
+                if (errCb) errCb(e);
             })
     }
 };
