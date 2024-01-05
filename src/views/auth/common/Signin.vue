@@ -118,7 +118,8 @@ export default {
 				isLoading.value = false;
 				const data = res.data;
 				if (data.meta.status) {
-					checkCapabilities(data?.data?.access_token?.user);
+					const responseUser = data?.data?.access_token?.user;
+					checkCapabilities(responseUser);
 					toast.success(' Login  successfully', {
 						timeout: 2000,
 					});
@@ -146,11 +147,18 @@ export default {
 			const isAdminMode = ['superadmin', 'admin'];
 			
 			const checkCapabilities = user?.roles?.some(role => isAdminMode.includes(role?.role?.name));
-
+			checkUserIsNewAccount(user);
+			
 			if (checkCapabilities) {
 				router.replace('/admin/division');
 			} else {
 				router.replace('/')
+			}
+		};
+
+		const checkUserIsNewAccount = (user) => {
+			if (!user.profile) {
+				router.push('/on-boarding');
 			}
 		};
 

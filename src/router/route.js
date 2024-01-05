@@ -67,6 +67,14 @@ const routes = [
         meta: {
           requiresAuth: true,
         }
+      },
+      {
+        path: '/on-boarding',
+        name: 'OnBoarding',
+        component: () => import('@/views/pages/on-boarding.vue'),
+        meta: {
+          requiresAuth: true,
+        }
       }
     ],
   },
