@@ -84,7 +84,7 @@ export default {
 		// Define a validation schema
 		const schema = yup.object({
 			email: yup.string().required('Email is required').email(),
-			password: yup.string().required('Password is required').min(8),
+			password: yup.string().required('Password is required'),
 		});
 
 		const toast = useToast();
