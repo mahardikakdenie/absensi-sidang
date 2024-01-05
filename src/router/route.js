@@ -3,7 +3,12 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import('@/views/auth/login/index.vue')
+    component: () => import('@/views/auth/login/index.vue'),
+  },
+  {
+    path: '/logout',
+    name: 'logout',
+    component: () => import('@/Layout/Logout.vue'),
   },
   {
     path: "/admin",

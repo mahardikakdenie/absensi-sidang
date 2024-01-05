@@ -4,22 +4,12 @@
   >
     <router-link to="/" v-slot="{ isActive }">
       <span
-        class="relative cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center"
-        :class="[
-          isActive ? 'text-primary-500' : 'dark:text-white text-slate-900',
-        ]"
-        ><Icon icon="heroicons-outline:mail" />
-        <span
-          class="absolute right-[5px] lg:top-0 -top-2 h-4 w-4 bg-red-500 text-[8px] font-semibold flex flex-col items-center justify-center rounded-full text-white z-[99]"
-          >10</span
-        >
+        class="relative cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center text-slate-900"
+        ><Icon icon="solar:home-bold" />
       </span>
       <span
-        class="block text-[11px]"
-        :class="[
-          isActive ? 'text-primary-500' : 'text-slate-600 dark:text-slate-300',
-        ]"
-        >Messages</span
+        class="block text-[11px] text-slate-900"
+        >Home</span
       >
     </router-link>
     <router-link
@@ -34,32 +24,17 @@
           src="@/assets/images/users/user-1.jpg"
           alt=""
           class="w-full h-full rounded-full"
-          :class="[
-            isActive
-              ? 'border-2 border-primary-500'
-              : 'border-2 border-slate-100',
-          ]"
         />
       </div>
     </router-link>
-    <router-link :to="{ name: 'Layout' }" v-slot="{ isActive }">
+    <router-link to="/logout" v-slot="{ isActive }">
       <span
-        class="relative cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center"
-        :class="[
-          isActive ? 'text-primary-500' : 'dark:text-white text-slate-900',
-        ]"
-        ><Icon icon="heroicons-outline:bell" />
-        <span
-          class="absolute right-[17px] lg:top-0 -top-2 h-4 w-4 bg-red-500 text-[8px] font-semibold flex flex-col items-center justify-center rounded-full text-white z-[99]"
-          >2</span
-        >
+        class="relative cursor-pointer rounded-full text-[20px] flex flex-col items-center justify-center text-slate-900">
+        <Icon icon="heroicons-outline:login" />
       </span>
       <span
-        class="block text-[11px]"
-        :class="[
-          isActive ? 'text-primary-500' : 'text-slate-600 dark:text-slate-300',
-        ]"
-        >Notifications</span
+        class="block text-[11px] text-slate-900"
+        >Logout</span
       >
     </router-link>
   </div>

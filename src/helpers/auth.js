@@ -12,4 +12,14 @@ export default {
                 if (errCB) errCB(e);
             })
     },
+    logout(params, cb ,errCb) {
+        const url = '/auth/logout';
+        client.post(url, params)
+            .then(res => {
+                if (cb) cb(res);
+            })
+            .catch(e => {
+                if (errCB) errCb(e);
+            })
+    }
 };
