@@ -55,7 +55,7 @@ export const menuItems = [
 		allowedRoles: ['user', 'user_admin', 'superadmin'],
     },
     {
-		title: 'Projects',
+		title: 'Divisi',
         icon: 'grommet-icons:projects',
         link: '/divisions',
 		allowedRoles: ['user', 'user_admin', 'superadmin'],
