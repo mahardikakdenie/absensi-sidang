@@ -46,19 +46,19 @@ export const menuItems = [
 		link: null,
 		isHeader: true,
         title: 'Home Attendance System',
-		allowedRoles: ['user', 'user_admin'],
+		allowedRoles: ['user', 'user_admin', 'superadmin'],
     },
     {
 		title: 'Home',
         icon: 'heroicons-outline:home',
         link: '/',
-		allowedRoles: ['user', 'user_admin'],
+		allowedRoles: ['user', 'user_admin', 'superadmin'],
     },
     {
 		title: 'Projects',
         icon: 'grommet-icons:projects',
         link: '/divisions',
-		allowedRoles: ['user', 'user_admin'],
+		allowedRoles: ['user', 'user_admin', 'superadmin'],
     },
 ];
 
