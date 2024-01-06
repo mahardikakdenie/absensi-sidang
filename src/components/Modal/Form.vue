@@ -1,153 +1,168 @@
 <template>
-<modal 
-    :active-modal="activeModal"
-    sizeClass="max-w-2xl max-h-2xl"
-    @close="$emit('close')"
->
-    <div class="grid grid-cols-1 h-auto">
-        <div 
-            v-for="(field, index) in forms"
-            :key="index" 
-            class="mt-2"
-        >
-            <text-input-field
-                v-if="field?.type === 'text'"
-                v-model="forms[index].value"
-                :error="field.error"
-                :type="field.type"
-                :label="field.label"
-                :placeholder="field.placeholder"
-                @input="onInput($event, field)"
-            />
-            <text-area-field
-                v-if="field?.type === 'textarea'"
-                v-model="forms[index].value"
-                :error="field.error"
-                :type="field.type"
-                :label="field.label"
-                :placeholder="field.placeholder"
-                @input="onInput($event, field)"
-            />
-            <text-input-field
-                v-if="field?.type === 'email'"
-                v-model="forms[index].value"
-                :type="field.type"
-                :error="field.error"
-                :label="field.label"
-                :placeholder="field.placeholder"
-                @input="onInput($event, field)"
-            />
-            <text-input-field
-                v-if="field?.type === 'password'"
-                v-model="forms[index].value"
-                :type="field.type"
-                :error="field.error"
-                :label="field.label"
-                :placeholder="field.placeholder"
-                @input="onInput($event, field)"
-            />
-            <vue-select 
-                v-if="field.type === 'multiselect'"
-                :error="field.error"
-                :label="field.label"
-                @input="onInput($event, field)"
-            >
-                <vSelect
-                    :placeholder="field.placeholder"
-                    :options="field.options"
-                    v-model="forms[index].value"
-                    multiple
+	<modal
+		:active-modal="activeModal"
+		:title="title"
+		sizeClass="max-w-2xl max-h-2xl"
+		@close="$emit('close')">
+		<div class="grid grid-cols-1 h-auto">
+			<div v-for="(field, index) in forms" :key="index" class="mt-2">
+                <!-- Text -->
+				<text-input-field
+					v-if="field?.type === 'text'"
+					v-model="forms[index].value"
+					:error="field.error"
+					:type="field.type"
+					:label="field.label"
+					:placeholder="field.placeholder"
+					@input="onInput($event, field)" 
+                />
+                <!-- TextArea -->
+				<text-area-field
+					v-if="field?.type === 'textarea'"
+					v-model="forms[index].value"
+					:error="field.error"
+					:type="field.type"
+					:label="field.label"
+					:placeholder="field.placeholder"
+					@input="onInput($event, field)" 
+                />
+                <!-- Email -->
+				<text-input-field
+					v-if="field?.type === 'email'"
+					v-model="forms[index].value"
+					:type="field.type"
+					:error="field.error"
+					:label="field.label"
+					:placeholder="field.placeholder"
+					@input="onInput($event, field)" 
+                />
+                <!-- PASSWORD -->
+				<text-input-field
+					v-if="field?.type === 'password'"
+					v-model="forms[index].value"
+					:type="field.type"
+					:error="field.error"
+					:label="field.label"
+					:placeholder="field.placeholder"
+					@input="onInput($event, field)" 
+                />
+                <!-- DATE -->
+				<FormGroup
+					v-if="field.type === 'date'"
+					:label="field?.label"
+					name="d1"
                 >
-                    <template #option="{label, image}">
-                        <div class="flex items-center ">
-                            <span
-                                class="w-10 h-10 rounded-full ltr:mr-4 rtl:ml-4 flex-none">
-                                <img
-                                    v-if="image"
-                                    :src="image"
-                                    :alt="image"
-                                    class="object-cover w-full h-full rounded-full" 
-                                />
-                            </span>
-                            <div class="text-start">
-                                <span class="text-sm text-slate-600 dark:text-slate-300 capitalize text-star">
-                                    {{ label }}
-                                </span>
-                            </div>
-                        </div>
-                    </template>
-                </vSelect>
-            </vue-select>
-        </div>
-        <div class="flex justify-end mt-4 gap-2">
-            <vue-button 
-                text="Cancel" 
-                btn-class="btn btn-danger light btn-sm" 
-                @click="$emit('close')" 
-            />
-            <vue-button 
-                text="Add User"
-                :is-disabled="!noErrors"
-                btn-class="btn btn-primary light btn-sm"
-                @click="submit" 
-            />
-        </div>
-    </div>
-</modal>
+					<flat-pickr
+                        v-model="field.value"
+						class="form-control"
+						id="d1"
+						placeholder="yyyy, dd M" 
+                    />
+				</FormGroup>
+                <!-- Vue Select -->
+				<vue-select
+					v-if="field.type === 'multiselect'"
+					:error="field.error"
+					:label="field.label"
+					@input="onInput($event, field)">
+					<vSelect
+						:placeholder="field.placeholder"
+						:options="field.options"
+						v-model="forms[index].value"
+						multiple>
+						<template #option="{ label, image }">
+							<div class="flex items-center">
+								<span
+									class="w-10 h-10 rounded-full ltr:mr-4 rtl:ml-4 flex-none">
+									<img
+										v-if="image"
+										:src="image"
+										:alt="image"
+										class="object-cover w-full h-full rounded-full" />
+								</span>
+								<div class="text-start">
+									<span
+										class="text-sm text-slate-600 dark:text-slate-300 capitalize text-star">
+										{{ label }}
+									</span>
+								</div>
+							</div>
+						</template>
+					</vSelect>
+				</vue-select>
+			</div>
+			<div class="flex justify-end mt-4 gap-2">
+				<vue-button
+					text="Cancel"
+					btn-class="btn btn-danger light btn-sm"
+					@click="$emit('close')" />
+				<vue-button
+					text="Add User"
+					:is-disabled="!noErrors"
+					btn-class="btn btn-primary light btn-sm"
+					@click="submit" />
+			</div>
+		</div>
+	</modal>
 </template>
 
 <script setup>
 import VueButton from '@/components/Button';
-import VueSelect from "@/components/Select/VueSelect";
+import VueSelect from '@/components/Select/VueSelect';
 import TextInputField from '@/components/Textinput/index.vue';
 import Modal from '@/components/Modal/index.vue';
 import { computed, ref, watchEffect } from 'vue';
 import { duplicateVar } from '@/constant/helpers';
 import TextAreaField from '@/components/Textarea';
+import FormGroup from '@/components/FromGroup';
 
-import vSelect from "vue-select";
+import vSelect from 'vue-select';
 
-import * as yup from "yup";
+import * as yup from 'yup';
 
 // Props
 const props = defineProps({
-    activeModal: {
-        type: Boolean,
-        default: false,
-    },
-    fields: {
-        type: Array,
-        default: () => ([
-            {
-                type: 'text',
-                key: 'name',
-                label: 'Nama',
-                placeholder: 'Masukan Nama'
-            }
-        ])
-    },
-    type: {
-        type: String,
-        default: 'create',
-    }
+	activeModal: {
+		type: Boolean,
+		default: false,
+	},
+	fields: {
+		type: Array,
+		default: () => [
+			{
+				type: 'text',
+				key: 'name',
+				label: 'Nama',
+				placeholder: 'Masukan Nama',
+			},
+		],
+	},
+	type: {
+		type: String,
+		default: 'create',
+	},
+	title: {
+		type: String,
+		default: null,
+	},
 });
 
 // Refs
 const forms = ref([]);
 const form = ref({
-    name: '',
+	name: '',
 });
 
 // Initialization
 const init = () => {
-    forms.value = duplicateVar(props?.fields);
-    forms.value = forms?.value?.map(form => {
-        return {
-            ...form,
-            error: '',
-        }
-    });
-}
+	forms.value = duplicateVar(props?.fields);
+	forms.value = forms?.value?.map((form) => {
+		return {
+			...form,
+			error: '',
+		};
+	});
+};
 
 /**
  * Set error messages for a field, including password and email validation.
@@ -163,10 +178,11 @@ const init = () => {
  * setError(field);
  */
 const setError = (field) => {
-    const index = forms?.value?.findIndex(form => form?.key === field?.key);
-    forms.value[index].error = field?.value === '' ? 'Inputan Tidak boleh Kosong' : undefined;
-    setErrorPassword(field, index);
-    setErrorEmail(field, index);
+	const index = forms?.value?.findIndex((form) => form?.key === field?.key);
+	forms.value[index].error =
+		field?.value === '' ? 'Inputan Tidak boleh Kosong' : undefined;
+	setErrorPassword(field, index);
+	setErrorEmail(field, index);
 };
 
 /**
@@ -185,21 +201,31 @@ const setError = (field) => {
  * setErrorPassword(field, index);
  */
 const setErrorPassword = (field, index) => {
-    const isPasswordField = field?.type === 'password' || field?.type === 'confirm_password';
-    const passwordIndex = forms?.value?.findIndex(form => form?.key === 'password');
-    const confirmPasswordIndex = forms?.value?.findIndex(form => form?.key === 'confirm_password');
+	const isPasswordField =
+		field?.type === 'password' || field?.type === 'confirm_password';
+	const passwordIndex = forms?.value?.findIndex(
+		(form) => form?.key === 'password'
+	);
+	const confirmPasswordIndex = forms?.value?.findIndex(
+		(form) => form?.key === 'confirm_password'
+	);
 
-    const isValidPasswordIndexes = passwordIndex > -1 && confirmPasswordIndex > -1;
+	const isValidPasswordIndexes =
+		passwordIndex > -1 && confirmPasswordIndex > -1;
 
-    if (isPasswordField && isValidPasswordIndexes) {
-        const password = forms?.value?.[passwordIndex]?.value;
-        const confirmPassword = forms?.value?.[confirmPasswordIndex]?.value;
+	if (isPasswordField && isValidPasswordIndexes) {
+		const password = forms?.value?.[passwordIndex]?.value;
+		const confirmPassword = forms?.value?.[confirmPasswordIndex]?.value;
 
-        const passwordsNotMatch = password !== confirmPassword;
+		const passwordsNotMatch = password !== confirmPassword;
 
-        forms.value[passwordIndex].error = passwordsNotMatch ? 'Password Tidak Sama' : '';
-        forms.value[confirmPasswordIndex].error = passwordsNotMatch ? 'Password Tidak Sama' : '';
-    }
+		forms.value[passwordIndex].error = passwordsNotMatch
+			? 'Password Tidak Sama'
+			: '';
+		forms.value[confirmPasswordIndex].error = passwordsNotMatch
+			? 'Password Tidak Sama'
+			: '';
+	}
 };
 
 /**
@@ -218,50 +244,58 @@ const setErrorPassword = (field, index) => {
  * setErrorEmail(field, index);
  */
 const setErrorEmail = (field, index) => {
-    if (field.key === 'email') {
-        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-        field.error = !emailRegex?.test(field?.value) ? 'Email tidak valid' : field.error; 
-    }
+	if (field.key === 'email') {
+		const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+		field.error = !emailRegex?.test(field?.value)
+			? 'Email tidak valid'
+			: field.error;
+	}
 };
 
 // Event handlers
 const onInput = (event, field) => {
-    setError(field);
+	setError(field);
 };
 
 // Computed property
-const noErrors = computed(() => forms?.value?.every(curr => curr?.error === '' || curr?.error === undefined) ?? false);
+const noErrors = computed(
+	() =>
+		forms?.value?.every(
+			(curr) => curr?.error === '' || curr?.error === undefined
+		) ?? false
+);
 
 // Emit definition
 const emit = defineEmits(['submit']);
 
 // Submit function
 const submit = () => {
-    forms?.value?.forEach(curr => setError(curr));
-    const noErrors = forms?.value?.every(curr => curr?.error === '' || curr?.error === undefined);
-    if (noErrors) {
-        emit('submit', forms?.value, props?.type);
-    }
+	forms?.value?.forEach((curr) => setError(curr));
+	const noErrors = forms?.value?.every(
+		(curr) => curr?.error === '' || curr?.error === undefined
+	);
+	if (noErrors) {
+		emit('submit', forms?.value, props?.type);
+	}
 };
 
 // Watch effect
 watchEffect(() => {
-    init();
+	init();
 });
-
 </script>
 
 <style lang="scss">
-    .fromGroup {
-        ul {
-            height: 200px !important;
-            overflow: scroll !important;
+.fromGroup {
+	ul {
+		height: 200px !important;
+		overflow: scroll !important;
 
-            li {
-                &:hover {
-                    background-color: gray;
-                }
-            }
-        }
-    }
+		li {
+			&:hover {
+				background-color: gray;
+			}
+		}
+	}
+}
 </style>

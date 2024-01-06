@@ -300,10 +300,12 @@ const getRolesData = () => {
 
 watch(() => store?.meta?.current_page, (value) => {
     currentPage.value = value;
+    getDataUser();
 });
 
 watch(() => store?.meta?.per_page, (value) => {
     perPage.value = value;
+    getDataUser();
 })
 
 onMounted(() => {
@@ -340,8 +342,9 @@ const createUser = (value) => {
         name: value[0],
         username: value[1],
         role_ids: value?.[2].map(curr => curr.id),
-        email: value[3],
-        password: value[4],
+        division_ids: value?.[3]?.map(curr => curr?.id),
+        email: value[4],
+        password: value[5],
     };
     const callback = (res) => {
         if (res?.data?.meta?.status) {

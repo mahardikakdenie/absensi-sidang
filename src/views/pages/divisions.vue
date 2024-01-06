@@ -19,13 +19,35 @@
 <script setup>
 import BoxList from '@/components/Card/box-list.vue';
 import divisionApi from '@/helpers/division.js';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import pageLoader from '@/components/Loader/pageLoader.vue';
+
+const user = computed(() => JSON.parse(localStorage.getItem('users')));
+const roles = computed(() => user?.value?.roles);
+
+const divisionsIds = ref();
+const checkCapabilities = () => {
+	const checkIsUserAdmin = roles?.value?.map(role => role?.role?.name).includes('user_admin');
+	const checkIsUser = roles?.value?.map(role => role?.role?.name).includes('user');
+	const checkIsUserAccebility = checkIsUserAdmin || checkIsUser;
+    const hasDivisions = user?.value?.divisions?.map(division => division?.devision_id) || [];
+	if (checkIsUserAccebility && hasDivisions?.length === 0) {
+		localStorage.removeItem('token');
+		router.push('/login');
+		toast?.error('Anda tidak memiliki divisi yang terdaftar, untuk lebih lanjut hubungi Admin');
+	} else if (checkIsUserAccebility) {
+		divisionsIds.value = hasDivisions;
+	}
+	getData();
+};
 
 const divisions = ref([]);
 const isLoading = ref(false);
 
 const getData = () => {
+    const params = {
+        division_ids: divisionsIds?.value,
+    }
     const callback = (response) => {
         divisions.value = response.data.data;
     };
@@ -34,11 +56,11 @@ const getData = () => {
         console.log('e => ', e);
     };
 
-    divisionApi.getData({}, callback, err);
+    divisionApi.getData(params, callback, err);
 };
 
 onMounted(() => {
-    getData();
+    checkCapabilities();
 });
 </script>
 
