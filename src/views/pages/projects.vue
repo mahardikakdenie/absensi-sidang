@@ -46,6 +46,7 @@ const dataProjects = computed(() => {
 // Fetch data from API
 const params = computed(() => ({
 	division_id: route.params.division_id,
+	status: 'publish',
 }));
 const getData = () => {
     isLoading.value = true;

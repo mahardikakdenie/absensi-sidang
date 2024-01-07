@@ -9,11 +9,13 @@ const wrapper = {
 		datas: [],
 		actions: [
 			{
+				key: 'update',
 				icon: 'bi:pencil',
 				tooltipText: 'Edit',
 				btnClass: 'btn btn-sm text-primary-400',
 			},
 			{
+				key: 'delete',
 				icon: 'material-symbols:delete',
 				tooltipText: 'Delete',
 				btnClass: 'btn btn-sm text-red-400',
@@ -66,6 +68,7 @@ const wrapper = {
 				}
 			} else {
                 this.datas[index].status = data?.status;
+                console.log("🚀 ~ file: data-table.js:71 ~ updateData ~ this.datas[index].status:", this.datas[index].status)
                 console.log("🚀 ~ file: data-table.js:66 ~ updateData ~ data?.status:", data)
             }
 		},

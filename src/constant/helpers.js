@@ -66,3 +66,9 @@ export const createFormField = (config) => ({
     options: [],
 	...config,
 });
+
+export const createOptionSelect = (id, label, image=null) => ({
+	id,
+	label,
+	image,
+})

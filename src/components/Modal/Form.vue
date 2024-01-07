@@ -3,6 +3,7 @@
 		:active-modal="activeModal"
 		:title="title"
 		sizeClass="max-w-2xl max-h-2xl"
+        class="text-primary-400"
 		@close="$emit('close')">
 		<div class="grid grid-cols-1 h-auto">
 			<div v-for="(field, index) in forms" :key="index" class="mt-2">
@@ -64,21 +65,26 @@
 					v-if="field.type === 'multiselect'"
 					:error="field.error"
 					:label="field.label"
-					@input="onInput($event, field)">
+                    @input="onInputSelect($event, field)"
+                >
 					<vSelect
 						:placeholder="field.placeholder"
 						:options="field.options"
 						v-model="forms[index].value"
-						multiple>
+						:multiple="field?.multiple"
+                    >
 						<template #option="{ label, image }">
-							<div class="flex items-center">
+                            <div>
+                                <div v-if="!isLoading" class="flex items-center">
 								<span
+									v-if="image"
 									class="w-10 h-10 rounded-full ltr:mr-4 rtl:ml-4 flex-none">
 									<img
 										v-if="image"
 										:src="image"
 										:alt="image"
-										class="object-cover w-full h-full rounded-full" />
+										class="object-cover w-full h-full rounded-full" 
+                                    />
 								</span>
 								<div class="text-start">
 									<span
@@ -87,6 +93,9 @@
 									</span>
 								</div>
 							</div>
+                            <page-loader v-else />
+
+                            </div>
 						</template>
 					</vSelect>
 				</vue-select>
@@ -115,10 +124,15 @@ import { computed, ref, watchEffect } from 'vue';
 import { duplicateVar } from '@/constant/helpers';
 import TextAreaField from '@/components/Textarea';
 import FormGroup from '@/components/FromGroup';
+import pageLoader from '@/components/Loader/pageLoader.vue';
 
 import vSelect from 'vue-select';
 
 import * as yup from 'yup';
+
+
+// Emit definition
+const emit = defineEmits(['submit', 'on-input-select']);
 
 // Props
 const props = defineProps({
@@ -253,8 +267,58 @@ const setErrorEmail = (field, index) => {
 };
 
 // Event handlers
+const inputTimer = ref(null);
+const isLoading = ref(false);
 const onInput = (event, field) => {
 	setError(field);
+};
+
+const onInputSelect= (event, field) => {
+    isLoading.value = true;
+    const isAddressField = field && field?.key;
+    if (isAddressField) {
+        if (inputTimer.value) {
+            // delete timer if exist
+            clearTimeout(inputTimer.value);
+            inputTimer.value = null;
+            isLoading.value = true;
+        }
+
+        isLoading.value = false;
+        inputTimer.value = setTimeout(() => {
+            generateLatAndLong(event.target.value)
+        }, 700);
+    }
+};
+
+const generateLatAndLong = (inputAddress) => {
+    const address = inputAddress;
+
+	// Construct the API request URL
+	const apiUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+		address
+	)}`;
+
+	// Make a GET request to the Nominatim API
+	fetch(apiUrl)
+		.then((response) => response.json())
+		.then((data) => {
+			// Check if the response has results
+			if (data.length > 0) {
+                forms.value[8].options = data.map(curr => ({
+                    label: curr?.display_name,
+                    latitude: curr?.lat,
+                    longitude: curr?.lon,
+                }));
+                console.log('forms => ', forms.value);
+			} else {
+                toast?.error('Alamat Tidak ditemukan');
+                forms.value[8].error = 'Alamat Tidak ditemukan';
+			}
+		})
+		.catch((error) => {
+			console.error('Error fetching geocoding data:', error);
+		});
 };
 
 // Computed property
@@ -264,9 +328,6 @@ const noErrors = computed(
 			(curr) => curr?.error === '' || curr?.error === undefined
 		) ?? false
 );
-
-// Emit definition
-const emit = defineEmits(['submit']);
 
 // Submit function
 const submit = () => {
@@ -292,8 +353,12 @@ watchEffect(() => {
 		overflow: scroll !important;
 
 		li {
+            @apply bg-white;
 			&:hover {
-				background-color: gray;
+                @apply bg-primary-500;
+                span {
+                    @apply text-white;
+                }
 			}
 		}
 	}

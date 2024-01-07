@@ -24,5 +24,10 @@ export default {
     getUserSummary(params, cb, errCb) {
         const url = `${endpointUser}/summary`;
         axiosHit(url, params, 'get', cb, errCb);
+    },
+
+    getUserSelected(params, cb, errCb) {
+        const url = `${endpointUser}/selected`;
+        axiosHit(url, params, 'post', cb, errCb);
     }
 }
