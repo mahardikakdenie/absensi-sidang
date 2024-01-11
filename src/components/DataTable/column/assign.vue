@@ -3,7 +3,8 @@
         <div
             v-for="(user, userIndex) in data.assignto"
             :key="userIndex"
-            class="h-6 w-6 rounded-full ring-1 ring-slate-100"
+            class="h-6 w-6 rounded-full ring-1 ring-slate-100 cursor-pointer"
+            @click="openModal"
         >
             <img
                 :src="user?.url"
@@ -21,13 +22,15 @@
                 placement: 'top',
             }"
             :content="`Lihat ${data?.assignto?.length} Anggota`"
+            @click="openModal"
         >
-            {{ data?.assignto?.length > 0 ? `+${data?.assignto?.length}` : '-'  }}
+            {{ data?.assignto?.length > 0 ? `+${data?.assignto?.length ?? 0}` : '-'  }}
         </div>
     </div>
 </template>
 
 <script>
+import {useDataTableStore} from '@/store/data-table';
 export default {
     props: {
         /**
@@ -38,8 +41,24 @@ export default {
         data: {
             type: Object,
             default: {},
-        },
-    }
+        }
+    },
+
+    setup(props) {
+        const store = useDataTableStore();
+
+        const openModal = () => {
+            const params = {
+                data: props?.data,
+                key: 'assign',
+            }
+            store?.trigerAction(params)
+        }
+
+        return {
+            openModal,
+        }
+    },
 }
 </script>
 

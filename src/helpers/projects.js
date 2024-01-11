@@ -17,5 +17,13 @@ export default {
   updateProject(id,params, callback, errCb) {
     const url = `${endpoint}/update/${id}`;
     axiosHit(url, params, 'put', callback, errCb);
-  }
+  },
+
+  deleteUserProject(id, callback, errCb) {
+    axiosHit(`user-project/${id}`, null, 'delete', callback, errCb);
+  },
+
+  insertUserProject(params, callback, errCb) {
+    axiosHit(`user-project`, params, 'post', callback, errCb);
+  },
 };

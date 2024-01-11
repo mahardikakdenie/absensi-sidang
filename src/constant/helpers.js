@@ -67,8 +67,9 @@ export const createFormField = (config) => ({
 	...config,
 });
 
-export const createOptionSelect = (id, label, image=null) => ({
+export const createOptionSelect = (id, label, image=null, roles) => ({
 	id,
 	label,
 	image,
+	roles,
 })

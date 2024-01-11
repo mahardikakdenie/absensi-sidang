@@ -4,7 +4,8 @@
 			<data-table
 				title="Project"
 				btn-text="Buat Project"
-				@open-modal-add="onOpenModalAdd" />
+				@open-modal-add="onOpenModalAdd" 
+            />
 		</card>
 		<ModalForm
 			:active-modal="isModalFormVisible"
@@ -20,6 +21,14 @@
             :text="textModal"
             @close="isModalConfirm = false"
             @submit="onSubmitStatus"
+        />
+        <ModalUserAssign 
+            :active-modal="isModalAssignation" 
+            :projectId="projectId"
+            title="User Assignation"
+            :users="usersAssignation"
+            :divisionId="assignationUserDivisionId"
+            @close="isModalAssignation = false"
         />
 	</div>
 </template>
@@ -38,6 +47,7 @@ import userApi from '@/helpers/user';
 import divisionApi from '@/helpers/division';
 import { useToast } from 'vue-toastification';
 import ModalConfirm from '@/components/Modal/Confirm.vue';
+import ModalUserAssign from '@/components/Modal/UserAssignation.vue'
 const userDummyImage =
 	'https://static.vecteezy.com/system/resources/previews/018/765/757/original/user-profile-icon-in-flat-style-member-avatar-illustration-on-isolated-background-human-permission-sign-business-concept-vector.jpg';
 
@@ -65,11 +75,12 @@ const headers = [
 	},
 	{ label: 'Mulai', field: 'startdate' },
 	{ label: 'Selesai', field: 'targetdate' },
+    { label: 'Divisi', field: 'division' },
     {
         label: 'Status',
         field: 'status'
     },
-{ label: 'Anggota', field: 'assign' },
+    { label: 'Anggota', field: 'assign' },
 	{
 		label: 'Actions',
 		field: 'actions',
@@ -104,14 +115,6 @@ const formConfig = [
         label: 'Divisi',
         placeholder: 'Masukan Divisi',
     },
-	{
-        key: 'userids',
-		type: 'multiselect',
-        multiple: true,
-        options: [],
-		label: 'Yang Ditugaskan',
-		placeholder: 'Masukan Akun yang di tugaskan',
-	},
     {
         key: 'startdate',
         type: 'date',
@@ -170,13 +173,21 @@ watch(
 	}
 );
 
+const isModalAssignation = ref(false);
+const assignationUserDivisionId = ref();
+const usersAssignation = ref([]);
 const handleTypeAction = (value) => {
-    console.log("🚀 ~ file: project.vue:172 ~ handleTypeAction ~ value:", value)
     if (value.key === 'update') {
         isModalFormVisible.value = true;
         typeForm.value = value.key;
         projectId.value = value?.data?.id;
+        divisionsIds.value = [value?.data?.division?.id];
         setFormData(value);
+    } else if (value.key === 'assign') {
+        isModalAssignation.value = true;
+        usersAssignation.value = value?.data?.users;
+        projectId.value = value?.data?.id;
+        assignationUserDivisionId.value = value?.data?.devisionId;
     } else if (value?.key !== 'add') {
         toggleModalConfirm();
         textModal.value = `Apakah anda yakin ingin mengubah status menjadi ${value?.key} di project ${value.data.name}`;
@@ -193,11 +204,10 @@ const setFormData = (value) => {
     form.value[1].value = value?.data?.projectNo;
     form.value[2].value = value?.data?.cost?.toString();
     form.value[3].value = createOptionSelect(value?.data?.division?.id, value?.data?.division?.name, null);
-    form.value[4].value = value?.data?.users?.map(curr => createOptionSelect(curr?.id, curr?.user?.name, null));
-    form.value[5].value = value?.data?.startdate;
-    form.value[6].value = value?.data?.targetdate;
-    form.value[7].value = value?.data?.description;
-    form.value[8].value = value?.data?.address;
+    form.value[4].value = value?.data?.startdate;
+    form.value[5].value = value?.data?.targetdate;
+    form.value[6].value = value?.data?.description;
+    form.value[7].value = value?.data?.address;
 };
 
 const divisionId = ref(null);
@@ -221,12 +231,13 @@ const getData = () => {
 	const params = {
 		division_id: divisionId?.value ?? null,
 		division_ids: divisionsIds?.value ?? null,
-        entities: 'users.user.profile.medias, division',
+        entities: 'users.user.profile.medias, users.user.roles.role, division',
 	};
 	const callback = (response) => {
 		const projects = response?.data?.data;
         const projectMap = projects.map(project => ({
             ...project,
+            division: project?.division?.name,
             assignto: project?.users
 			?.filter((user) => user.type !== 'owner')
 			.map((user) => ({
@@ -264,32 +275,13 @@ const checkProjectCapabilities = () => {
 		divisionsIds.value = hasDivisions?.map((division) => division?.devision_id);
 	}
 	getData();
-    getUserSelected();
     getSelectedDivisions();
 };
-
-const getUserSelected = () => {
-    const params = {
-        division_ids: divisionsIds?.value,
-        entities: 'profile.medias,roles.role',
-    };
-    const callback = (response) => {
-        const data = response?.data?.data;
-        form.value[4].options = data.map(curr => createOptionSelect(curr.id, curr.name, curr?.profile?.medias?.url ?? userDummyImage));
-    };
-    const err = (e) => {
-        console.error(e);
-    };
-
-    userApi.getUserSelected(params, callback, err);
-};
-
 const getSelectedDivisions = () => {
     const params = {
         typeGet: 'selected',
         division_ids: divisionsIds?.value,
-    };
-    
+    };    
     const callback = (res) => {
         const divisions = res?.data?.data;
         form.value[3].options = divisions.map(curr => ({
@@ -331,13 +323,12 @@ const onSubmit = (data, type) => {
         projectNo: data?.[1]?.value,
         cost: data?.[2]?.value,
         devisionId: data?.[3].value?.id,
-        user_ids: data?.[4].value?.map(curr => curr?.id),
-        startdate: data?.[5].value,
-        targetdate: data?.[6].value,
-        description: data?.[7].value,
-        address: data?.[8].value?.label,
-        longitude: data?.[8]?.value?.longitude,
-        latitude: data?.[8]?.value?.latitude,
+        startdate: data?.[4].value,
+        targetdate: data?.[5].value,
+        description: data?.[6].value,
+        address: data?.[7].value?.label,
+        longitude: data?.[7]?.value?.longitude,
+        latitude: data?.[7]?.value?.latitude,
     };
     console.log("🚀 ~ file: project.vue:250 ~ onSubmit ~ params:", params)
 

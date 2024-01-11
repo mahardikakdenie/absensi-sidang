@@ -73,7 +73,7 @@
 						v-model="forms[index].value"
 						:multiple="field?.multiple"
                     >
-						<template #option="{ label, image }">
+						<template #option="{ label, image, roles }">
                             <div>
                                 <div v-if="!isLoading" class="flex items-center">
 								<span
@@ -87,10 +87,9 @@
                                     />
 								</span>
 								<div class="text-start">
-									<span
-										class="text-sm text-slate-600 dark:text-slate-300 capitalize text-star">
-										{{ label }}
-									</span>
+                                    <span class="text-sm text-slate-600 dark:text-slate-300 capitalize text-star">
+                                        {{ label }}<template v-if="roles"> -  {{ roles.join(' - ') }}</template>
+                                    </span>
 								</div>
 							</div>
                             <page-loader v-else />
@@ -125,6 +124,7 @@ import { duplicateVar } from '@/constant/helpers';
 import TextAreaField from '@/components/Textarea';
 import FormGroup from '@/components/FromGroup';
 import pageLoader from '@/components/Loader/pageLoader.vue';
+import VueAlert from '@/components/Alert';
 
 import vSelect from 'vue-select';
 
@@ -305,12 +305,11 @@ const generateLatAndLong = (inputAddress) => {
 		.then((data) => {
 			// Check if the response has results
 			if (data.length > 0) {
-                forms.value[8].options = data.map(curr => ({
+                forms.value[7].options = data.map(curr => ({
                     label: curr?.display_name,
                     latitude: curr?.lat,
                     longitude: curr?.lon,
                 }));
-                console.log('forms => ', forms.value);
 			} else {
                 toast?.error('Alamat Tidak ditemukan');
                 forms.value[8].error = 'Alamat Tidak ditemukan';
