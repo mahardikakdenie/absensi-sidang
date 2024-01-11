@@ -26,4 +26,12 @@ export default {
         const url = `${endpoint}/update/${id}`;
         axiosHit(url, params, 'put', callback, errCb);
     },
+
+    deleteUserProject(id, callback, errCb) {
+        axiosHit(`user-division/${id}`, null, 'delete', callback, errCb);
+    },
+    
+    insertUserProject(params, callback, errCb) {
+        axiosHit(`user-division`, params, 'post', callback, errCb);
+    },
 }

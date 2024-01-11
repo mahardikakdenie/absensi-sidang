@@ -94,13 +94,14 @@
 import { useForm, useFieldArray } from 'vee-validate';
 import VueButton from '@/components/Button';
 import Card from '@/components/Card';
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch, onMounted, computed } from 'vue';
 import userApi from '@/helpers/user';
 import pageLoader from '@/components/Loader/pageLoader.vue';
 import { useRoute } from 'vue-router';
 import projectApi from '@/helpers/projects';
 import { useToast } from 'vue-toastification';
 import VueAllert from '@/components/Alert';
+import divisionApi from '@/helpers/division'
 const userDummyImage =
 	'https://static.vecteezy.com/system/resources/previews/018/765/757/original/user-profile-icon-in-flat-style-member-avatar-illustration-on-isolated-background-human-permission-sign-business-concept-vector.jpg';
 const props = defineProps({
@@ -134,20 +135,19 @@ const setNameOption = (option) =>
 const typeOption = ref('list-member');
 const isFetching = ref(false);
 const isPageProjects = computed(() => route?.path?.includes('/project'));
-const isPageDivision = computed(() => route?.path?.includes('/'))
+const isPageDivision = computed(() => route?.path?.includes('/division'))
 // const users = ref([]);
 
 const roleIds = ref([]);
 watch(
 	() => typeOption?.value,
 	(value) => {
-		let temporaryProductId = props?.projectId
-		console.log("🚀 ~ file: List.vue:141 ~ props?.projectId:", props?.projectId)
+		let temporaryProductId = isPageProjects.value ? props?.projectId : undefined;
 		roleIds.value = [];
-		if (value === 'add-admin' && route?.path?.includes('/project')) {
+		if (value === 'add-admin') {
 			temporaryProductId = undefined
 			roleIds.value = [3];
-		} else if (value === 'add-member' && route?.path?.includes('/project')) {
+		} else if (value === 'add-member') {
 			temporaryProductId = undefined
 			roleIds.value = [2,4];
 		}
@@ -159,20 +159,41 @@ const listUsers = ref([]);
 const isLoading = ref(false);
 const userCount = ref(0);
 const fetchParams = (projectId) => {
-	let params = {
-		division_ids: [props?.divisionId],
-		entities: 'profile.medias,roles.role',
-		roleIds: roleIds.value,
-		// project_ids: [projectId],
-		not_have_this_projects: [22],
-	}
-	if (typeOption?.value === 'list-member') {
+	let params;
+	if (isPageProjects.value) {
 		params = {
 			division_ids: [props?.divisionId],
-			entities: 'profile.medias,roles.role, projects',
+			entities: 'profile.medias,roles.role',
 			roleIds: roleIds.value,
-			project_ids: [projectId],
-			// not_have_this_projects: [22],
+			// project_ids: [projectId],
+			not_have_this_projects: [projectId],
+		}
+		if (typeOption?.value === 'list-member') {
+			params = {
+				division_ids: [props?.divisionId],
+				entities: 'profile.medias,roles.role, projects',
+				roleIds: roleIds.value,
+				project_ids: [projectId],
+				// not_have_this_projects: [22],
+			}
+		}
+	} else {
+		params = {
+			entities: 'profile.medias,roles.role,divisions',
+			roleIds: [],
+		}
+		if (typeOption?.value === 'list-member') {
+			params = {
+				...params,
+				division_ids: [props?.divisionId],
+				roleIds: [],
+			}
+		} else {
+			params = {
+				...params,
+				roleIds: roleIds?.value,
+				not_have_divisions: [props?.divisionId],
+			}
 		}
 	}
 	
@@ -188,6 +209,7 @@ const getUserSelected = (projectId) => {
 		if (response?.data?.meta?.status) {
 			userCount.value = response?.data?.data;
 			createUserDisplay(response?.data?.data);
+			console.log(response?.data?.data);
 		}
 		isFetching.value = false;
 	};
@@ -200,7 +222,7 @@ const getUserSelected = (projectId) => {
 };
 
 const deleteData = (user, index) => {
-	const userId = user?.projects?.id;
+	const userId = user?.[isPageProjects.value ? 'projects' : 'divisions']?.id;
 	const callback = (response) => {
 		if (response?.data?.meta?.status) {
 			const data = response?.data?.data;
@@ -213,13 +235,19 @@ const deleteData = (user, index) => {
 	const err = (e) => {
 		console.log(e);
 	};
-	projectApi.deleteUserProject(userId, callback, err);
+
+	if (isPageProjects.value) {
+		projectApi.deleteUserProject(userId, callback, err);
+	} else {
+		divisionApi.deleteUserProject(userId, callback, err)
+	}
 };
 
 const insertUserProject = (user, index) => {
 	const params = {
 		user_id: user?.id,
 		project_id: props?.projectId,
+		division_id: props?.divisionId,
 	};
 	const callback = (response) => {
 		if (response?.data?.meta?.status) {
@@ -233,7 +261,11 @@ const insertUserProject = (user, index) => {
 	const err = (e) => {
 		console.log(e);
 	};
-	projectApi.insertUserProject(params, callback, err);
+	if (isPageProjects.value) {
+		projectApi.insertUserProject(params, callback, err);
+	} else {
+		divisionApi.insertUserProject(params, callback, err);
+	}
 };
 
 const createUserDisplay = (users) => {
@@ -243,6 +275,7 @@ const createUserDisplay = (users) => {
 		img: user?.profile?.medias?.url ?? userDummyImage,
 		roles: user?.roles?.map((role) => role?.role?.name).join(' - '),
 		projects: user?.projects?.find(curr => curr?.project_id === props?.projectId && curr?.user_id === user?.id),
+		divisions: user?.divisions?.find(curr => curr?.devision_id === props?.divisionId && curr?.user_id === user?.id),
 	}));
 };
 

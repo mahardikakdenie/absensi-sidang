@@ -22,6 +22,12 @@
             @close="close"
             @submit="submitConfirm"
         />
+		<ModalUserAssign 
+            title="User Assignation"
+			:active-modal="isModalAssignationVisible" 
+			:divisionId="divisionId"
+			@close="isModalAssignationVisible = false"  
+		/>
 	</div>
 </template>
 
@@ -38,8 +44,10 @@ import ModalConfirm from '@/components/Modal/Confirm.vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/store/user';
 import { useToast } from 'vue-toastification';
+import ModalUserAssign from '@/components/Modal/UserAssignation.vue';
 const router = useRouter();
 const isLoading = ref(false);
+const isModalAssignationVisible = ref(false);
 
 const userDummyImage =
 	'https://static.vecteezy.com/system/resources/previews/018/765/757/original/user-profile-icon-in-flat-style-member-avatar-illustration-on-isolated-background-human-permission-sign-business-concept-vector.jpg';
@@ -200,6 +208,9 @@ const handleTypeAction = (value) => {
         if (value.key === 'update') {
             value.data.users = null;
 			toogleModalForm('update');
+		} else if (value.key === 'assign') {
+			divisionId.value= value?.data?.id;
+			isModalAssignationVisible.value = true;
 		} else if (value?.key !== 'add') {
             toggleModalConfirm();
             textModal.value = `Apakah anda yakin ingin mengubah status menjadi ${value?.key} di divisi ${value.data.name}`;
