@@ -170,18 +170,10 @@ const form = ref([
         type: 'multiselect',
         value: null,
         error: '',
+        multiple: true,
         options: [],
         label: 'Role',
         placeholder: 'Masukan Role',
-    },
-    {
-        key: 'divisionids',
-        type: 'multiselect',
-        value: null,
-        error: '',
-        options: [],
-        label: 'Divisi',
-        placeholder: 'Masukan Divisi',
     },
     {
         type: 'email',
@@ -190,22 +182,6 @@ const form = ref([
         key: 'email',
         label: 'Email',
         placeholder: 'Masukan Email',
-    },
-    {
-        type: 'password',
-        value: '',
-        error: '',
-        key: 'password',
-        label: 'password',
-        placeholder: 'Masukan password'
-    },
-    {
-        type: 'password',
-        value: '',
-        error: '',
-        key: 'confirm_password',
-        label: 'Konfirmasi',
-        placeholder: 'Masukan Konfirmasi password'
     },
 ]);
 
@@ -342,9 +318,7 @@ const createUser = (value) => {
         name: value[0],
         username: value[1],
         role_ids: value?.[2].map(curr => curr.id),
-        division_ids: value?.[3]?.map(curr => curr?.id),
-        email: value[4],
-        password: value[5],
+        email: value[3],
     };
     const callback = (res) => {
         if (res?.data?.meta?.status) {

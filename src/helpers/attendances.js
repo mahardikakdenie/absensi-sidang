@@ -1,5 +1,10 @@
+import { axiosHit } from "@/constant/helpers";
 import client from "./http-client";
 const endpoint = 'attendance';
+
+export const getAllData = (params, callback, errCallback) => {
+    axiosHit(endpoint,params, 'get', callback, errCallback);
+};
 
 export const getDataAttendanceLogs = (params, callback, errCallback) => {
     const url = `${endpoint}/log`;
