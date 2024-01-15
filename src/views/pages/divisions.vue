@@ -47,9 +47,20 @@ const isLoading = ref(false);
 const getData = () => {
     const params = {
         division_ids: divisionsIds?.value,
+        status: 'publish',
+        entities: 'users.user.profile.medias',
     }
     const callback = (response) => {
-        divisions.value = response.data.data;
+        const res = response?.data?.data;
+        const data = res?.map(curr => ({
+            ...curr,
+            assignto: curr?.users?.map(user => ({
+                name: user?.user?.name,
+                image: curr?.user?.profile?.medias?.url
+            }))
+        }))
+        console.log("🚀 ~ data ~ data:", data)
+        divisions.value = data;
     };
 
     const err = (e) => {

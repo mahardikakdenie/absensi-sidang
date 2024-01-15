@@ -49,7 +49,7 @@
 				</div>
 			</div>
 			<!-- progress -->
-			<div v-if="type === 'project-list'" class="mt-3">
+			<div v-if="type === 'project-list' && false" class="mt-3">
 				<span class="text-sm">Progress</span>
 				<ProgressBar height="h-3" parentClass="mt-2">
 					<Bar :value="80" barColor="bg-[#CE7722]" showValue />
@@ -60,7 +60,7 @@
 						colorTextClass="text-black" />
 				</ProgressBar>
 			</div>
-			<div v-if="type === 'project-list'" class="mt-3">
+			<div v-if="type === 'project-list' && false" class="mt-3">
 				<span>Deviasi</span>
 				<ProgressBar height="h-3" parentClass="mt-2">
 					<Bar :value="40" barColor="bg-[#CE7722]" showValue />
@@ -82,21 +82,21 @@
 					<div class="flex justify-start -space-x-1.5">
 						<div
 							class="h-6 w-6 rounded-full ring-1 ring-slate-100"
-							v-for="(user, userIndex) in assignto"
+							v-for="(user, userIndex) in element?.assignto"
 							:key="userIndex"
                         >
 							<img
-								:src="user.image"
-                                :content="user.title"
+								:src="user.image ?? userDummyImage"
+                                :content="user.name"
                                 v-tippy="{
                                     placement: 'top'
                                 }"
-								:alt="user.title"
+								:alt="user.name"
 								class="w-full h-full rounded-full" />
 						</div>
 						<div
 							class="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-300 text-xs ring-2 ring-slate-100 dark:ring-slate-700 rounded-full h-6 w-6 flex flex-col justify-center items-center">
-							+2
+							+{{ element?.assignto?.length ?? 0 }}
 						</div>
 					</div>
 				</div>
@@ -152,6 +152,8 @@ export default {
 	},
 	setup() {
 		const store = useKanbanStore();
+		const userDummyImage =
+			'https://static.vecteezy.com/system/resources/previews/018/765/757/original/user-profile-icon-in-flat-style-member-avatar-illustration-on-isolated-background-human-permission-sign-business-concept-vector.jpg';
 
 		const assignto = [
 			{
@@ -201,7 +203,8 @@ export default {
 			actions,
 			assignto,
 			formatedDate,
-            truncateText
+            truncateText,
+			userDummyImage
 		};
 	},
 };

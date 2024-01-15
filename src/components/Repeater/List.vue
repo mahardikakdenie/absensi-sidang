@@ -16,6 +16,7 @@
 							} btn-sm`"
 							@click="typeOption = 'list-member'" />
 						<vue-button
+							v-if="isPageDivision"
 							text="Tambah Admin"
 							:btnClass="`${
 								typeOption === 'add-admin'
@@ -31,9 +32,6 @@
 									: ''
 							} btn-sm`"
 							@click="typeOption = 'add-member'" />
-					</div>
-					<div>
-						Jumlah Akun Yang berada di divisi Ini {{ userCount?.length }}
 					</div>
 				</div>
 				<hr class="my-6" />

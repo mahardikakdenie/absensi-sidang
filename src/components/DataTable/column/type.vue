@@ -26,6 +26,8 @@
         let color = 'bg-primary-600 text-primary-100';
         if (status.value === 'late') {
             color = 'bg-danger-600 text-danger-100'
+        } else if (status.value === 'clockout') {
+            color = 'bg-info-600 text-primary-100'
         }
         return color;
     });

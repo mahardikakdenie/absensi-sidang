@@ -27,7 +27,7 @@ const routes = [
         },
       },
       {
-        name: 'List Projects',
+        name: 'List Divisi',
         path: '/divisions',
         component: () => import('@/views/pages/divisions'),
         meta: {
@@ -35,7 +35,7 @@ const routes = [
         }
       },
       {
-        name: 'List SubProjects',
+        name: 'List Project',
         path: '/divisions/:division_id',
         component: () => import('@/views/pages/projects.vue'),
         meta: {
