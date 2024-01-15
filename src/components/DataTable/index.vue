@@ -49,6 +49,7 @@
 					<column-status v-if="props.column.field === 'status'" :data="props.row" />
 					<action-column v-if="props.column.field === 'actions'" :data="props.row" />
 					<ColumnAssign v-if="props.column.field === 'assign'"  :data="props.row" />
+					<ColumnType v-if="props.column.field === 'type'"  :data="props.row" />
 					<div v-if="isRowNotModify(props)">
 						<span class="normal-case">
 							{{  props.row[props.column.field]  }}
@@ -93,6 +94,7 @@ import columnRole from '@/components/DataTable/column/roles.vue';
 import actionColumn from '@/components/DataTable/column/actions.vue';
 import ColumnStatus from '@/components/DataTable/column/status.vue';
 import ColumnAssign from '@/components/DataTable/column/assign.vue';
+import ColumnType from '@/components/DataTable/column/type.vue';
 import { duplicateVar } from '@/constant/helpers';
 const actions = [
 	{
@@ -173,6 +175,7 @@ export default {
 		actionColumn,
 		ColumnStatus,
 		ColumnAssign,
+		ColumnType,
 	},
 
 	props: {
@@ -221,7 +224,7 @@ export default {
 		};
 
 		const isRowNotModify = (props) => {
-			const forbiddenFields = ['name', 'roles', 'status'];
+			const forbiddenFields = ['name', 'roles', 'status', 'type'];
 			return !forbiddenFields.includes(props.column.field);
 		};
 

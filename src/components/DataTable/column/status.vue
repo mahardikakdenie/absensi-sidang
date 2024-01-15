@@ -20,7 +20,7 @@ const props = defineProps({
     },
 });
 
-const status = computed(() => props?.data?.status?.split('_').join(' '));
+const status = computed(() => props?.data?.status?.split('_').join(' ') ?? 'draft');
 const getColorStatus = computed(() => {
     let color = 'bg-primary-600 text-primary-100';
     if (status.value === 'not active' || status.value === 'draft') {

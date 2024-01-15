@@ -2,9 +2,9 @@
 <div
     v-for="(item, i) in statistics"
     :key="i"
-    :class="[item.bg, {'shadow-lg bg-opacity-50': item.key === route.query.summary}]"
-    class="box-summary"
-    @click="setFilterSummary(item.key)"
+    :class="[{'bg-opacity-50': item.key === route.query.summary}]"
+    class="box-summary bg-primary-500"
+    @click.prevent="setFilterSummary(item.key)"
 >
     <div
         class="mx-auto h-6 w-6 flex items-center justify-center rounded-full bg-white text-lg mb-2"
@@ -51,6 +51,6 @@ const setFilterSummary = (key) => {
 
 <style lang="scss">
 .box-summary {
-    @apply rounded-md p-2 bg-opacity-[0.15] dark:bg-opacity-50 text-center transition-all duration-300 hover:shadow-lg hover:bg-opacity-50 cursor-pointer;
+    @apply rounded-md p-2 bg-opacity-[0.15] dark:bg-opacity-50 text-center transition-all duration-300 hover:bg-opacity-50 cursor-pointer;
 }
 </style>

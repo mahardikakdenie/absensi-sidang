@@ -58,7 +58,7 @@ const conditionToMeet = (action) => {
 	 * The current status of the data.
 	 * @type {string}
 	 */
-	const status = props.data.status;
+	const status = props.data.status ?? 'draft';
 
 	/**
 	 * Configuration for different conditions based on the action key.
