@@ -24,10 +24,10 @@ const store = useDataTableStore();
 const statistics = ref([
     {
         title: "All",
-        count: "3,564",
+        count: "0",
         bg: "bg-[#E5F9FF] dark:bg-slate-900	",
-        text: "text-info-500",
-        icon: "heroicons:shopping-cart",
+        text: "text-success-900",
+        icon: "icon-park:data-all",
     },
     {
         title: "ClockIn",
