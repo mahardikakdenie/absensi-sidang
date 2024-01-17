@@ -6,7 +6,7 @@ export default {
   },
 
   getDetailProject(id, params, callback, errCb) {
-    const url = `${endpoint}/${id}`;
+    const url = `${endpoint}/show/${id}`;
     axiosHit(url, params, "get", callback, errCb);
   },
 

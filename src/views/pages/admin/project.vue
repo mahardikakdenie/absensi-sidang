@@ -75,12 +75,15 @@ const headers = [
 	},
 	{ label: 'Mulai', field: 'startdate' },
 	{ label: 'Selesai', field: 'targetdate' },
+    { label: 'Sisa Waktu', field: 'left_date' },
+    { label: 'Fisik', field: 'fisik' },
     { label: 'Divisi', field: 'division' },
     {
         label: 'Status',
         field: 'status'
     },
     { label: 'Anggota', field: 'assign' },
+    { label: 'Shift', field: 'shift' },
 	{
 		label: 'Actions',
 		field: 'actions',
@@ -177,6 +180,7 @@ const isModalAssignation = ref(false);
 const assignationUserDivisionId = ref();
 const usersAssignation = ref([]);
 const handleTypeAction = (value) => {
+    console.log("🚀 ~ handleTypeAction ~ value:", value?.key === 'name-table')
     if (value.key === 'update') {
         isModalFormVisible.value = true;
         typeForm.value = value.key;
@@ -188,6 +192,8 @@ const handleTypeAction = (value) => {
         usersAssignation.value = value?.data?.users;
         projectId.value = value?.data?.id;
         assignationUserDivisionId.value = value?.data?.devisionId;
+    }else if (value?.key === 'name-table') {
+        console.log('Haloo key');
     } else if (value?.key !== 'add') {
         toggleModalConfirm();
         textModal.value = `Apakah anda yakin ingin mengubah status menjadi ${value?.key} di project ${value.data.name}`;
@@ -229,12 +235,18 @@ const onOpenModalAdd = () => {
 
 const getData = () => {
 	const params = {
-		division_id: divisionId?.value ?? null,
+		division_id: divisionId?.value ?? route?.query?.division_id,
 		division_ids: divisionsIds?.value ?? null,
         entities: 'users.user.profile.medias, users.user.roles.role, division',
 	};
 	const callback = (response) => {
 		const projects = response?.data?.data;
+        const totalDate = (start, end) => {
+			const startDate = new Date(start);
+			const endDate = new Date(end);
+			const diffDays = endDate.getDate() - startDate.getDate();
+			return diffDays;
+		};
         const projectMap = projects.map(project => ({
             ...project,
             division: project?.division?.name,
@@ -245,6 +257,9 @@ const getData = () => {
 				url: user?.user?.profile?.medias?.url ?? userDummyImage,
 				name: user?.user?.name,
 			})),
+            left_date: `${totalDate(project?.startdate, project?.targetdate)} Lagi`,
+            shift: '-',
+            fisik: '0%'
         }))
 		store.setData(projectMap);
 	};
@@ -299,7 +314,9 @@ const getSelectedDivisions = () => {
 
 const init = () => {
 	const query = route.query;
+	console.log("🚀 ~ init ~ query:", query)
 	divisionId.value = query?.division_id;
+	console.log("🚀 ~ init ~ divisionId.value:", divisionId.value)
 };
 
 const dataMounted = onMounted(() => {
@@ -307,6 +324,7 @@ const dataMounted = onMounted(() => {
 	init();
 	store.setHeaders(headers);
     store?.setActions(actions);
+    store?.setNameConfig(null)
 });
 
 

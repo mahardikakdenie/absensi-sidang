@@ -72,4 +72,20 @@ export const createOptionSelect = (id, label, image=null, roles) => ({
 	label,
 	image,
 	roles,
-})
+});
+
+export const setNameRoles = (role) => {
+	let displayRole = role;
+	if (role === 'user_admin') {
+		displayRole = 'Pengawas'
+	}
+
+	return displayRole;
+};
+
+export const totalDate = (start, end) => {
+	const startDate = new Date(start);
+	const endDate = new Date(end);
+	const diffDays = endDate.getDate() - startDate.getDate();
+	return diffDays;
+};

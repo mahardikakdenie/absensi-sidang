@@ -66,15 +66,23 @@ const config = computed(() => store?.nameConfig);
 const emit = defineEmits(['name-action'])
 
 const nameAction = () => {
-    store?.goTo(props?.data);
+    const params = {
+		key: 'name-table',
+		data: props?.data,
+	};
+	store?.trigerAction(params);
 };
 
 /**
  * Function called when the button is clicked.
  * @returns {void}
  */
-const handleButtonClick = () => {
-    // 
+const handleButtonClick = (icon) => {
+    const params = {
+		key: icon,
+		data: props?.data,
+	};
+	store?.trigerAction(params);
 };
 </script>
 

@@ -8,7 +8,7 @@
 				<div class="items-center flex justify-between">
 					<div class="flex justify-end gap-4 items-center">
 						<vue-button
-							text="Anggota Project"
+							text="Anggota"
 							:btnClass="`${
 								typeOption === 'list-member'
 									? 'border-b border-primary-500 rounded-0'
@@ -52,9 +52,9 @@
 								<span class="text-sm font-bold">{{
 									user.name
 								}}</span>
-								<p class="text-gray-500">
-									{{ user?.roles }}
-								</p>
+								<div>
+									<VueBadge :label="setNameRoles(user?.roles)" badgeClass="capitalize bg-primary-400 text-white text-sm" />
+								</div>
 							</div>
 						</div>
 						<div class="space-x-3">
@@ -92,14 +92,16 @@
 import { useForm, useFieldArray } from 'vee-validate';
 import VueButton from '@/components/Button';
 import Card from '@/components/Card';
-import { ref, watch, onMounted, computed } from 'vue';
+import { ref, watch, onMounted, computed, capitalize } from 'vue';
 import userApi from '@/helpers/user';
 import pageLoader from '@/components/Loader/pageLoader.vue';
 import { useRoute } from 'vue-router';
 import projectApi from '@/helpers/projects';
 import { useToast } from 'vue-toastification';
 import VueAllert from '@/components/Alert';
-import divisionApi from '@/helpers/division'
+import divisionApi from '@/helpers/division';
+import { setNameRoles } from "@/constant/helpers";
+import VueBadge from '@/components/Badge/index.vue';
 const userDummyImage =
 	'https://static.vecteezy.com/system/resources/previews/018/765/757/original/user-profile-icon-in-flat-style-member-avatar-illustration-on-isolated-background-human-permission-sign-business-concept-vector.jpg';
 const props = defineProps({

@@ -5,45 +5,47 @@
 				<vue-button
 					text="Clock In"
 					btnClass="btn btn-primary hover:light"
-					@click="setType('clockin')"
-				/>
+					@click="setType('clockin')" />
 				<vue-button
 					text="Clock Out"
 					btnClass="btn btn-success hover:light"
-					@click="setType('clockout')"
-				/>
+					@click="setType('clockout')" />
 			</div>
 			<div class="mt-3">
-				<router-link :to="`/attendance-log/division/2/project/${route.params.id}`" class="hover:underline text-sm">
+				<router-link
+					:to="`/attendance-log/division/2/project/${route.params.id}`"
+					class="hover:underline text-sm">
 					Catatan Kehadiran
 				</router-link>
 			</div>
 		</card>
 		<div
-			class="bg-white lg:w-[200px] border rounded-md flex p-2 justify-around"
-		>
+			v-if="false"
+			class="bg-white lg:w-[200px] border rounded-md flex p-2 justify-around">
 			<information-color
 				v-for="(information, index) in formatInformations"
 				:key="index"
 				:color-code="information.colorCode"
-				:label="information.label" 
-			/>
+				:label="information.label" />
 		</div>
 
 		<div class="">
 			<card>
 				<div class="flex justify-between">
 					<div>
-						<span class=""> CODE -ABC </span>
+						<span class=""> Project Nomor : {{ project?.projectNo }} </span>
 					</div>
 					<div>
 						<div>
 							<span class="font-bold text-[12px] lg:text-lg">
-								Rp 9.999.999.999
+								Rp {{ project?.cost }}
 							</span>
 						</div>
 						<div class="flex justify-end">
-							<span class="text-sm"> 01-01-2023 </span>
+							<span class="text-sm">
+								{{ project?.startdate }} -
+								{{ project?.targetdate }}
+							</span>
 						</div>
 					</div>
 				</div>
@@ -51,13 +53,12 @@
 				<single-accordion
 					title="Project Name"
 					parentClass="mt-3"
-					isOpen
-				>
+					isOpen>
 					<template #content>
-						<div class="mb-3">
+						<div v-if="false" class="mb-3">
 							<span class="font-bold text-lg"> Progress </span>
 						</div>
-						<div>
+						<div v-if="false">
 							<span>Progress</span>
 							<ProgressBar height="h-3" parentClass="mt-2">
 								<Bar
@@ -71,7 +72,7 @@
 									colorTextClass="text-black" />
 							</ProgressBar>
 						</div>
-						<div class="mt-3">
+						<div v-if="false" class="mt-3">
 							<span>Deviasi</span>
 							<ProgressBar height="h-3" parentClass="mt-2">
 								<Bar
@@ -85,16 +86,31 @@
 									colorTextClass="text-black" />
 							</ProgressBar>
 						</div>
+						<div>
+							<div class="font-bold">Nama Projek</div>
+							{{ project?.name }}
+						</div>
+						<div class="mt-2">
+							<div class="font-bold">Alamat</div>
+							{{ project?.address }}
+						</div>
+						<div class="mt-2">
+							<div class="font-bold">Deskripsi</div>
+							{{ project?.description }}
+						</div>
 					</template>
 				</single-accordion>
 				<single-accordion title="Keterangan" isOpen parentClass="mt-2">
 					<template #content>
 						<div>
 							<div>
-								<span> Pengawas : Budi Raharja </span>
+								<span> 
+									Pengawas : 
+									<vue-badge v-for="(user, index) in userAdminList" :key="index" :label="user?.user?.name" badge-class="gap-4 text-black" /> 
+								</span>
 							</div>
 							<div>
-								<span> Sisa Hari : 61 Hari </span>
+								<span> Sisa Hari : {{ totalDate(project?.startdate, project?.targetdate) }} Hari </span>
 							</div>
 						</div>
 					</template>
@@ -119,6 +135,9 @@ import { computed, onMounted, ref } from 'vue';
 import { useThemeSettingsStore } from '@/store/themeSettings';
 import DropZoneVue from '@/components/Fileinput/DropZone.vue';
 import { useRoute, useRouter } from 'vue-router';
+import projectApi from '@/helpers/projects';
+import VueBadge from '@/components/Badge';
+import {totalDate} from '@/constant/helpers';
 
 const store = useThemeSettingsStore();
 
@@ -142,7 +161,6 @@ const options = [
 	},
 ];
 
-
 // Ref for video element
 const videoElement = ref(null);
 
@@ -152,18 +170,42 @@ const typeAttendance = ref('');
 
 const setType = (type) => {
 	typeAttendance.value = type;
-	router.push(`/attendance/${type}/${route.params.id}`)
+	router.push(`/attendance/${type}/${route.params.id}`);
 };
 
-const isOpenCamera = ref(false);
-const startCamera = (type) => {
-	isOpenCamera.value = true;
-	typeAttendance.value = type;
-};
-const clockInPreview = ref(null);
+const project = ref();
+const userAdminList = computed(() => {
+	const users = project?.value?.users;
+	if (users) {
+		return users.filter((curr) => {
+			const roles = curr?.user?.roles;
+			if (roles) {
+				return roles.some((role) => role?.roleId === 4);
+			}
+			return false;
+		});
+	}
+	return [];
+});
 
+const getDetailProject = () => {
+	const params = {
+		entities: 'users.user.roles',
+	};
+	const callback = (res) => {
+		const data = res?.data?.data;
+		project.value = data;
+	};
+	const err = (e) => {
+		console.log(e);
+	};
+	projectApi.getDetailProject(route?.params?.id, params, callback, err);
+};
 
 const submit = () => {};
+onMounted(() => {
+	getDetailProject();
+});
 </script>
 
 <style></style>

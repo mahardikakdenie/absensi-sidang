@@ -88,10 +88,12 @@ console.log("🚀 ~ file: attendance.vue:85 ~ watch ~ old, newValue:", old, newV
 const description = ref('');
 const mediaWorkProofId = ref(null);
 const attendances = ref(null);
+const fullAddress = ref('');
 
 
 const clockInPreview = ref(null);
 const upload = (data) => {
+    fullAddress.value = data?.fullAddress;
     const callback = (res) => {
         clockInPreview.value = res.data.data.url;
         attendances.value = {
@@ -170,6 +172,7 @@ const SubmitAttendance = () => {
         longtitude: attendances.value.long,
         action: route.params.type,
         time: formattedCurrentTime.value,
+        full_address: fullAddress.value,
     };
 
     const callback = (response) => {

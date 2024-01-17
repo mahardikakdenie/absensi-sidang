@@ -95,7 +95,7 @@ const userStore = useUserStore();
 
 const user = computed(() => userStore.user);
 const media = computed(() => user?.value?.profile?.medias);
-const divisions = computed(() => user?.value?.divisions?.filter(curr => curr.type === 'assign'));
+const divisions = computed(() => user?.value?.divisions?.filter(curr => curr.type === 'assign' && curr?.division?.status === 'publish'));
 const projects = ref('');
 const router = useRouter();
 

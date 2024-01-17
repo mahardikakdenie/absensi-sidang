@@ -18,6 +18,8 @@ import DataTable from '@/components/DataTable/index.vue';
 import { computed, onMounted, ref } from 'vue';
 import { getAllData, getDataSummary } from "@/helpers/attendances";
 import { useDataTableStore } from '@/store/data-table';
+const userDummyImage = 'https://static.vecteezy.com/system/resources/previews/018/765/757/original/user-profile-icon-in-flat-style-member-avatar-illustration-on-isolated-background-human-permission-sign-business-concept-vector.jpg';
+
 
 const store = useDataTableStore();
 
@@ -55,6 +57,7 @@ const statistics = ref([
 const headers = [
 	{ label: 'Name', field: 'name' },
 	{ label: 'Project Name', field: 'project' },
+	{ label: 'Full Address', field: 'full_address' },
 	{ label: 'Type', field: 'type' },
 ];
 
@@ -76,6 +79,7 @@ const actions = [
 
 const fetchParams = computed(() => ({
     entities: 'project.division,user.profile.medias',
+    admin_mode: true,
 }));
 
 const getDataAttendance = () => {
@@ -83,11 +87,12 @@ const getDataAttendance = () => {
     const callback = (res) => {
         const data = res?.data?.data;
         const configMapping = data?.map(curr => ({
-            image: curr?.user?.profile?.medias?.url,
+            image: curr?.user?.profile?.medias?.url ?? userDummyImage,
             name: curr?.user?.name,
             status: curr?.status ?? null,
             project: curr?.project?.name,
             type: curr?.type,
+            full_address: curr?.full_address ?? '-',
         }))
         store?.setData(configMapping);
     };
@@ -111,7 +116,7 @@ const getDataAttendanceSummary = () => {
         console.log(e);
     }
 
-    getDataSummary(null, callback, err);
+    getDataSummary({admin_mode: true}, callback, err);
 };
 
 onMounted(() => {

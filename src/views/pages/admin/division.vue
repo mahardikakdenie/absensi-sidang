@@ -212,6 +212,8 @@ const handleTypeAction = (value) => {
 		} else if (value.key === 'assign') {
 			divisionId.value= value?.data?.id;
 			isModalAssignationVisible.value = true;
+		} else if (value?.key === 'name-table') {
+			router.push(`/admin/project?division_id=${value?.data?.id}`);
 		} else if (value?.key !== 'add') {
             toggleModalConfirm();
             textModal.value = `Apakah anda yakin ingin mengubah status menjadi ${value?.key} di divisi ${value.data.name}`;
