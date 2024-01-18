@@ -29,5 +29,10 @@ export default {
     getUserSelected(params, cb, errCb) {
         const url = `${endpointUser}/selected`;
         axiosHit(url, params, 'post', cb, errCb);
-    }
+    },
+
+    updateProfile(params, cb, errCb) {
+        const url = `${endpointUser}/profile`;
+        axiosHit(url, params, 'post', cb, errCb);
+    },
 }

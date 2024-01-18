@@ -1,7 +1,7 @@
 <template>
 <div>
     <div class="grid grid-rows-1">
-        <div v-if="divisions.length > 0 && !isLoading" class="grid lg:grid-cols-5 grid-cols-2 gap-2">
+        <div v-if="divisions.length > 0 && !isLoading" class="grid lg:grid-cols-5 grid-cols-1 gap-2">
             <div 
                 v-for="(division, i) in divisions" 
                 :key="i"

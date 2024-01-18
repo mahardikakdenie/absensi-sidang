@@ -286,7 +286,7 @@ watch(() => store?.meta?.per_page, (value) => {
 
 onMounted(() => {
     store.setHeaders(headers);
-    store.setNameConfig(setNameConfig?.value);
+    store.setNameConfig(null);
     getRolesData();
     checkUserCapabilities();
 });

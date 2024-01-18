@@ -101,6 +101,7 @@ export default {
     const getUser = () => {
       const callback = (response) => {
         const users = response?.data?.data;
+        localStorage.setItem('users', JSON.stringify(users));
         store.setUser(users);
       };
       const err = (e) => {

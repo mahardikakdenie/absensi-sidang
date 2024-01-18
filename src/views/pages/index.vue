@@ -12,7 +12,7 @@
                         <div class="flex justify-center">
                             <div class="flex-0">
                                 <div class="author-img w-[65px] h-[88px] rounded-[40px]">
-                                    <img v-if="media" :src="media.url" class="w-full h-full object-cover rounded-md" />
+                                    <img :src="media?.url ?? userDummyImage" class="w-full h-full object-cover rounded-md" />
                                 </div>
                             </div>
                         </div>
@@ -90,6 +90,7 @@ import VueBadge from '@/components/Badge/index.vue';
 import pageLoader from '@/components/Loader/pageLoader.vue';
 import projectApi from '@/helpers/projects';
 import { useRouter } from 'vue-router';
+import { userDummyImage } from "@/constant/static";
 
 const userStore = useUserStore();
 
@@ -123,9 +124,18 @@ const getMyProjects = () => {
     projectApi.getData(params, callback, err);
 };
 
+const checkCapabilities = () => {
+    const user = JSON.parse(localStorage.getItem('users'));
+    if (!user?.profile) {
+        router.push('/on-boarding');
+    }
+};
+
 watch(user, (newValue, oldValue) => {
     if (newValue && newValue.id !== undefined) {
         getMyProjects();
+    } else {
+        checkCapabilities();
     }
 });
 
@@ -133,6 +143,7 @@ onMounted(() => {
     if (user.value && user.value.id) {
         getMyProjects();
     }
+    checkCapabilities();
 });
 
 </script>

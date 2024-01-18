@@ -51,6 +51,7 @@ import Icon from "@/components/Icon";
 import profileImg from "@/assets/images/all-img/user.png";
 import { useUserStore } from '@/store/user'
 import { computed } from 'vue';
+import { userDummyImage } from "@/constant/static";
 export default {
   components: {
     Icon,
@@ -60,56 +61,13 @@ export default {
   data() {
     return {
       profileImg,
+      userDummyImage,
       ProfileMenu: [
-        // {
-        //   label: "Profile",
-        //   icon: "heroicons-outline:user",
-        //   link: () => {
-        //     this.$router.push("profile");
-        //   },
-        // },
-        // {
-        //   label: "Chat",
-        //   icon: "heroicons-outline:chat",
-        //   link: () => {
-        //     this.$router.push("chat");
-        //   },
-        // },
-        // {
-        //   label: "Email",
-        //   icon: "heroicons-outline:mail",
-        //   link: () => {
-        //     this.$router.push("email");
-        //   },
-        // },
-        // {
-        //   label: "Todo",
-        //   icon: "heroicons-outline:clipboard-check",
-        //   link: () => {
-        //     this.$router.push("todo");
-        //   },
-        // },
-        // {
-        //   label: "Settings",
-        //   icon: "heroicons-outline:cog",
-        //   link: () => {
-        //     this.$router.push("settings");
-        //   },
-        // },
-        // {
-        //   label: "Price",
-        //   icon: "heroicons-outline:credit-card",
-        //   link: () => {
-        //     this.$router.push("pricing");
-        //   },
-        // },
-        // {
-        //   label: "Faq",
-        //   icon: "heroicons-outline:information-circle",
-        //   link: () => {
-        //     this.$router.push("faq");
-        //   },
-        // },
+        {
+          label: 'Profile',
+          icon: 'pajamas:profile',
+          link: () => this.$router.push('/on-boarding'),
+        },
         {
           label: "Logout",
           icon: "heroicons-outline:login",
@@ -123,7 +81,7 @@ export default {
   setup() {
     const userstore = useUserStore();
     const profile = computed(() => userstore?.user);
-    const profileImage = profile?.value?.profile?.medias?.url ?? profileImg;
+    const profileImage = profile?.value?.profile?.medias?.url ?? userDummyImage;
 
     return {
       profile,

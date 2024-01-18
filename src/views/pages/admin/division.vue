@@ -302,7 +302,6 @@ const submit = (value, type) => {
 };
 
 const createDivision = (value) => {
-	console.log("🚀 ~ file: division.vue:302 ~ createDivision ~ value:", value)
 	const params = {
 		name: value?.[0]?.value,
 		usersIdsAssignTo: value?.[1]?.value?.map((curr) => curr.id),
