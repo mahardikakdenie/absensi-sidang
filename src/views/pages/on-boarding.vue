@@ -1,7 +1,7 @@
 <template>
 	<div class="space-y-5">
         <VueAllert type="success" dismissible icon="akar-icons:double-check">
-            Selamat datang, Mahardika Kessuma Denie! Akun Anda telah berhasil terdaftar di sistem kami. Untuk dapat mengakses sistem dengan lebih baik, mohon segera lengkapi profil Anda. Terima kasih atas kerjasama Anda.
+            Selamat datang, {{dataUser?.name}}! Akun Anda telah berhasil terdaftar di sistem kami. Untuk dapat mengakses sistem dengan lebih baik, mohon segera lengkapi profil Anda. Terima kasih atas kerjasama Anda.
         </VueAllert>
 		<Card title="Profile">
 			<div class="">
@@ -9,6 +9,20 @@
 					v-model="dataUser.name"
 					label="Nama"
 					placeholder="Masukan Nama"
+				/>
+				<InputField
+					v-model="dataUser.name"
+					label="Password"
+					placeholder="Masukan Password"
+					type="password"
+					hasicon
+				/>
+				<InputField
+					v-model="dataUser.name"
+					label="Konfirmasi Password"
+					placeholder="Konfirmasi Password"
+					type="password"
+					hasicon
 				/>
 				<InputField
 					v-model="dataUser.email"
@@ -134,10 +148,14 @@ export default {
 			getMe();
 		});
 
+		const password = ref();
+		const confirmPassword = ref();
+
 		const submit = () => {
 			const params = {
 				...form.value,
 				mediaId: mediaId?.value,
+				password: password?.value ?? null,
 			}
 			console.log("🚀 ~ submit ~ params:", params)
 			const callback = (res) => {
@@ -161,6 +179,8 @@ export default {
 			isFetching,
 			alertText,
 			onInputGender,
+			password,
+			confirmPassword,
 		}
 	},
 };

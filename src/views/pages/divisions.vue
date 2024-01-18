@@ -21,9 +21,13 @@ import BoxList from '@/components/Card/box-list.vue';
 import divisionApi from '@/helpers/division.js';
 import { onMounted, ref, computed } from 'vue';
 import pageLoader from '@/components/Loader/pageLoader.vue';
+import { useRouter } from 'vue-router';
+import { useToast } from 'vue-toastification';
 
 const user = computed(() => JSON.parse(localStorage.getItem('users')));
 const roles = computed(() => user?.value?.roles);
+const router = useRouter();
+const toast = useToast();
 
 const divisionsIds = ref();
 const checkCapabilities = () => {

@@ -9,7 +9,9 @@
 				<img
 					src="@/assets/images/svg/upload.svg"
 					alt=""
-					class="mx-auto mb-4" 
+					class="mx-auto mb-4"
+					width="100"
+					height="100"
                 />
 				<p
 					class="text-sm text-slate-500 dark:text-slate-300 font-light">
@@ -17,16 +19,18 @@
 				</p>
 			</div>
 			<div v-if="!isFetching" class="flex space-x-4">
-				<div v-for="(file, i) in files" :key="i" class="mb-4 flex-none">
-					<div class="relative mx-auto mt-6 rounded-md overflow-hidden">
+			<div v-for="(file, i) in files" :key="i" class="mb-4 flex-none">
+					<div class="mx-auto mt-6 rounded-md overflow-hidden">
 						<img
 							:src="file.preview"
-							width="48"
-							class="object-cover h-full w-full block rounded-md" 
-                        />
+							width="200"
+							class="object-cover block rounded-md" 
+							style="max-width: 100%; max-height: 100%;"
+						/>
 					</div>
 				</div>
 			</div>
+
 			<page-loader v-if="isFetching"/>
 		</div>
 		<div
