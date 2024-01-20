@@ -30,6 +30,11 @@
             :divisionId="assignationUserDivisionId"
             @close="isModalAssignation = false"
         />
+        <ShiftCreationModal 
+            :active-modal="isShiftModalVisible"
+            :project-id="projectId"
+            @close="isShiftModalVisible = false" 
+        />
 	</div>
 </template>
 
@@ -47,7 +52,8 @@ import userApi from '@/helpers/user';
 import divisionApi from '@/helpers/division';
 import { useToast } from 'vue-toastification';
 import ModalConfirm from '@/components/Modal/Confirm.vue';
-import ModalUserAssign from '@/components/Modal/UserAssignation.vue'
+import ModalUserAssign from '@/components/Modal/UserAssignation.vue';
+import ShiftCreationModal from '@/components/Modal/ShiftCreation.vue';
 const userDummyImage =
 	'https://static.vecteezy.com/system/resources/previews/018/765/757/original/user-profile-icon-in-flat-style-member-avatar-illustration-on-isolated-background-human-permission-sign-business-concept-vector.jpg';
 
@@ -59,6 +65,7 @@ const toast = useToast();
 const user = computed(() => JSON.parse(localStorage.getItem('users')));
 const roles = computed(() => user?.value?.roles);
 const projectId = ref();
+const isShiftModalVisible = ref(false);
 
 const headers = [
 	{
@@ -180,7 +187,6 @@ const isModalAssignation = ref(false);
 const assignationUserDivisionId = ref();
 const usersAssignation = ref([]);
 const handleTypeAction = (value) => {
-    console.log("🚀 ~ handleTypeAction ~ value:", value?.key === 'name-table')
     if (value.key === 'update') {
         isModalFormVisible.value = true;
         typeForm.value = value.key;
@@ -194,7 +200,11 @@ const handleTypeAction = (value) => {
         assignationUserDivisionId.value = value?.data?.devisionId;
     }else if (value?.key === 'name-table') {
         console.log('Haloo key');
-    } else if (value?.key !== 'add') {
+    } else if (value?.key === 'shift-creator') {
+        isShiftModalVisible.value = true;
+        projectId.value = value?.data?.id;
+    } 
+    else if (value?.key !== 'add') {
         toggleModalConfirm();
         textModal.value = `Apakah anda yakin ingin mengubah status menjadi ${value?.key} di project ${value.data.name}`;
     }
@@ -237,7 +247,7 @@ const getData = () => {
 	const params = {
 		division_id: divisionId?.value ?? route?.query?.division_id,
 		division_ids: divisionsIds?.value ?? null,
-        entities: 'users.user.profile.medias, users.user.roles.role, division',
+        entities: 'users.user.profile.medias, users.user.roles.role, division, shift.shift',
 	};
 	const callback = (response) => {
 		const projects = response?.data?.data;
@@ -258,7 +268,7 @@ const getData = () => {
 				name: user?.user?.name,
 			})),
             left_date: `${totalDate(project?.startdate, project?.targetdate)} Lagi`,
-            shift: '-',
+            shift: project?.shift,
             fisik: '0%'
         }))
 		store.setData(projectMap);
@@ -314,9 +324,7 @@ const getSelectedDivisions = () => {
 
 const init = () => {
 	const query = route.query;
-	console.log("🚀 ~ init ~ query:", query)
 	divisionId.value = query?.division_id;
-	console.log("🚀 ~ init ~ divisionId.value:", divisionId.value)
 };
 
 const dataMounted = onMounted(() => {
@@ -348,7 +356,6 @@ const onSubmit = (data, type) => {
         longitude: data?.[7]?.value?.longitude,
         latitude: data?.[7]?.value?.latitude,
     };
-    console.log("🚀 ~ file: project.vue:250 ~ onSubmit ~ params:", params)
 
     if (type === 'add') {
         createProject(params);

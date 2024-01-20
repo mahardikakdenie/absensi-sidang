@@ -76,16 +76,20 @@ const actions = [
 	},
 ];
 
-
+const meta = computed(() => store?.meta);
 const fetchParams = computed(() => ({
     entities: 'project.division,user.profile.medias',
     admin_mode: true,
+    paginate: meta?.per_page,
+    page: meta?.current_page,
 }));
 
 const getDataAttendance = () => {
     const params = fetchParams?.value
     const callback = (res) => {
         const data = res?.data?.data;
+        const meta = res?.data?.meta;
+        console.log("🚀 ~ callback ~ meta:", meta)
         const configMapping = data?.map(curr => ({
             image: curr?.user?.profile?.medias?.url ?? userDummyImage,
             name: curr?.user?.name,
@@ -95,6 +99,7 @@ const getDataAttendance = () => {
             full_address: curr?.full_address ?? '-',
         }))
         store?.setData(configMapping);
+        store?.setMeta(meta);
     };
     const err = (e) => {
         console.log(e);
@@ -106,7 +111,6 @@ const getDataAttendance = () => {
 const getDataAttendanceSummary = () => {
     const callback = (res) => {
         const data = res?.data?.data;
-        console.log(data);
         statistics.value[0].count = data?.all ?? 0;
         statistics.value[1].count = data?.clockin ?? 0;
         statistics.value[2].count = data?.clockout ?? 0;

@@ -16,9 +16,9 @@
                 v-tippy="{
                     placement: 'top',
                 }"
-                :to="`/detail-project/${element?.id}`"
+                :to="`/detail-project/${element?.id}?shift_id=${element?.shift_id}`"
                 class="board-title dark:text-slate-200 text-slate-900 truncate hover:text-primary-600">
-                {{ element?.name ?? 'name' }}
+                {{ element?.name ?? 'name' }} <span class="tex-sm">{{ element?.timeIn }} - {{ element?.timeOut }}</span>
             </router-link>
         </div>
     </div>

@@ -105,7 +105,7 @@
 					btn-class="btn btn-danger light btn-sm"
 					@click="$emit('close')" />
 				<vue-button
-					text="Add User"
+					text="Submit"
 					:is-disabled="!noErrors"
 					btn-class="btn btn-primary light btn-sm"
 					@click="submit" />

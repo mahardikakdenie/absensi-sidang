@@ -157,7 +157,6 @@ export default {
 				mediaId: mediaId?.value,
 				password: password?.value ?? null,
 			}
-			console.log("🚀 ~ submit ~ params:", params)
 			const callback = (res) => {
 				if (res?.data?.meta?.status) {
 					toast?.success('Update Profile Berhasil');

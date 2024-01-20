@@ -24,7 +24,7 @@
       ></div>
     </Transition>
     <!-- mobile sidebar -->
-    <!-- <Settings /> -->
+    <Settings />
 
     <div
       class="content-wrapper transition-all duration-150"
@@ -43,9 +43,9 @@
         >
           <Breadcrumbs v-if="!this.$route.meta.hide" />
           <router-view v-slot="{ Component }">
-            <transition name="router-animation" mode="out-in" appear>
+            <!-- <transition name="router-animation" mode="out-in" appear> -->
               <component :is="Component"></component>
-            </transition>
+            <!-- </transition> -->
           </router-view>
         </div>
       </div>

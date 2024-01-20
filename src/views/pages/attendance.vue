@@ -74,6 +74,7 @@ const toast = useToast();
 const route = useRoute();
 const router = useRouter();
 
+
 const typeAction = computed(() => route.params.type);
 
 const isOpenCamera = ref(false);
@@ -173,6 +174,7 @@ const SubmitAttendance = () => {
         action: route.params.type,
         time: formattedCurrentTime.value,
         full_address: fullAddress.value,
+        shiftId: route?.query?.shift_id,
     };
 
     const callback = (response) => {

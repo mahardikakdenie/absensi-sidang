@@ -1,5 +1,6 @@
 import { axiosHit } from "@/constant/helpers.js";
 const endpoint = "/project";
+const endpointShift = '/shift';
 export default {
   getData(params, callback, errCB) {
     axiosHit(endpoint, params, "post", callback, errCB);
@@ -25,5 +26,10 @@ export default {
 
   insertUserProject(params, callback, errCb) {
     axiosHit(`user-project`, params, 'post', callback, errCb);
+  },
+
+  createShift(params, callback, errCb) {
+    const url = `${endpointShift}/store`;
+    axiosHit(url, params, 'post', callback, errCb);
   },
 };

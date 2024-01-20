@@ -1,36 +1,18 @@
 <template>
     <div class="flex justify-start -space-x-1.5">
         <div
-            v-for="(user, userIndex) in data.assignto"
-            :key="userIndex"
-            class="h-6 w-6 rounded-full ring-1 ring-slate-100 cursor-pointer"
+            class="rounded-full ring-1 ring-slate-100 cursor-pointer h-full"
             @click="openModal"
         >
-            <img
-                :src="user?.url"
-                :content="user?.name"
-                v-tippy="{
-                    placement: 'top'
-                }"
-                :alt="user.title"
-                class="w-full h-full rounded-full" 
-            />
-        </div>
-        <div
-            class="assign-btn"
-            v-tippy="{
-                placement: 'top',
-            }"
-            :content="`Lihat ${data?.assignto?.length} Anggota`"
-            @click="openModal"
-        >
-            {{ data?.assignto?.length > 0 ? `+${data?.assignto?.length ?? 0}` : '-'  }}
+            <vue-badge :label="setDisplayShift" />
         </div>
     </div>
 </template>
 
 <script>
 import {useDataTableStore} from '@/store/data-table';
+import VueBadge from '@/components/Badge';
+import { computed } from 'vue';
 export default {
     props: {
         /**
@@ -44,19 +26,34 @@ export default {
         }
     },
 
+    components: {
+        VueBadge,
+    },
+
     setup(props) {
         const store = useDataTableStore();
 
         const openModal = () => {
             const params = {
                 data: props?.data,
-                key: 'assign',
+                key: 'shift-creator',
             }
             store?.trigerAction(params)
-        }
+        };
+
+        const setDisplayShift = computed(() => {
+            const shifts = props?.data?.shift;
+            let displayStr = 'Lihat SHift';
+            if (shifts?.length === 0) {
+                displayStr = 'TIdak ada Shift';
+            }
+
+            return displayStr;
+        });
 
         return {
             openModal,
+            setDisplayShift,
         }
     },
 }

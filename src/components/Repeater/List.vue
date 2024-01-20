@@ -209,7 +209,6 @@ const getUserSelected = (projectId) => {
 		if (response?.data?.meta?.status) {
 			userCount.value = response?.data?.data;
 			createUserDisplay(response?.data?.data);
-			console.log(response?.data?.data);
 		}
 		isFetching.value = false;
 	};

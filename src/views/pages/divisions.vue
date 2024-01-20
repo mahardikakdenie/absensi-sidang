@@ -30,29 +30,15 @@ const router = useRouter();
 const toast = useToast();
 
 const divisionsIds = ref();
-const checkCapabilities = () => {
-	const checkIsUserAdmin = roles?.value?.map(role => role?.role?.name).includes('user_admin');
-	const checkIsUser = roles?.value?.map(role => role?.role?.name).includes('user');
-	const checkIsUserAccebility = checkIsUserAdmin || checkIsUser;
-    const hasDivisions = user?.value?.divisions?.map(division => division?.devision_id) || [];
-	if (checkIsUserAccebility && hasDivisions?.length === 0) {
-		localStorage.removeItem('token');
-		router.push('/login');
-		toast?.error('Anda tidak memiliki divisi yang terdaftar, untuk lebih lanjut hubungi Admin');
-	} else if (checkIsUserAccebility) {
-		divisionsIds.value = hasDivisions;
-	}
-	getData();
-};
 
 const divisions = ref([]);
 const isLoading = ref(false);
-
 const getData = () => {
     const params = {
         division_ids: divisionsIds?.value,
         status: 'publish',
         entities: 'users.user.profile.medias',
+		isMyDivision: true,
     }
     const callback = (response) => {
         const res = response?.data?.data;
@@ -61,9 +47,8 @@ const getData = () => {
             assignto: curr?.users?.map(user => ({
                 name: user?.user?.name,
                 image: curr?.user?.profile?.medias?.url
-            }))
-        }))
-        console.log("🚀 ~ data ~ data:", data)
+            })),
+        }));
         divisions.value = data;
     };
 
@@ -72,6 +57,17 @@ const getData = () => {
     };
 
     divisionApi.getData(params, callback, err);
+};
+const checkCapabilities = () => {
+    getData();
+	const checkIsUserAdmin = roles?.value?.map(role => role?.role?.name).includes('user_admin');
+	const checkIsUser = roles?.value?.map(role => role?.role?.name).includes('user');
+	const checkIsUserAccebility = checkIsUserAdmin || checkIsUser;
+	if (!checkIsUserAccebility) {
+        localStorage.removeItem('token');
+		router.push('/login');
+		toast?.error('Anda Memiliki Role yang tidak bisa masuk ke halaman ini, untuk lebih lanjut hubungi Admin');
+	}
 };
 
 onMounted(() => {

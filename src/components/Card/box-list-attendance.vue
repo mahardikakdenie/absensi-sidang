@@ -19,8 +19,8 @@
 							:badgeClass="`text-xs ${setBadgeColor(attendance.type)} text-white bg-opacity-75 badge-type`" 
                         />
 						<vue-badge
-							label="On Time"
-							badgeClass="bg-success-500 text-xs text-white bg-opacity-75 badge-status" 
+							:label="attendance?.status ?? 'late'"
+							badgeClass="bg-danger-500 text-xs text-white bg-opacity-75 badge-status" 
                         />
 					</div>
 				</div>
@@ -91,6 +91,7 @@ const getDataAttendanceLog = () => {
         if (response.data.meta.status) {
             isLoading.value = false;
             attendances.value = response.data.data;
+            console.log("🚀 ~ callback ~ attendances.value:", attendances.value)
             attendanceMeta.value = response.data.meta;
 		}
 	};

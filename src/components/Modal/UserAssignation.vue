@@ -27,6 +27,7 @@ import Modal from '@/components/Modal';
 import ListRepeater from '@/components/Repeater/List.vue';
 import VueButton from '@/components/Button';
 import { onMounted } from 'vue';
+
 const props = defineProps({
     title: {
         type: String,
@@ -48,7 +49,6 @@ const props = defineProps({
 		type: [String, Number],
 		default: null,
 	},
-
 });
 
 onMounted(() => {   

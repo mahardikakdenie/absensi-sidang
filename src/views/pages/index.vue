@@ -57,8 +57,16 @@
                                         Deadline : <span class="font-normal">{{ dayjs(project.targetdate).format('dddd, D MMMM YYYY') }}</span>
                                     </span>
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
-                                        <vue-button text="Clock In" btn-class="btn btn-sm btn-success light" @click="setType('clockin', project)" />
-                                        <vue-button text="Clock out" btn-class="btn btn-sm btn-danger light" @click="setType('clockout', project)" />
+                                        <vue-button 
+                                            text="Clock In" 
+                                            btn-class="btn btn-sm btn-success light" 
+                                            @click="setType('clockin', project)" 
+                                        />
+                                        <vue-button 
+                                            text="Clock out" 
+                                            btn-class="btn btn-sm btn-danger light" 
+                                            @click="setType('clockout', project)" 
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -91,6 +99,7 @@ import pageLoader from '@/components/Loader/pageLoader.vue';
 import projectApi from '@/helpers/projects';
 import { useRouter } from 'vue-router';
 import { userDummyImage } from "@/constant/static";
+import {getDataShift} from '@/helpers/shift';
 
 const userStore = useUserStore();
 
@@ -104,6 +113,25 @@ const isProjectFetching = ref(false);
 
 const setType = (type, project) => {
 	router.push(`/attendance/${type}/${project?.id}`)
+};
+
+const getDataMyShift = () => {
+    const params = {
+        is_myshift: true,
+        entities: 'projectShift.project.shift',
+    };
+    const callback = (res) => {
+        console.log(res?.data?.data);
+        const shifts = res?.data?.data;
+        projects.value = shifts?.map(curr => ({
+            ...curr?.project_shift?.[0]?.project,
+            timeIn: curr?.timeIn,
+            timeOut: curr?.timeOut,
+            shift_id: curr?.id,
+        }))
+    };
+    const err = () => {};
+    getDataShift(params,callback, err)
 };
 
 const getMyProjects = () => {
@@ -133,7 +161,7 @@ const checkCapabilities = () => {
 
 watch(user, (newValue, oldValue) => {
     if (newValue && newValue.id !== undefined) {
-        getMyProjects();
+        // getMyProjects();
     } else {
         checkCapabilities();
     }
@@ -141,9 +169,10 @@ watch(user, (newValue, oldValue) => {
 
 onMounted(() => {
     if (user.value && user.value.id) {
-        getMyProjects();
+        // getMyProjects();
     }
     checkCapabilities();
+    getDataMyShift();
 });
 
 </script>

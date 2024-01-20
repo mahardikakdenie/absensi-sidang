@@ -101,7 +101,8 @@
   </ul>
 </template>
 <script>
-import { topMenu } from "../../../constant/data.js";
+// import { topMenu } from "../../../constant/data.js";
+import { topMenu } from "@/constant/static";
 import Icon from "../../Icon";
 export default {
   components: {
