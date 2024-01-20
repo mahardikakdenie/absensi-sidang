@@ -31,7 +31,7 @@
                                 <div class="mt-2">
                                     <ul>
                                         <li v-for="(division, index) in divisions" :key="index">
-                                            <vue-badge :label="division?.division?.name" />
+                                            <vue-badge :label="division?.division?.name" badge-class="mt-2" />
                                         </li>
                                     </ul>
                                 </div>
@@ -118,17 +118,17 @@ const setType = (type, project) => {
 const getDataMyShift = () => {
     const params = {
         is_myshift: true,
-        entities: 'projectShift.project.shift',
+        entities: 'projectShift.project.shift, projectShift.project.division',
     };
     const callback = (res) => {
-        console.log(res?.data?.data);
         const shifts = res?.data?.data;
         projects.value = shifts?.map(curr => ({
             ...curr?.project_shift?.[0]?.project,
             timeIn: curr?.timeIn,
             timeOut: curr?.timeOut,
             shift_id: curr?.id,
-        }))
+        })).filter(curr => curr?.division?.status === 'publish');
+        console.log("🚀 ~ callback ~ projects.value:", projects.value)
     };
     const err = () => {};
     getDataShift(params,callback, err)

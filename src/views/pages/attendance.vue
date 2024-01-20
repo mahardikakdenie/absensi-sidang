@@ -68,11 +68,14 @@ import { computed, onBeforeMount, onMounted, ref, watch } from 'vue';
 import { useToast } from 'vue-toastification';
 import { uploadMedia,uploadMediaImgur } from '@/helpers/media.js';
 import { attendance } from '@/helpers/attendances.js';
+import projectApi from '@/helpers/projects';
 import axios from 'axios';
 
 const toast = useToast();
 const route = useRoute();
 const router = useRouter();
+
+const shiftId = ref();
 
 
 const typeAction = computed(() => route.params.type);
@@ -159,8 +162,28 @@ const formattedCurrentTime = computed(() => {
     return timeString;
 })
 
+const getDetailProject = () => {
+    const params = {
+        entities: 'shift',
+    }
+    const callback = (response) => {
+        const project = response?.data?.data;
+        shiftId.value = project?.shift?.[0]?.shift_id ?? route?.query?.shift_id
+        if (!shiftId?.value) {
+            toast?.error('Project Ini Tidak Memiliki Shift, Untuk Lebih lanjut hubungi Admin')
+            router?.push(`/detail-project/${project?.id}`);
+        }
+    }
+
+    const err = (e) => {
+        console.log(e);
+    }
+    
+    projectApi.getDetailProject(route?.params?.project_id, params, callback, err)
+};
 
 onMounted(() => {
+    getDetailProject();
     checkValidRoute();
 });
 
@@ -174,8 +197,9 @@ const SubmitAttendance = () => {
         action: route.params.type,
         time: formattedCurrentTime.value,
         full_address: fullAddress.value,
-        shiftId: route?.query?.shift_id,
+        shiftId: shiftId?.value ?? route?.query?.shift_id,
     };
+    console.log("🚀 ~ SubmitAttendance ~ form.shiftId?.value:", form.shiftId?.value)
 
     const callback = (response) => {
         if (response.data.meta.status) {

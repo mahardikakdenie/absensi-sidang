@@ -20,7 +20,7 @@
                         />
 						<vue-badge
 							:label="attendance?.status ?? 'late'"
-							badgeClass="bg-danger-500 text-xs text-white bg-opacity-75 badge-status" 
+							:badgeClass="`${setBadgeColor(attendance.status ?? 'late')} text-xs text-white bg-opacity-75 badge-status`" 
                         />
 					</div>
 				</div>
@@ -107,6 +107,8 @@ const setBadgeColor = (type) => {
     let color = 'bg-success-500';
     if (type === 'clockout') {
         color = 'bg-primary-500'
+    } else if (type === 'late') {
+        color = 'bg-danger-500';
     }
 
     return color;

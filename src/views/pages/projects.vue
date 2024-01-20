@@ -40,19 +40,26 @@ const dataProjects = computed(() => {
 	return projects?.value?.map(project => ({
 		...project,
 		name: project?.name ?? 'Name',
-		progress: 69
+		progress: 69,
+		assignto: project?.users?.map(user => ({
+			name: user?.user?.name,
+			image: project?.user?.profile?.medias?.url
+		})),
 	}))
 })
 // Fetch data from API
 const params = computed(() => ({
 	division_id: route.params.division_id,
 	status: 'publish',
+	entities: 'users',
+	is_my_project: true,
 }));
 const getData = () => {
     isLoading.value = true;
 	const callback = (response) => {
         isLoading.value = false;
 		projects.value = response.data.data;
+		console.log("🚀 ~ callback ~ projects.value:", projects.value)
 	};
 
 	const err = (e) => {
