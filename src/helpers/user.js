@@ -35,4 +35,9 @@ export default {
         const url = `${endpointUser}/profile`;
         axiosHit(url, params, 'post', cb, errCb);
     },
+
+    changePassword(params, cb, errCb) {
+        const endpoint = 'auth/change-password';
+        axiosHit(endpoint, params, 'post', cb, errCb);
+    }
 }

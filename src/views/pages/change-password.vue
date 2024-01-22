@@ -1,49 +1,29 @@
 <template>
 	<div class="space-y-5">
-        <VueAllert type="success" dismissible icon="akar-icons:double-check">
-            Selamat datang, {{dataUser?.name}}! Akun Anda telah berhasil terdaftar di sistem kami. Untuk dapat mengakses sistem dengan lebih baik, mohon segera lengkapi profil Anda. Terima kasih atas kerjasama Anda.
-        </VueAllert>
 		<Card title="Profile">
 			<div class="">
 				<InputField
-					v-model="dataUser.name"
-					label="Nama"
-					placeholder="Masukan Nama"
-				/>
-				<!-- <InputField
-					v-model="dataUser.password"
-					label="Password"
-					placeholder="Masukan Password"
+					v-model="password"
+					label="Password Lama"
+					placeholder="Masukan Password Lama"
 					type="password"
 					hasicon
 				/>
 				<InputField
-					v-model="dataUser.name"
-					label="Konfirmasi Password"
-					placeholder="Konfirmasi Password"
+                    class="mt-4"
+					v-model="newPassword"
+					label="Password Baru"
+					placeholder="Masukan Password Baru"
 					type="password"
 					hasicon
-				/> -->
-				<InputField
-					v-model="dataUser.email"
-					label="Email"
-					placeholder="Masukan Email"
 				/>
-				<InputField
-					v-model="form.phoneNumber"
-					label="Nomor Telepon"
-					placeholder="Masukan Nomor Telepon"
-				/>
-				<InputTextArea 
-					v-model="form.address" 
-					label="Alamat" 
-					placeholder="Masukan Alamat" 
-				/>
-				<label>Upload Foto Profile</label>
-				<DropZoneVue @upload="upload" />
 			</div>
 			<div class="flex justify-end mt-3">
-				<vue-button text="Update" btn-class="btn-sm btn btn-dark" @click="submit" />
+				<vue-button 
+                    text="Update" 
+                    btn-class="btn-sm btn btn-dark" 
+                    @click="submit" 
+                />
 			</div>
 		</Card>
 	</div>
@@ -76,13 +56,6 @@ export default {
 		VueSelect,
 		DropZoneVue,
 	},
-
-	data() {
-		return {
-			genderOptions: ['Laki-Laki', 'Perempuan'],
-		}
-	},
-	
 	setup() {
 		const toast = useToast();
 		const router = useRouter();
@@ -100,11 +73,9 @@ export default {
 		};
 		const checkCapabilities = () => {
 			if (user?.status !== 'active') {
-				console.log("🚀 ~ checkCapabilities ~ user?.statu:", user?.statu)
 				toast?.error('Lengkapi data anda !!');
-				router?.push('/on-boarding');
+				router?.push('/change-password');
 			}
-			console.log(user?.status)
 		};
 
 		const getMe = () => {
@@ -114,7 +85,7 @@ export default {
 			const callback = (res) => {
 				if (res?.data?.meta?.status) {
 					const data = res?.data?.data;
-					localStorage.setItem('users', JSON.stringify(data));
+					form?.value 
 				}
 			};
 			const err = (e) => {};
@@ -151,21 +122,26 @@ export default {
 		});
 
 		const password = ref();
-		const confirmPassword = ref();
+		const newPassword = ref();
 
 		const submit = () => {
 			const params = {
-				...form.value,
-				mediaId: mediaId?.value,
-				password: password?.value ?? null,
+				currentPassword: password?.value,
+                newPassword: newPassword?.value
 			}
 			const callback = (res) => {
 				if (res?.data?.meta?.status) {
+                    const user = res?.data?.data?.user;
+                    if (!user?.profile) {
+                        router.push('/on-boarding');
+                    }
 					toast?.success('Update Profile Berhasil');
+                    password.value = '';
+                    newPassword.value = '';
 				}
 			};
 			const err = (e) => {};
-			userApi.updateProfile(params, callback, err);
+			userApi.changePassword(params, callback, err);
 		};
 
 		const onInputGender = (e) => {
@@ -181,7 +157,7 @@ export default {
 			alertText,
 			onInputGender,
 			password,
-			confirmPassword,
+			newPassword,
 		}
 	},
 };

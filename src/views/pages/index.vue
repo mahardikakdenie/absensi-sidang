@@ -39,6 +39,10 @@
                         </div>
                     </div>
                 </card>
+                <div class="grid grid-cols-1 sm:grid-cols-2 my-4 gap-4">
+                    <vue-button text="Change Password" btn-class="btn-sm btn-primary light" @click="$router.push('/change-password')" />
+                    <vue-button text="Change Profile" btn-class="btn btn-success light btn-sm" @click="$router.push('/on-boarding')" />
+                </div>
             </div>
             <div class="col-span-1 sm:col-span-2">
                 <card>

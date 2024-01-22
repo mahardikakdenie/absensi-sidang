@@ -69,6 +69,11 @@ export default {
           link: () => this.$router.push('/on-boarding'),
         },
         {
+          label: 'Change Password',
+          icon: 'mdi:password-outline',
+          link: () => this?.$router?.push('/change-password'),
+        },
+        {
           label: "Logout",
           icon: "heroicons-outline:login",
           link: () => {
