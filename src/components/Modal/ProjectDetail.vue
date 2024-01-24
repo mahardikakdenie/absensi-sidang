@@ -76,15 +76,15 @@
         <template #footer>
             <div class="flex justify-end mt-4 gap-2">
                 <vue-button
-                    text="Cancel"
-                    btn-class="btn btn-danger light btn-sm"
+                    text="Tutup"
+                    btn-class="btn btn-danger light btn-dark"
                     @click="$emit('close')" 
                 />
-                <vue-button
+                <!-- <vue-button
                     text="Confirm"
                     btn-class="btn btn-primary light btn-sm"
                     @click="submit" 
-                />
+                /> -->
             </div>
         </template>
     </modal>

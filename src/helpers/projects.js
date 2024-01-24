@@ -33,5 +33,8 @@ export default {
     axiosHit(url, params, 'post', callback, errCb);
   },
 
-  updateShift(params, callback, errCb) {},
+  updateShift(id,params, callback, errCb) {
+    const url = `${endpointShift}/update/${id}`;
+    axiosHit(url, params, 'put', callback, errCb);
+  },
 };

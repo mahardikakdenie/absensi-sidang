@@ -49,11 +49,13 @@
 				<VueButton
 					text="Cancel"
 					btn-class="btn-sm btn btn-danger"
-					@click="close" />
+					@click="close" 
+				/>
 				<VueButton
 					text="Submit"
 					btn-class="btn-sm btn btn-primary"
-					@click="submit" />
+					@click="submit" 
+				/>
 			</template>
 		</modal>
 	</div>
@@ -69,6 +71,7 @@ import vSelect from 'vue-select';
 import projectApi from '@/helpers/projects';
 import { useDataTableStore } from '@/store/data-table';
 import { useToast } from 'vue-toastification';
+import { duplicateVar } from '@/constant/helpers';
 
 const timeIn = ref();
 const timeOut = ref();
@@ -137,6 +140,22 @@ const close = () => {
 const submit = () => {
 	const typeIsUpdate = store?.typeAction?.shifts.length > 0;
 	if (typeIsUpdate) {
+		const params = {
+			timeIn: timeIn?.value,
+			timeOut: timeOut?.value,
+		};
+		const callback = (res) => {
+			if (res?.data?.meta?.status) {
+				close();
+				toast?.success('Shift Sudah di update Harap Refresh');
+			}
+		};
+
+		const err = (e) => {
+			console.log(e);
+		}
+
+		projectApi?.updateShift(store?.typeAction?.shifts?.[0]?.id, params, callback, err);
 	} else {
 		const userIds = store?.typeAction?.data?.users?.map(
 			(user) => user?.user_id
