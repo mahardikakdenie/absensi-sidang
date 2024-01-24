@@ -35,6 +35,12 @@
             :project-id="projectId"
             @close="isShiftModalVisible = false" 
         />
+        <ProductDetailModal 
+            :active-modal="isProductDetailModal" 
+            :data="project"
+            title="Project Detail"
+            @close="isProductDetailModal = false"
+        />
 	</div>
 </template>
 
@@ -54,6 +60,7 @@ import { useToast } from 'vue-toastification';
 import ModalConfirm from '@/components/Modal/Confirm.vue';
 import ModalUserAssign from '@/components/Modal/UserAssignation.vue';
 import ShiftCreationModal from '@/components/Modal/ShiftCreation.vue';
+import ProductDetailModal from '@/components/Modal/ProjectDetail.vue';
 const userDummyImage =
 	'https://static.vecteezy.com/system/resources/previews/018/765/757/original/user-profile-icon-in-flat-style-member-avatar-illustration-on-isolated-background-human-permission-sign-business-concept-vector.jpg';
 
@@ -66,6 +73,8 @@ const user = computed(() => JSON.parse(localStorage.getItem('users')));
 const roles = computed(() => user?.value?.roles);
 const projectId = ref();
 const isShiftModalVisible = ref(false);
+const isProductDetailModal = ref(false);
+const project = ref();
 
 const headers = [
 	{
@@ -200,6 +209,8 @@ const handleTypeAction = (value) => {
         assignationUserDivisionId.value = value?.data?.devisionId;
     }else if (value?.key === 'name-table') {
         console.log('Haloo key');
+        project.value = value?.data;
+        isProductDetailModal.value = true;
     } else if (value?.key === 'shift-creator') {
         isShiftModalVisible.value = true;
         projectId.value = value?.data?.id;

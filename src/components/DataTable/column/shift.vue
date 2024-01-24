@@ -34,9 +34,11 @@ export default {
         const store = useDataTableStore();
 
         const openModal = () => {
+            const shifts = props?.data?.shift;
             const params = {
                 data: props?.data,
                 key: 'shift-creator',
+                shifts,
             }
             store?.trigerAction(params)
         };

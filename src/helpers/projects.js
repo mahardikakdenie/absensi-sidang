@@ -32,4 +32,6 @@ export default {
     const url = `${endpointShift}/store`;
     axiosHit(url, params, 'post', callback, errCb);
   },
+
+  updateShift(params, callback, errCb) {},
 };
