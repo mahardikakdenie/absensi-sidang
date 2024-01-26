@@ -91,7 +91,7 @@
 							</div>
 						</div>
 
-						<div class="grid grid-cols-2 mt-4 gap-2">
+						<div v-if="false" class="grid grid-cols-2 mt-4 gap-2">
 							<vue-button
 								text="Approve"
 								btn-class="btn btn-primary light btn-sm"
