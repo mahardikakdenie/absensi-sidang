@@ -40,10 +40,16 @@
                         <div class="">
                             <h3 class="text-lg font-bold mb-2">Fisik dan Pencairan</h3>
                             <div class="px-2">
-                                <input-text placeholder="Fisik (%)" />
+                                <input-text
+                                    v-model="physical_process"
+                                    placeholder="Fisik (%)" 
+                                />
                             </div>
                             <div class="px-2 mt-2">
-                                <input-text placeholder="Pencairan (%)" />
+                                <input-text v-model="disbursement_of_funds" placeholder="Pencairan (%)" />
+                            </div>
+                            <div class="flex justify-end p-2">
+                                <vue-button text="Submit" btn-class="btn btn-sm btn-primary" @click="submit" />
                             </div>
                         </div>
                     </div>
@@ -80,11 +86,6 @@
                     btn-class="btn btn-danger light btn-dark"
                     @click="$emit('close')" 
                 />
-                <!-- <vue-button
-                    text="Confirm"
-                    btn-class="btn btn-primary light btn-sm"
-                    @click="submit" 
-                /> -->
             </div>
         </template>
     </modal>
@@ -95,10 +96,11 @@ import Modal from '@/components/Modal/index.vue';
 import VueButton from '@/components/Button';
 import { useDataTableStore } from '@/store/data-table';
 import InputText from '@/components/Textinput';
-import { computed } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import dayjs from 'dayjs';
 import { userDummyImage } from '@/constant/static';
 import VueBadge from '@/components/Badge'
+import { duplicateVar } from '@/constant/helpers';
 
 
 const store = useDataTableStore();
@@ -110,10 +112,19 @@ const props = defineProps({
     data: Object
 });
 
+const physical_process = ref('');
+const disbursement_of_funds = ref();
+
 const emits = defineEmits(['close', 'submit']);
 
 const close = () => {
     emits('close');
+};
+
+const init = () => {
+    const data = duplicateVar(props?.data);
+    physical_process.value = data?.physical_process;
+    disbursement_of_funds.value = data?.disbursement_of_funds;
 };
 
 const formatShiftTime = (time) => {
@@ -121,6 +132,14 @@ const formatShiftTime = (time) => {
 };
 
 const submit = () => {
-    emits('submit', data?.value, type?.value);
+    emits('submit', physical_process.value, disbursement_of_funds.value);
 };
+
+onMounted(() => {
+    init();
+});
+
+watch(() => props?.data, () => {
+    init();
+})
 </script>

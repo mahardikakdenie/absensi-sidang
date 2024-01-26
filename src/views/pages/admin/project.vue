@@ -40,6 +40,7 @@
             :data="project"
             title="Project Detail"
             @close="isProductDetailModal = false"
+            @submit="onChangeProjectProcess"
         />
 	</div>
 </template>
@@ -208,9 +209,10 @@ const handleTypeAction = (value) => {
         projectId.value = value?.data?.id;
         assignationUserDivisionId.value = value?.data?.devisionId;
     }else if (value?.key === 'name-table') {
-        console.log('Haloo key');
         project.value = value?.data;
+        console.log("🚀 ~ handleTypeAction ~ project.value:", project.value)
         isProductDetailModal.value = true;
+        projectId.value = value?.data?.id;
     } else if (value?.key === 'shift-creator') {
         isShiftModalVisible.value = true;
         projectId.value = value?.data?.id;
@@ -280,7 +282,7 @@ const getData = () => {
 			})),
             left_date: `${totalDate(project?.startdate, project?.targetdate)} Lagi`,
             shift: project?.shift,
-            fisik: '0%'
+            fisik: `${project?.physical_process ?? 0}%`,
         }))
 		store.setData(projectMap);
 	};
@@ -413,6 +415,15 @@ const updateProject = (formValue, params, type = 'form') => {
     }
 
     projectsApi.updateProject(projectId?.value, params, callback, err);
+};
+
+const onChangeProjectProcess = (physical_process, disbursement_of_funds) => {
+    const params = {
+        physical_process,
+        disbursement_of_funds,
+    }
+
+    updateProject(params, params, '');
 };
 
 onBeforeUnmount(() => {

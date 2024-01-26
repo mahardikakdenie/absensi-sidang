@@ -59,7 +59,6 @@ const getData = () => {
 	const callback = (response) => {
         isLoading.value = false;
 		projects.value = response.data.data;
-		console.log("🚀 ~ callback ~ projects.value:", projects.value)
 	};
 
 	const err = (e) => {
