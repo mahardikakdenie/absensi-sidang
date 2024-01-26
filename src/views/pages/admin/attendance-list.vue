@@ -6,8 +6,11 @@
         </div>
     </card>
     <card>
-        <data-table title="Attendance List" />
+        <data-table 
+            title="Attendance List" 
+        />
     </card>
+    <ModalAttendanceDetail :activeModal="isAttendanceModalVisible" :data="attendanceData" @close="isAttendanceModalVisible = false" />
 </div>
 </template>
 
@@ -15,13 +18,17 @@
 import Card from '@/components/Card/index.vue';
 import BoxSummary from '@/components/Card/box-summary.vue';
 import DataTable from '@/components/DataTable/index.vue';
-import { computed, onMounted, ref } from 'vue';
+import ModalAttendanceDetail from '@/components/Modal/AttendanceDetail.vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { getAllData, getDataSummary } from "@/helpers/attendances";
 import { useDataTableStore } from '@/store/data-table';
 const userDummyImage = 'https://static.vecteezy.com/system/resources/previews/018/765/757/original/user-profile-icon-in-flat-style-member-avatar-illustration-on-isolated-background-human-permission-sign-business-concept-vector.jpg';
 
 
 const store = useDataTableStore();
+
+const attendanceData = ref();
+const isAttendanceModalVisible = ref(false);
 
 const statistics = ref([
     {
@@ -78,7 +85,7 @@ const actions = [
 
 const meta = computed(() => store?.meta);
 const fetchParams = computed(() => ({
-    entities: 'project.division,user.profile.medias',
+    entities: 'project.division,user.profile.medias,media,user.roles.role,mediaProof',
     admin_mode: true,
     paginate: meta?.per_page,
     page: meta?.current_page,
@@ -89,14 +96,17 @@ const getDataAttendance = () => {
     const callback = (res) => {
         const data = res?.data?.data;
         const meta = res?.data?.meta;
-        console.log("🚀 ~ callback ~ meta:", meta)
         const configMapping = data?.map(curr => ({
+            ...curr,
             image: curr?.user?.profile?.medias?.url ?? userDummyImage,
             name: curr?.user?.name,
             status: curr?.status ?? null,
             project: curr?.project?.name,
             type: curr?.type,
             full_address: curr?.full_address ?? '-',
+            project_address: curr?.project?.address,
+            project_decription: curr?.project?.description,
+            media_proof: curr?.media_proof?.url
         }))
         store?.setData(configMapping);
         store?.setMeta(meta);
@@ -122,6 +132,13 @@ const getDataAttendanceSummary = () => {
 
     getDataSummary({admin_mode: true}, callback, err);
 };
+
+watch(() => store?.typeAction, (value) => {
+    if (value?.key === 'name-table') {
+        attendanceData.value = value?.data;
+        isAttendanceModalVisible.value = true;
+    }
+});
 
 onMounted(() => {
     store?.setHeaders(headers);
