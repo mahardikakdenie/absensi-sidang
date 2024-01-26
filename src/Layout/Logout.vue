@@ -10,7 +10,6 @@ const router = useRouter();
 const toast = useToast();
 const logout = () => {
     const callback = (res) => {
-        console.log("🚀 ~ file: Logout.vue:7 ~ callback ~ res:", res);
         if (res?.data?.meta?.status) {
             router.push('/login');
             toast.success('Berhasil Logout');

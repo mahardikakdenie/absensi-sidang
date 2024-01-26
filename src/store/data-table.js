@@ -68,8 +68,8 @@ const wrapper = {
 				}
 			} else {
                 this.datas[index].status = data?.status;
-                console.log("🚀 ~ file: data-table.js:71 ~ updateData ~ this.datas[index].status:", this.datas[index].status)
-                console.log("🚀 ~ file: data-table.js:66 ~ updateData ~ data?.status:", data)
+				this.datas[index].physical_process = data?.physical_process;
+				this.datas[index].disbursement_of_funds = data?.disbursement_of_funds;
             }
 		},
 		setDisableSearch(action) {

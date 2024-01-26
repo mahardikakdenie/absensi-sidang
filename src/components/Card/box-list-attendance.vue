@@ -91,7 +91,6 @@ const getDataAttendanceLog = () => {
         if (response.data.meta.status) {
             isLoading.value = false;
             attendances.value = response.data.data;
-            console.log("🚀 ~ callback ~ attendances.value:", attendances.value)
             attendanceMeta.value = response.data.meta;
 		}
 	};

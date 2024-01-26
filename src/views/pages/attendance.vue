@@ -86,7 +86,6 @@ const startCamera = (type) => {
 };
 
 watch(() => isOpenCamera, (old, newValue) => {
-console.log("🚀 ~ file: attendance.vue:85 ~ watch ~ old, newValue:", old, newValue)
 })
 
 const description = ref('');
@@ -199,7 +198,6 @@ const SubmitAttendance = () => {
         full_address: fullAddress.value,
         shiftId: shiftId?.value ?? route?.query?.shift_id,
     };
-    console.log("🚀 ~ SubmitAttendance ~ form.shiftId?.value:", form.shiftId?.value)
 
     const callback = (response) => {
         if (response.data.meta.status) {

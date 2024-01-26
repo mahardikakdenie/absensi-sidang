@@ -100,11 +100,9 @@ export default {
 		};
 		const checkCapabilities = () => {
 			if (user?.status !== 'active') {
-				console.log("🚀 ~ checkCapabilities ~ user?.statu:", user?.statu)
 				toast?.error('Lengkapi data anda !!');
 				router?.push('/on-boarding');
 			}
-			console.log(user?.status)
 		};
 
 		const getMe = () => {
@@ -169,7 +167,7 @@ export default {
 		};
 
 		const onInputGender = (e) => {
-			console.log(e?.target?.value);
+			// console.log(e?.target?.value);
 		}
 
 		return {

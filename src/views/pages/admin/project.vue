@@ -93,7 +93,7 @@ const headers = [
 	{ label: 'Mulai', field: 'startdate' },
 	{ label: 'Selesai', field: 'targetdate' },
     { label: 'Sisa Waktu', field: 'left_date' },
-    { label: 'Fisik', field: 'fisik' },
+    { label: 'Fisik', field: 'physical_process' },
     { label: 'Divisi', field: 'division' },
     {
         label: 'Status',
@@ -210,7 +210,6 @@ const handleTypeAction = (value) => {
         assignationUserDivisionId.value = value?.data?.devisionId;
     }else if (value?.key === 'name-table') {
         project.value = value?.data;
-        console.log("🚀 ~ handleTypeAction ~ project.value:", project.value)
         isProductDetailModal.value = true;
         projectId.value = value?.data?.id;
     } else if (value?.key === 'shift-creator') {
@@ -282,7 +281,7 @@ const getData = () => {
 			})),
             left_date: `${totalDate(project?.startdate, project?.targetdate)} Lagi`,
             shift: project?.shift,
-            fisik: `${project?.physical_process ?? 0}%`,
+            physical_process: `${project?.physical_process ?? 0}%`,
         }))
 		store.setData(projectMap);
 	};
@@ -423,7 +422,7 @@ const onChangeProjectProcess = (physical_process, disbursement_of_funds) => {
         disbursement_of_funds,
     }
 
-    updateProject(params, params, '');
+    updateProject(params, params, 'confirm');
 };
 
 onBeforeUnmount(() => {
