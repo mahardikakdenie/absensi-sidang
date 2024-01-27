@@ -10,6 +10,10 @@
                 <box-list :element="division" />
             </div>
         </div>
+
+        <div v-else-if="divisions.length === 0 && !isLoading" class="flex justify-center">
+            <span>Tidak ada data Hubungi Admin Terkait</span>
+        </div>
         
         <page-loader v-else />
     </div>

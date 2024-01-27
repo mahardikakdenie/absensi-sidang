@@ -66,6 +66,7 @@ const headers = [
 	{ label: 'Project Name', field: 'project' },
 	{ label: 'Full Address', field: 'full_address' },
 	{ label: 'Type', field: 'type' },
+	{ label: 'Status', field: 'status' },
 ];
 
 const actions = [
@@ -100,7 +101,8 @@ const getDataAttendance = () => {
             ...curr,
             image: curr?.user?.profile?.medias?.url ?? userDummyImage,
             name: curr?.user?.name,
-            status: curr?.status ?? null,
+            status: curr?.status ?? 'late',
+            roles: curr?.user?.roles ?? [],
             project: curr?.project?.name,
             type: curr?.type,
             full_address: curr?.full_address ?? '-',

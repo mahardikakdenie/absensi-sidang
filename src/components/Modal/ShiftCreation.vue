@@ -139,10 +139,14 @@ const close = () => {
 
 const submit = () => {
 	const typeIsUpdate = store?.typeAction?.shifts.length > 0;
+	const userIds = store?.typeAction?.data?.users?.map(
+		(user) => user?.user_id
+	);
 	if (typeIsUpdate) {
 		const params = {
 			timeIn: timeIn?.value,
 			timeOut: timeOut?.value,
+			userIds: userIds,
 		};
 		const callback = (res) => {
 			if (res?.data?.meta?.status) {
@@ -157,9 +161,6 @@ const submit = () => {
 
 		projectApi?.updateShift(store?.typeAction?.shifts?.[0]?.id, params, callback, err);
 	} else {
-		const userIds = store?.typeAction?.data?.users?.map(
-			(user) => user?.user_id
-		);
 		const params = {
 			projectIds: [props?.projectId],
 			userIds: userIds,

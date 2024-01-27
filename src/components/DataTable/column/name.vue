@@ -16,6 +16,9 @@
         >
             {{ data.name }}
         </span>
+        <div v-if="data && data?.roles && $route?.path?.includes('attendance')" class="grid grid-cols-1 gap-2">
+            <vue-badge v-for="(role, index) in data?.roles" :key="index" :label="role?.role?.name" />
+        </div>
         <div v-if="config?.icons.length > 0" class="grid grid-cols-4 mt-2 button-icon">
             <vue-button 
                 v-for="(icon, index) in config?.icons" 
@@ -33,6 +36,7 @@
 
 <script setup>
 import VueButton from '@/components/Button';
+import VueBadge from '@/components/Badge';
 import { useDataTableStore } from "@/store/data-table.js";
 import { computed } from 'vue';
 
