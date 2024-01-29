@@ -1,49 +1,82 @@
 <template>
 	<div>
-		<modal :active-modal="activeModal" @close="close">
-			<!-- DATE -->
-			<FormGroup name="Time In" label="Masukan Waktu Masuk" class="mb-2">
-				<flat-pickr
-					v-model="timeIn"
-					class="form-control"
-					id="d1"
-					placeholder="Masukan Jam Masuk"
-					:config="{
-						enableTime: true,
-						noCalendar: true,
-						dateFormat: 'H:i',
-					}" />
-			</FormGroup>
-			<!-- DATE -->
-			<FormGroup name="TimeOut" label="Masukan Waktu Keluar">
-				<flat-pickr
-					v-model="timeOut"
-					class="form-control"
-					id="d1"
-					placeholder="Masukan Jam Keluar"
-					:config="{
-						enableTime: true,
-						noCalendar: true,
-						dateFormat: 'H:i',
-					}" />
-			</FormGroup>
+		<modal 
+			:active-modal="activeModal" 
+			title="Membuat Shift" 
+			@close="close"
+			sizeClass="max-w-full"
+		>
 
-			<vue-select v-if="false" label="User Selected">
-				<vSelect v-model="users" multiple :options="userOptions">
-					<template #option="{ label }">
-						<div>
-							<div v-if="!isLoading" class="flex items-center">
-								<div class="text-start">
-									<span
-										class="text-sm text-slate-600 dark:text-slate-300 capitalize text-star">
-										{{ label }}
-									</span>
-								</div>
+			<div class="grid grid-cols-12">
+				<div class="col-span-8 border-r">
+					<div class="p-2">
+						<div class="flex justify-start">
+							<div 
+								:class="{
+										'border-primary-500 text-primary-500': tabLeft === 'shift', 
+										'border-b-[#ffff]': tabLeft !== 'shift' 
+									}"
+								class="p-2 text-sm hover:text-primary-500 border-b-2 hover:border-b-primary-500 cursor-pointer"
+							>
+								<span class="text-sm">
+									Shift
+								</span>
 							</div>
 						</div>
-					</template>
-				</vSelect>
-			</vue-select>
+
+						<!--  -->
+
+
+						<hr class="my-2">
+
+						<div class="mt-4">
+							<div class="p-2 border-b hover:bg-gray-200 cursor-pointer">
+								<header class="flex justify-between items-center">
+									<div  class="flex space-x-2 sm:space-x-3 items-center rtl:space-x-reverse">
+										<div class="flex-none">
+											<div class="h-10 w-10 rounded-md sm:text-lg bg-slate-100 text-slate-900 dark:bg-slate-600 dark:text-slate-200 flex flex-col items-center justify-center font-normal capitalize text-sm">
+												1
+											</div>
+										</div>
+										<div>
+											<div class="text-sm font-bold">
+												Time In : {{ timeIn }} WIB - TimeOut : {{ timeOut }} WIB
+											</div>
+											<div class="mt-2">
+												<div class="my-2">
+													<vue-badge 
+														label="berlangsung" 
+														badge-class="text-sm bg-primary-500 text-white" 
+													/>
+												</div>
+												<div>
+													<user-assign />
+												</div>
+											</div>
+										</div>
+									</div>
+								</header>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="col-span-4">
+					<div class="p-2 border-b">
+						<div class="grid grid-cols-5 gap-2">
+							<div 
+								v-for="(tab, index) in rightTabs"
+								:key="i"
+								class="p-2 text-sm text-center hover:text-primary-500 w-100  border-b-2 border-b-[#ffff] hover:border-b-primary-500 cursor-pointer"
+							>
+								<span class="text-sm text-center whitespace-nowrap">
+									{{ tab?.label }}
+								</span>
+							</div>
+						</div>
+					</div>	
+				</div>
+			</div>
 
 			<template #footer>
 				<VueButton
@@ -62,7 +95,8 @@
 </template>
 <script setup>
 import Modal from '@/components/Modal';
-import FormGroup from '@/components/FromGroup';
+import UserAssign from '@/components/DataTable/column/assign.vue';
+import VueBadge from '@/components/Badge';
 import VueButton from '@/components/Button';
 import userApi from '@/helpers/user';
 import { computed, onMounted, ref, watch } from 'vue';
@@ -78,6 +112,13 @@ const timeOut = ref();
 const users = ref([]);
 const store = useDataTableStore();
 const toast = useToast();
+const tabLeft = ref('shift');
+const rightTabs = [
+	{
+		label: 'Anggota',
+		key: 'anggota'
+	}
+];
 
 const props = defineProps({
 	activeModal: {
@@ -188,5 +229,7 @@ const submit = () => {
 
 onMounted(() => {
 	getUserSelected();
+	timeIn.value = store?.typeAction?.data?.timeIn;
+	timeOut.value = store?.typeAction?.data?.timeOut;
 });
 </script>

@@ -160,6 +160,7 @@ export default {
 			const callback = (res) => {
 				if (res?.data?.meta?.status) {
 					toast?.success('Update Profile Berhasil');
+					router?.push('/');
 				}
 			};
 			const err = (e) => {};

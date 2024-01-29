@@ -21,7 +21,7 @@
         </div>
         <div v-if="config?.icons.length > 0" class="grid grid-cols-4 mt-2 button-icon">
             <vue-button 
-                v-for="(icon, index) in config?.icons" 
+                v-for="(icon, index) in config?.icons"
                 :key="index" 
                 :icon="icon.icon" 
                 :btn-class="icon.btnClass" 

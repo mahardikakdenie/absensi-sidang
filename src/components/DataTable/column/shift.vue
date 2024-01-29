@@ -4,7 +4,7 @@
             class="rounded-full ring-1 ring-slate-100 cursor-pointer h-full"
             @click="openModal"
         >
-            <vue-badge :label="setDisplayShift" />
+            <vue-badge label="Lihat Shiuft" />
         </div>
     </div>
 </template>
