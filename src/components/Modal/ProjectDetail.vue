@@ -15,15 +15,15 @@
                         </div>
                         <hr class="mt-6">
                         <div>
-                            <h3 class="text-lg font-bold mb-2">Shifts</h3>
+                            <h3 class="text-lg font-bold mb-2">Jam Masuk dan Keluar</h3>
                             <div>
                                 <span>
-                                    Waktu Masuk : Pukul {{ data?.shift?.[0]?.shift?.timeIn }} WIB
+                                    Waktu Masuk : Pukul {{ data?.timeIn }} WIB
                                 </span>
                             </div>
                             <div>
                                 <span>
-                                    Waktu Keluar : Pukul {{ data?.shift?.[0]?.shift?.timeOut }} WIB
+                                    Waktu Keluar : Pukul {{ data?.timeOut }} WIB
                                 </span>
                             </div>
                         </div>

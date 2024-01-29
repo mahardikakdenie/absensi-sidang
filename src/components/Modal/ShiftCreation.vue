@@ -101,9 +101,8 @@ watch(
 	() => props?.projectId,
 	(value) => {
 		getUserSelected();
-		timeIn.value = store?.typeAction?.data?.shift?.[0]?.shift?.timeIn ?? '';
-		timeOut.value =
-			store?.typeAction?.data?.shift?.[0]?.shift?.timeOut ?? '';
+		timeIn.value = store?.typeAction?.data?.timeIn;
+		timeOut.value = store?.typeAction?.data?.timeOut;
 	}
 );
 
@@ -138,46 +137,53 @@ const close = () => {
 };
 
 const submit = () => {
-	const typeIsUpdate = store?.typeAction?.shifts.length > 0;
-	const userIds = store?.typeAction?.data?.users?.map(
-		(user) => user?.user_id
-	);
-	if (typeIsUpdate) {
-		const params = {
-			timeIn: timeIn?.value,
-			timeOut: timeOut?.value,
-			userIds: userIds,
-		};
-		const callback = (res) => {
-			if (res?.data?.meta?.status) {
-				close();
-				toast?.success('Shift Sudah di update Harap Refresh');
-			}
-		};
+	// const typeIsUpdate = store?.typeAction?.shifts.length > 0;
+	// const userIds = store?.typeAction?.data?.users?.map(
+	// 	(user) => user?.user_id
+	// );
+	// if (typeIsUpdate) {
+	// 	const params = {
+	// 		timeIn: timeIn?.value,
+	// 		timeOut: timeOut?.value,
+	// 		userIds: userIds,
+	// 	};
+	// 	const callback = (res) => {
+	// 		if (res?.data?.meta?.status) {
+	// 			close();
+	// 			toast?.success('Shift Sudah di update Harap Refresh');
+	// 		}
+	// 	};
 
-		const err = (e) => {
-			console.log(e);
-		}
+	// 	const err = (e) => {
+	// 		console.log(e);
+	// 	}
 
-		projectApi?.updateShift(store?.typeAction?.shifts?.[0]?.id, params, callback, err);
-	} else {
-		const params = {
-			projectIds: [props?.projectId],
-			userIds: userIds,
-			timeIn: timeIn?.value,
-			timeOut: timeOut?.value,
-		};
-		const callback = (res) => {
-			if (res?.data?.meta?.status) {
-				close();
-				toast?.success('Shift Sudah di tambahkan Harap Refresh');
-			}
-		};
-		const err = (e) => {
-			console.log(e);
-		};
-		projectApi.createShift(params, callback, err);
-	}
+	// 	projectApi?.updateShift(store?.typeAction?.shifts?.[0]?.id, params, callback, err);
+	// } else {
+	// 	const params = {
+	// 		projectIds: [props?.projectId],
+	// 		userIds: userIds,
+	// 		timeIn: timeIn?.value,
+	// 		timeOut: timeOut?.value,
+	// 	};
+	// 	const callback = (res) => {
+	// 		if (res?.data?.meta?.status) {
+	// 			close();
+	// 			toast?.success('Shift Sudah di tambahkan Harap Refresh');
+	// 		}
+	// 	};
+	// 	const err = (e) => {
+	// 		console.log(e);
+	// 	};
+	// 	projectApi.createShift(params, callback, err);
+	// }
+	const params = {
+		timeIn: timeIn?.value,
+		timeOut: timeOut?.value,
+		id: props?.projectId,
+	};
+
+	emits('submit', params);
 };
 
 onMounted(() => {

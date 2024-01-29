@@ -2,7 +2,7 @@
     <div>
         <div class="my-3">
             <VueAllert type="success" dismissible icon="akar-icons:double-check">
-                Selamat Datang {{  user?.name  }}
+                Selamat Datang {{ user?.name }}
             </VueAllert>
         </div>
         <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
@@ -12,7 +12,8 @@
                         <div class="flex justify-center">
                             <div class="flex-0">
                                 <div class="author-img w-[65px] h-[88px] rounded-[40px]">
-                                    <img :src="media?.url ?? userDummyImage" class="w-full h-full object-cover rounded-md" />
+                                    <img :src="media?.url ?? userDummyImage"
+                                        class="w-full h-full object-cover rounded-md" />
                                 </div>
                             </div>
                         </div>
@@ -24,7 +25,7 @@
                                 </span>
                             </div>
                             <div class="mt-2 text-sm">
-                                <span class="font-bold">ID : </span> <span>{{ user?.profile_nik ?? '-' }}</span> 
+                                <span class="font-bold">ID : </span> <span>{{ user?.profile_nik ?? '-' }}</span>
                             </div>
                             <div class="mt-2 text-sm">
                                 <span class="font-bold">Divisi </span>
@@ -40,8 +41,10 @@
                     </div>
                 </card>
                 <div class="grid grid-cols-1 sm:grid-cols-2 my-4 gap-4">
-                    <vue-button text="Change Password" btn-class="btn-sm btn-primary light" @click="$router.push('/change-password')" />
-                    <vue-button text="Change Profile" btn-class="btn btn-success light btn-sm" @click="$router.push('/on-boarding')" />
+                    <vue-button text="Change Password" btn-class="btn-sm btn-primary light"
+                        @click="$router.push('/change-password')" />
+                    <vue-button text="Change Profile" btn-class="btn btn-success light btn-sm"
+                        @click="$router.push('/on-boarding')" />
                 </div>
             </div>
             <div class="col-span-1 sm:col-span-2">
@@ -56,21 +59,33 @@
                         <div v-if="!isProjectFetching && projects.length > 0">
                             <div v-for="(project, i) in projects" :key="i" class="mt-6">
                                 <header-project :element="project" />
-                                <div class="sm:px-2">
-                                    <span class="font-bold whitespace-nowrap text-sm">
+                                <div class="sm:px-2 gap-2">
+                                    <div class="grid grid-cols-8">
+                                        <div>
+                                            <span class="font-bold whitespace-nowrap text-sm">
+                                                Time In :
+                                            </span>
+                                            <span class="text-sm">
+                                                {{ formattedTime(project?.timeIn) }}
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <span class="font-bold whitespace-nowrap text-sm">
+                                                Time Out :
+                                            </span>
+                                            <span class="text-sm">
+                                                {{ formattedTime(project?.timeOut) }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="font-bold whitespace-nowrap text-sm">
                                         Deadline : <span class="font-normal">{{ dayjs(project.targetdate).format('dddd, D MMMM YYYY') }}</span>
-                                    </span>
+                                    </div>
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
-                                        <vue-button 
-                                            text="Clock In" 
-                                            btn-class="btn btn-sm btn-success light" 
-                                            @click="setType('clockin', project)" 
-                                        />
-                                        <vue-button 
-                                            text="Clock out" 
-                                            btn-class="btn btn-sm btn-danger light" 
-                                            @click="setType('clockout', project)" 
-                                        />
+                                        <vue-button text="Clock In" btn-class="btn btn-sm btn-success light"
+                                            @click="setType('clockin', project)" />
+                                        <vue-button text="Clock out" btn-class="btn btn-sm btn-danger light"
+                                            @click="setType('clockout', project)" />
                                     </div>
                                 </div>
                             </div>
@@ -103,7 +118,7 @@ import pageLoader from '@/components/Loader/pageLoader.vue';
 import projectApi from '@/helpers/projects';
 import { useRouter } from 'vue-router';
 import { userDummyImage } from "@/constant/static";
-import {getDataShift} from '@/helpers/shift';
+import { getDataShift } from '@/helpers/shift';
 
 const userStore = useUserStore();
 
@@ -116,7 +131,7 @@ const router = useRouter();
 const isProjectFetching = ref(false);
 
 const setType = (type, project) => {
-	router.push(`/attendance/${type}/${project?.id}`)
+    router.push(`/attendance/${type}/${project?.id}`)
 };
 
 const getDataMyShift = () => {
@@ -133,15 +148,20 @@ const getDataMyShift = () => {
             shift_id: curr?.id,
         })).filter(curr => curr?.division?.status === 'publish');
     };
-    const err = () => {};
-    getDataShift(params,callback, err)
+    const err = () => { };
+    getDataShift(params, callback, err)
 };
 
 const getMyProjects = () => {
     isProjectFetching.value = true;
     const callback = (res) => {
         isProjectFetching.value = false;
-        projects.value = res.data.data;
+        projects.value = res.data.data.map(curr => ({
+            ...curr,
+            timeIn: curr?.timeIn ?? '-',
+            timeOut: curr?.timeOut ?? '-',
+            shift_id: curr?.id,
+        }));
     }
     const err = (e) => {
         isProjectFetching.value = true;
@@ -170,12 +190,21 @@ watch(user, (newValue, oldValue) => {
     }
 });
 
+const formattedTime = (inputTime) => {
+    const parsedTime = new Date(`1970-01-01T${inputTime}Z`);
+
+    // Format: HH:mm
+    const result = `${parsedTime.getHours().toString().padStart(2, '0')}:${parsedTime.getMinutes().toString().padStart(2, '0')}`;
+
+    return result;
+};
+
 onMounted(() => {
     if (user.value && user.value.id) {
         // getMyProjects();
     }
     checkCapabilities();
-    getDataMyShift();
+    getMyProjects();
 });
 
 </script>

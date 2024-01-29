@@ -33,7 +33,8 @@
         <ShiftCreationModal 
             :active-modal="isShiftModalVisible"
             :project-id="projectId"
-            @close="isShiftModalVisible = false" 
+            @close="isShiftModalVisible = false"
+            @submit="createShift"
         />
         <ProductDetailModal 
             :active-modal="isProductDetailModal" 
@@ -405,6 +406,7 @@ const updateProject = (formValue, params, type = 'form') => {
         if (response?.data?.meta?.status) {
             isModalFormVisible.value = false;
             isModalConfirm.value = false;
+            isShiftModalVisible.value = false
             toast.success('Data Berhasil Di Update');
             store?.updateData(formValue, projectId?.value, type);
         }
@@ -414,6 +416,11 @@ const updateProject = (formValue, params, type = 'form') => {
     }
 
     projectsApi.updateProject(projectId?.value, params, callback, err);
+};
+
+const createShift = (params) => {
+    projectId.value = params?.id;
+    updateProject(params,params, '');
 };
 
 const onChangeProjectProcess = (physical_process, disbursement_of_funds) => {
