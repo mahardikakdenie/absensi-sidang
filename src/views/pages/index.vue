@@ -118,7 +118,7 @@ import pageLoader from '@/components/Loader/pageLoader.vue';
 import projectApi from '@/helpers/projects';
 import { useRouter } from 'vue-router';
 import { userDummyImage } from "@/constant/static";
-import { getDataShift } from '@/helpers/shift';
+// import { getDataShift } from '@/helpers/shift';
 
 const userStore = useUserStore();
 
@@ -149,7 +149,7 @@ const getDataMyShift = () => {
         })).filter(curr => curr?.division?.status === 'publish');
     };
     const err = () => { };
-    getDataShift(params, callback, err)
+    // getDataShift(params, callback, err)
 };
 
 const getMyProjects = () => {

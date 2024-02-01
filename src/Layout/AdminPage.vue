@@ -3,6 +3,7 @@
         <router-view />
     </div>
 </template>
+
 <script setup>
 import { useUserStore } from '@/store/user';
 import { computed, onMounted, ref, watch } from 'vue';
@@ -78,6 +79,7 @@ watch(() => route.path, (value) => {
     }
 })
 
+// Hook API
 onMounted(() => {
     getUser();
 })

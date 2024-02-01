@@ -101,7 +101,6 @@ const headers = [
         field: 'status'
     },
     { label: 'Anggota', field: 'assign' },
-    { label: 'Shift', field: 'shift' },
 	{
 		label: 'Actions',
 		field: 'actions',
@@ -183,6 +182,12 @@ const actions = [
 		tooltipText: 'Ubah Status menjadi publish',
 		btnClass: 'btn btn-sm text-success-600',
 	},
+    {
+        key: 'shift-creator',
+        icon: 'fluent:shifts-checkmark-20-regular',
+        tooltipText: 'Buat Shift',
+        btnClass: 'btn btn-sm text-success-500',
+    }
 ];
 
 const form = ref(formConfig.map(createFormField));
