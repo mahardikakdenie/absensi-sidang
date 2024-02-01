@@ -19,6 +19,7 @@
 						</div>
 						<!--  -->
 
+						<!-- Form Create Shift -->
 						<div v-if="isFormVisible" class="p-2 mt-2">
 							<div class="mb-2">
 								<span class="text-sm">Buat Shift</span>
@@ -92,19 +93,22 @@
 								<div class="flex justify-end mt-2">
 									<vue-button
 										text="Submit"
-										btn-class="btn-sm btn-primary" />
+										btn-class="btn-sm btn-primary"
+										@click="createShift" />
 								</div>
 							</div>
 						</div>
+						<!-- End Form Create Shift -->
 
-						<!--  -->
+						<!-- List SHift -->
 						<hr class="my-2" />
 						<div v-if="!isFormVisible" class="mt-4">
 							<div v-if="shifts.length > 0 && !isLoading">
 								<div
 									v-for="(shift, index) in shifts"
 									:key="index"
-									class="p-2 border-b hover:bg-gray-200 cursor-pointer">
+									class="p-2 border-b hover:bg-gray-200 cursor-pointer"
+									@click="setSelectedShift(shift)">
 									<header
 										class="flex justify-between items-center">
 										<div
@@ -134,29 +138,33 @@
 													</div>
 
 													<!-- Assign -->
-													<div class="mt-2 ml-4 flex justify-start -space-x-1.5">
+													<div
+														class="mt-2 ml-4 flex justify-start -space-x-1.5">
 														<div
 															v-for="(
 																user, userIndex
-															) in 2"
+															) in shift?.user_shift"
 															:key="userIndex"
-															:content="'Halo'"
-															v-tippy="{
-																placement: 'top'
-															}"
-															class="h-6 w-6 rounded-full ring-1 ring-slate-100 cursor-pointer"
-															@click="openModal">
+															class="h-6 w-6 rounded-full ring-1 ring-slate-100 cursor-pointer">
 															<img
-																:src="userDummyImage"
+																:src="
+																	user?.user
+																		?.profile
+																		?.medias
+																		?.url ??
+																	userDummyImage
+																"
 																:content="
-																	user?.name
+																	user?.user
+																		?.name
 																"
 																v-tippy="{
 																	placement:
-																		'top',
+																		'bottom',
 																}"
 																:alt="
-																	user.title
+																	user?.user
+																		?.name
 																"
 																class="w-full h-full rounded-full" />
 														</div>
@@ -164,15 +172,23 @@
 												</div>
 											</div>
 										</div>
+										<div>
+											<vue-button
+												icon="material-symbols:close"
+												btn-class="btn-sm btn-danger light"
+												icon-class="text-sm" />
+										</div>
 									</header>
 								</div>
 							</div>
 							<div
-								v-if="shifts.length === 0 && !isLoading"
+								v-else-if="shifts.length === 0 && !isLoading"
 								class="flex justify-center">
 								<span>Tidak ada shift</span>
 							</div>
+							<page-loader v-else />
 						</div>
+						<!-- End List Shift -->
 					</div>
 				</div>
 
@@ -190,37 +206,47 @@
 								</span>
 							</div>
 							<div>
-								<vue-button text="Tambah Anggota" btn-class="btn-sm btn-primary btn light" />
+								<vue-button
+									text="Tambah Anggota"
+									btn-class="btn-sm btn-primary btn light" />
 							</div>
 						</div>
 					</div>
 					<!-- End Tabs -->
 
 					<!-- Content -->
-					<div
-						class="border-b p-2 mt-2 grid grid-cols-12 hover:bg-gray-200">
-						<div class="col-span-1">
-							<img
-								:src="userDummyImage"
-								width="60"
-								class="object-cover rounded-full" />
-						</div>
-						<div class="flex items-center col-span-8">
-							<span class="text-sm">
-								Mahardika Kessuma denie
-							</span>
-						</div>
-						<div class="col-span-3 flex items-center justify-end">
-							<vue-button
-								btn-class="btn btn-sm btn-light light"
-								btnTooltip="Hapus Anggota"
-								icon-class="text-red-500 text-lg"
-								icon="material-symbols:delete" />
-							<vue-button
-								btn-class="btn btn-sm btn-light light"
-								btnTooltip="Atur Shift"
-								icon-class="text-primary-500 text-lg"
-								icon="mdi:approve" />
+					<div>
+						<div
+							v-for="(user, index) in userOptions"
+							:key="index"
+							class="border-b p-2 mt-2 grid grid-cols-12 hover:bg-gray-200 gap-3">
+							<div class="col-span-1">
+								<img
+									:src="
+										user?.profile?.medias?.url ??
+										userDummyImage
+									"
+									width="60"
+									class="object-cover rounded-full" />
+							</div>
+							<div class="flex items-center col-span-8">
+								<span class="text-sm">
+									{{ user?.name }}
+								</span>
+							</div>
+							<div
+								class="col-span-3 flex items-center justify-end">
+								<vue-button
+									btn-class="btn btn-sm btn-light light"
+									btnTooltip="Hapus Anggota"
+									icon-class="text-red-500 text-lg"
+									icon="material-symbols:delete" />
+								<vue-button
+									btn-class="btn btn-sm btn-light light"
+									btnTooltip="Atur Shift"
+									icon-class="text-primary-500 text-lg"
+									icon="mdi:approve" />
+							</div>
 						</div>
 					</div>
 					<!-- End Content -->
@@ -242,6 +268,7 @@
 </template>
 <script setup>
 import TextInput from '@/components/Textinput';
+import pageLoader from '../Loader/pageLoader.vue';
 import Modal from '@/components/Modal';
 import UserAssign from '@/components/DataTable/column/assign.vue';
 import VueBadge from '@/components/Badge';
@@ -286,9 +313,21 @@ const props = defineProps({
 	},
 });
 
+const selectedShift = ref();
+
+watch(
+	() => selectedShift,
+	(value) => {
+		if (value) {
+			getDataShifts();
+		}
+	}
+);
+
 const fetchParams = computed(() => ({
-	entities: '',
+	entities: 'profile.medias, shift',
 	project_ids: props?.projectId ? [props?.projectId] : [],
+	shift_id: selectedShift?.value?.id,
 }));
 
 const emits = defineEmits(['submit', 'close']);
@@ -298,6 +337,7 @@ watch(
 	(value) => {
 		if (value) {
 			getDataShift();
+			getUserSelected();
 		}
 	}
 );
@@ -305,6 +345,7 @@ watch(
 const isLoading = ref(false);
 const isFetching = ref(false);
 const userOptions = ref([]);
+
 const getUserSelected = (projectId) => {
 	isLoading.value = true;
 	const params = fetchParams?.value;
@@ -313,10 +354,7 @@ const getUserSelected = (projectId) => {
 		isLoading.value = false;
 		if (response?.data?.meta?.status) {
 			const data = response?.data?.data;
-			userOptions.value = data?.map((curr) => ({
-				label: curr?.name,
-				id: curr?.id,
-			}));
+			userOptions.value = data;
 		}
 		isFetching.value = false;
 	};
@@ -333,12 +371,14 @@ const close = () => {
 };
 
 const getDataShift = () => {
+	isLoading.value = true;
 	const params = {
 		project_id: props?.projectId,
-		entities: 'projectShift',
+		entities: 'projectShift, userShift.user.profile.medias',
 	};
 	const callback = (res) => {
 		if (res?.data?.meta?.status) {
+			isLoading.value = false;
 			const data = res?.data?.data;
 			shifts.value = data;
 			console.log('🚀 ~ callback ~ shifts.value:', shifts.value);
@@ -349,6 +389,15 @@ const getDataShift = () => {
 	};
 
 	getDataShifts(params, callback, err);
+};
+
+const createShift = () => {
+	//
+};
+
+const setSelectedShift = (shift) => {
+	selectedShift.value = shift;
+	getUserSelected();
 };
 
 const submit = () => {
@@ -402,8 +451,11 @@ const submit = () => {
 };
 
 onMounted(() => {
-	getDataShift();
-	timeIn.value = store?.typeAction?.data?.timeIn;
-	timeOut.value = store?.typeAction?.data?.timeOut;
+	if (props?.activeModal) {
+		getDataShift();
+		getUserSelected();
+		timeIn.value = store?.typeAction?.data?.timeIn;
+		timeOut.value = store?.typeAction?.data?.timeOut;
+	}
 });
 </script>
