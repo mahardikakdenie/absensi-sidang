@@ -260,7 +260,7 @@ const getData = () => {
 	const params = {
 		division_id: divisionId?.value ?? route?.query?.division_id,
 		division_ids: divisionsIds?.value ?? null,
-        entities: 'users.user.profile.medias, users.user.roles.role, division, shift.shift',
+        entities: 'users.user.profile.medias,users.user.roles.role,division,shift.shift',
 	};
 	const callback = (response) => {
 		const projects = response?.data?.data;

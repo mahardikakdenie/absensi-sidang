@@ -116,7 +116,6 @@
 
 <script setup>
 import VueButton from '@/components/Button';
-import VueSelect from '@/components/Select/VueSelect';
 import TextInputField from '@/components/Textinput/index.vue';
 import Modal from '@/components/Modal/index.vue';
 import { computed, ref, watchEffect } from 'vue';
@@ -126,6 +125,7 @@ import FormGroup from '@/components/FromGroup';
 import pageLoader from '@/components/Loader/pageLoader.vue';
 import VueAlert from '@/components/Alert';
 
+import VueSelect from '@/components/Select/VueSelect';
 import vSelect from 'vue-select';
 
 import * as yup from 'yup';

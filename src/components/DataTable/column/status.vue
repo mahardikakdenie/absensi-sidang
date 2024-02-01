@@ -1,12 +1,15 @@
 <template>
-<div class="flex justify-center items-center p-2">
-    <vue-badge :label="status" :badgeClass="getColorStatus" />
-</div>
-
+	<span class="block w-full">
+		<span
+			class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-[999px] bg-opacity-25 text-sm"
+			:class="[getColorStatus]"
+        >
+			{{ status }}
+		</span>
+	</span>
 </template>
 
 <script setup>
-import VueBadge from '@/components/Badge/index.vue';
 import { computed } from 'vue';
 
 const props = defineProps({
@@ -21,15 +24,12 @@ const props = defineProps({
 });
 
 const status = computed(() => props?.data?.status?.split('_').join(' ') ?? 'draft');
+
 const getColorStatus = computed(() => {
-    let color = 'bg-primary-600 text-primary-100';
+    let color = 'text-success-500 bg-success-500';
     if (status.value === 'not active' || status.value === 'draft' || status.value === 'late') {
-        color = 'bg-danger-600 text-danger-100'
+        color = 'text-warning-500 bg-warning-500'
     }
     return color;
 });
 </script>
-
-<style>
-
-</style>
