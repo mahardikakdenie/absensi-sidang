@@ -108,11 +108,13 @@
 									v-for="(shift, index) in shifts"
 									:key="index"
 									class="p-2 border-b hover:bg-gray-200 cursor-pointer"
-									@click="setSelectedShift(shift)">
+								>
 									<header
 										class="flex justify-between items-center">
 										<div
-											class="flex space-x-2 sm:space-x-3 items-center rtl:space-x-reverse">
+											class="flex space-x-2 sm:space-x-3 items-center rtl:space-x-reverse w-full"
+											@click="setSelectedShift(shift, index)"
+										>
 											<div class="flex-none">
 												<div
 													class="h-10 w-10 rounded-md sm:text-lg bg-slate-100 text-slate-900 dark:bg-slate-600 dark:text-slate-200 flex flex-col items-center justify-center font-normal capitalize text-sm">
@@ -172,11 +174,17 @@
 												</div>
 											</div>
 										</div>
-										<div>
+										<div class="flex gap-4">
+											<vue-button
+												icon="mdi:users-add-outline"
+												btn-class="btn-sm btn-success light"
+												@click="addMember(shift)"
+											/>
 											<vue-button
 												icon="material-symbols:close"
 												btn-class="btn-sm btn-danger light"
-												icon-class="text-sm" />
+												icon-class="text-sm" 
+											/>
 										</div>
 									</header>
 								</div>
@@ -202,13 +210,14 @@
 								class="p-2 text-sm text-center hover:text-primary-500 w-100 border-b-2 border-b-[#ffff] hover:border-b-primary-500 cursor-pointer">
 								<span
 									class="text-sm text-center whitespace-nowrap">
-									{{ tab?.label }}
+									{{ tab?.label }} {{ memberPropertyText }}
 								</span>
 							</div>
 							<div>
 								<vue-button
 									text="Tambah Anggota"
-									btn-class="btn-sm btn-primary btn light" />
+									btn-class="btn-sm btn-primary btn light"
+									@click="addMember" />
 							</div>
 						</div>
 					</div>
@@ -216,37 +225,59 @@
 
 					<!-- Content -->
 					<div>
-						<div
-							v-for="(user, index) in userOptions"
-							:key="index"
-							class="border-b p-2 mt-2 grid grid-cols-12 hover:bg-gray-200 gap-3">
-							<div class="col-span-1">
-								<img
-									:src="
-										user?.profile?.medias?.url ??
-										userDummyImage
-									"
-									width="60"
-									class="object-cover rounded-full" />
-							</div>
-							<div class="flex items-center col-span-8">
-								<span class="text-sm">
-									{{ user?.name }}
-								</span>
-							</div>
+						<div v-if="listUserVisible">
 							<div
-								class="col-span-3 flex items-center justify-end">
-								<vue-button
-									btn-class="btn btn-sm btn-light light"
-									btnTooltip="Hapus Anggota"
-									icon-class="text-red-500 text-lg"
-									icon="material-symbols:delete" />
-								<vue-button
-									btn-class="btn btn-sm btn-light light"
-									btnTooltip="Atur Shift"
-									icon-class="text-primary-500 text-lg"
-									icon="mdi:approve" />
+								v-for="(user, index) in userOptions"
+								:key="index"
+								class="border-b p-2 mt-2 grid grid-cols-12 hover:bg-gray-200 gap-3">
+								<div class="col-span-1">
+									<img
+										:src="
+											user?.profile?.medias?.url ??
+											userDummyImage
+										"
+										width="60"
+										class="object-cover rounded-full" />
+								</div>
+								<div class="flex items-center col-span-8">
+									<span class="text-sm">
+										{{ user?.name }}
+									</span>
+								</div>
+								<div
+									class="col-span-3 flex items-center justify-end">
+									<vue-button
+										v-if="
+											user?.shift?.some(
+												(curr) =>
+													curr?.shift_id ===
+													selectedShift?.id
+											)
+										"
+										btn-class="btn btn-sm btn-light light"
+										btnTooltip="Hapus Anggota"
+										icon-class="text-red-500 text-lg"
+										icon="material-symbols:delete" />
+
+									<vue-button
+										v-if="
+											user?.shift?.every(
+												(curr) =>
+													curr?.shift_id !==
+													selectedShift?.id
+											)
+										"
+										btn-class="btn btn-sm btn-light light"
+										btnTooltip="Atur Shift"
+										icon-class="text-primary-500 text-lg"
+										icon="mdi:approve" />
+								</div>
 							</div>
+						</div>
+						<div v-else class="flex p-4 justify-center">
+							<span class="text-sm">
+								Pilih Shift Untuk melihat Anggota
+							</span>
 						</div>
 					</div>
 					<!-- End Content -->
@@ -300,6 +331,12 @@ const rightTabs = [
 	},
 ];
 
+const listUserVisible = ref(false);
+
+const typeForm = ref('add');
+
+const memberPropertyText = ref('Project');
+
 const isFormVisible = ref(false);
 
 const props = defineProps({
@@ -327,7 +364,7 @@ watch(
 const fetchParams = computed(() => ({
 	entities: 'profile.medias, shift',
 	project_ids: props?.projectId ? [props?.projectId] : [],
-	shift_id: selectedShift?.value?.id,
+	shift_id: typeForm.value !== 'add' ? selectedShift?.value?.id : null,
 }));
 
 const emits = defineEmits(['submit', 'close']);
@@ -355,6 +392,10 @@ const getUserSelected = (projectId) => {
 		if (response?.data?.meta?.status) {
 			const data = response?.data?.data;
 			userOptions.value = data;
+			if (typeForm.value === 'add') {
+				const filteredUserOptions = userOptions?.value.filter(user => user?.shift?.some(curr => curr?.shift_id !== selectedShift?.id));
+				userOptions.value = filteredUserOptions;
+			}
 		}
 		isFetching.value = false;
 	};
@@ -395,9 +436,19 @@ const createShift = () => {
 	//
 };
 
-const setSelectedShift = (shift) => {
+const addMember = (shift) => {
+	listUserVisible.value = true;
 	selectedShift.value = shift;
+	typeForm.value = 'add';
 	getUserSelected();
+};
+
+const setSelectedShift = (shift, index) => {
+	selectedShift.value = shift;
+	listUserVisible.value = true;
+	getUserSelected();
+	typeForm.value = 'delete'
+	memberPropertyText.value = `Shift ke ${index + 1}`;
 };
 
 const submit = () => {
