@@ -102,14 +102,13 @@ watch(() => store?.typeAction, (value) => {
 
 const getUsers = () => {
 	const params = {
-		// project_ids: [projectId.value],
+		project_ids: [projectId.value],
         entities: 'profile.medias, roles.role, projects, shift',
 		// not_have_this_projects:
         shift_id: route?.query?.shift_id,
 	};
 
 	const callback = (res) => {
-		console.log(res);
 		const users = res?.data?.data.map((user) => {
 			return {
 				...user,
@@ -138,7 +137,7 @@ const fetchParams = computed(() => {
         };
     } else if (route?.params?.type === 'shift') {
         params = {
-            not_have_this_shift: [route?.query?.shift_id],
+            // not_have_this_shift: [route?.query?.shift_id],
             project_ids: [projectId?.value],
         }
     }
@@ -248,7 +247,6 @@ const deleteProjectUser = (data) => {
 const deleteShiftUser = (users) => {
     const index = users?.shift?.findIndex(curr => curr?.shift_id === parseInt(route?.query?.shift_id));
     const relationId = users?.shift?.[index]?.id;
-    console.log("🚀 ~ deleteShiftUser ~ relationId:", relationId)
     const params = {
         relation_id: relationId,
     };

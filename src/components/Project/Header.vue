@@ -18,7 +18,7 @@
                 }"
                 :to="`/detail-project/${element?.id}?shift_id=${element?.shift_id}`"
                 class="board-title dark:text-slate-200 text-slate-900 truncate hover:text-primary-600">
-                {{ element?.name ?? 'name' }}
+                {{ element?.name ?? 'name' }} - <span class="text-sm">{{ element?.shift?.type ?? 'Reguler' }}</span>
             </router-link>
         </div>
     </div>

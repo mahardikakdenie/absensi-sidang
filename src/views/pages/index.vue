@@ -66,7 +66,7 @@
                                                 Time In :
                                             </span>
                                             <span class="text-sm">
-                                                {{ formattedTime(project?.timeIn) }}
+                                                {{ convertToShortFormat(project?.shift?.timeIn) }}
                                             </span>
                                         </div>
                                         <div>
@@ -74,7 +74,7 @@
                                                 Time Out :
                                             </span>
                                             <span class="text-sm">
-                                                {{ formattedTime(project?.timeOut) }}
+                                                {{ convertToShortFormat(project?.shift?.timeOut) }}
                                             </span>
                                         </div>
                                     </div>
@@ -118,7 +118,7 @@ import pageLoader from '@/components/Loader/pageLoader.vue';
 import projectApi from '@/helpers/projects';
 import { useRouter } from 'vue-router';
 import { userDummyImage } from "@/constant/static";
-// import { getDataShift } from '@/helpers/shift';
+import { getDataShifts } from '@/helpers/shift';
 
 const userStore = useUserStore();
 
@@ -137,42 +137,25 @@ const setType = (type, project) => {
 const getDataMyShift = () => {
     const params = {
         is_myshift: true,
-        entities: 'projectShift.project.shift, projectShift.project.division',
+        entities: 'projectShift.project.shift, projectShift.project.division, userShift',
     };
     const callback = (res) => {
         const shifts = res?.data?.data;
         projects.value = shifts?.map(curr => ({
             ...curr?.project_shift?.[0]?.project,
-            timeIn: curr?.timeIn,
-            timeOut: curr?.timeOut,
+            shift: {
+                timeIn: curr?.timeIn,
+                timeOut: curr?.timeOut,
+                type: curr?.type,
+            },
             shift_id: curr?.id,
         })).filter(curr => curr?.division?.status === 'publish');
+        console.log("🚀 ~ callback ~ projects.value:", projects.value);
     };
-    const err = () => { };
-    // getDataShift(params, callback, err)
-};
-
-const getMyProjects = () => {
-    isProjectFetching.value = true;
-    const callback = (res) => {
-        isProjectFetching.value = false;
-        projects.value = res.data.data.map(curr => ({
-            ...curr,
-            timeIn: curr?.timeIn ?? '-',
-            timeOut: curr?.timeOut ?? '-',
-            shift_id: curr?.id,
-        }));
-    }
-    const err = (e) => {
-        isProjectFetching.value = true;
+    const err = () => { 
         console.log(e);
-    }
-
-    const params = {
-        owner_id: user?.value?.id,
-    }
-
-    projectApi.getData(params, callback, err);
+    };
+    getDataShifts(params, callback, err)
 };
 
 const checkCapabilities = () => {
@@ -190,21 +173,14 @@ watch(user, (newValue, oldValue) => {
     }
 });
 
-const formattedTime = (inputTime) => {
-    const parsedTime = new Date(`1970-01-01T${inputTime}Z`);
-
-    // Format: HH:mm
-    const result = `${parsedTime.getHours().toString().padStart(2, '0')}:${parsedTime.getMinutes().toString().padStart(2, '0')}`;
-
-    return result;
+const convertToShortFormat = (fullTime) => {
+    const [hours, minutes] = fullTime.split(':');
+    return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
 };
 
 onMounted(() => {
-    if (user.value && user.value.id) {
-        // getMyProjects();
-    }
     checkCapabilities();
-    getMyProjects();
+    getDataMyShift();
 });
 
 </script>
