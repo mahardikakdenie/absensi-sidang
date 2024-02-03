@@ -345,7 +345,7 @@ watchEffect(() => {
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .fromGroup {
 	ul {
 		height: 200px !important;

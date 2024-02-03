@@ -3,7 +3,8 @@
 		:disabled="isDisabled"
 		v-tippy="{
 			placement: 'top',
-		}"
+		
+		theme: 'tomato',}"
 		:content="btnTooltip"
 		class="btn inline-flex justify-center"
 		:class="`
@@ -17,7 +18,8 @@
 			<span class="flex items-center">
 				<span
 					v-tippy="{
-						placement: 'top',
+						placement: 'bottom',
+						theme: 'tomato',
 					}"
 					:content="iconTooltip"
 					:class="`
@@ -59,8 +61,9 @@
 
 	<router-link
 		:to="link"
-    v-tippy="{
-			placement: 'top',
+		v-tippy="{
+			placement: 'bottom',
+			theme: 'tomato',
 		}"
 		:content="btnTooltip"
 		class="btn inline-flex justify-center"
@@ -113,7 +116,7 @@
 	</router-link>
 	<div
 		class="btn inline-flex justify-center"
-    v-tippy="{
+		v-tippy="{
 			placement: 'top',
 		}"
 		:content="btnTooltip"

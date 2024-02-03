@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="flex">
 		<template v-for="(action, index) in actions">
 			<vue-button
 				:key="index"

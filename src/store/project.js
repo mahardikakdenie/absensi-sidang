@@ -19,6 +19,8 @@ export const useProjectStore = defineStore('project', {
             editId: null,
             editdesc: null,
 
+            selectedProject: null,
+
             projects: [
                 {
                     id: uuidv4(),
@@ -145,5 +147,8 @@ export const useProjectStore = defineStore('project', {
         closeEditModal() {
             this.editModal = false;
         },
+        setSelectedProject(project) {
+            this.selectedProject = project;
+        }
     }
 })

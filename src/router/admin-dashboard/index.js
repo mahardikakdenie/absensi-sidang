@@ -58,6 +58,16 @@ const router = [
                     showDatePicker: true,
                     requiresAuth: true,
                 }
+            },
+            {
+                name: 'Admin Tambah User',
+                path: ':type/:id/:slug',
+                component: () => import('@/views/pages/admin/_add-user/index.vue'),
+                meta: {
+                    groupParent: 'List Division',
+                    showDatePicker: true,
+                    requiresAuth: true,
+                }
             }
         ],
     }

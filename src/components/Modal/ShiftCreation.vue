@@ -108,6 +108,7 @@
 									v-for="(shift, index) in shifts"
 									:key="index"
 									class="p-2 border-b hover:bg-gray-200 cursor-pointer"
+									:class="[{'bg-gray-200': shift.id === selectedShift?.id}]"
 								>
 									<header
 										class="flex justify-between items-center">
@@ -176,14 +177,9 @@
 										</div>
 										<div class="flex gap-4">
 											<vue-button
-												icon="mdi:users-add-outline"
-												btn-class="btn-sm btn-success light"
-												@click="addMember(shift)"
-											/>
-											<vue-button
-												icon="material-symbols:close"
-												btn-class="btn-sm btn-danger light"
-												icon-class="text-sm" 
+												text="Hapus Shift"
+												btn-class="btn-sm light btn-danger light"
+												icon-class="text-sm text-red-500"
 											/>
 										</div>
 									</header>
@@ -205,19 +201,19 @@
 					<div class="p-2 border-b">
 						<div class="flex justify-between">
 							<div
-								v-for="(tab, index) in rightTabs"
-								:key="index"
 								class="p-2 text-sm text-center hover:text-primary-500 w-100 border-b-2 border-b-[#ffff] hover:border-b-primary-500 cursor-pointer">
 								<span
-									class="text-sm text-center whitespace-nowrap">
-									{{ tab?.label }} {{ memberPropertyText }}
+									class="text-sm text-center whitespace-nowrap"
+								>
+									{{titleUserTab}}
 								</span>
 							</div>
 							<div>
 								<vue-button
 									text="Tambah Anggota"
 									btn-class="btn-sm btn-primary btn light"
-									@click="addMember" />
+									@click="addMember" 
+								/>
 							</div>
 						</div>
 					</div>
@@ -229,7 +225,8 @@
 							<div
 								v-for="(user, index) in userOptions"
 								:key="index"
-								class="border-b p-2 mt-2 grid grid-cols-12 hover:bg-gray-200 gap-3">
+								class="border-b p-2 mt-2 grid grid-cols-12 hover:bg-gray-200 gap-3"
+							>
 								<div class="col-span-1">
 									<img
 										:src="
@@ -392,10 +389,6 @@ const getUserSelected = (projectId) => {
 		if (response?.data?.meta?.status) {
 			const data = response?.data?.data;
 			userOptions.value = data;
-			if (typeForm.value === 'add') {
-				const filteredUserOptions = userOptions?.value.filter(user => user?.shift?.some(curr => curr?.shift_id !== selectedShift?.id));
-				userOptions.value = filteredUserOptions;
-			}
 		}
 		isFetching.value = false;
 	};
@@ -436,10 +429,13 @@ const createShift = () => {
 	//
 };
 
+const titleUserTab = ref('');
+
 const addMember = (shift) => {
 	listUserVisible.value = true;
 	selectedShift.value = shift;
 	typeForm.value = 'add';
+	titleUserTab.value = 'Tambah Pengguna';
 	getUserSelected();
 };
 
@@ -451,47 +447,10 @@ const setSelectedShift = (shift, index) => {
 	memberPropertyText.value = `Shift ke ${index + 1}`;
 };
 
+const deleteMemberList = () => {
+};
+
 const submit = () => {
-	// const typeIsUpdate = store?.typeAction?.shifts.length > 0;
-	// const userIds = store?.typeAction?.data?.users?.map(
-	// 	(user) => user?.user_id
-	// );
-	// if (typeIsUpdate) {
-	// 	const params = {
-	// 		timeIn: timeIn?.value,
-	// 		timeOut: timeOut?.value,
-	// 		userIds: userIds,
-	// 	};
-	// 	const callback = (res) => {
-	// 		if (res?.data?.meta?.status) {
-	// 			close();
-	// 			toast?.success('Shift Sudah di update Harap Refresh');
-	// 		}
-	// 	};
-
-	// 	const err = (e) => {
-	// 		console.log(e);
-	// 	}
-
-	// 	projectApi?.updateShift(store?.typeAction?.shifts?.[0]?.id, params, callback, err);
-	// } else {
-	// 	const params = {
-	// 		projectIds: [props?.projectId],
-	// 		userIds: userIds,
-	// 		timeIn: timeIn?.value,
-	// 		timeOut: timeOut?.value,
-	// 	};
-	// 	const callback = (res) => {
-	// 		if (res?.data?.meta?.status) {
-	// 			close();
-	// 			toast?.success('Shift Sudah di tambahkan Harap Refresh');
-	// 		}
-	// 	};
-	// 	const err = (e) => {
-	// 		console.log(e);
-	// 	};
-	// 	projectApi.createShift(params, callback, err);
-	// }
 	const params = {
 		timeIn: timeIn?.value,
 		timeOut: timeOut?.value,

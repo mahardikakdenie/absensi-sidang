@@ -28,6 +28,11 @@ export default {
     axiosHit(`user-project`, params, 'post', callback, errCb);
   },
 
+  /**Bulk */
+  insertUsersProject(params, callback, errCb) {
+    axiosHit(`user-project/inserts`, params, 'post', callback, errCb);
+  },
+
   createShift(params, callback, errCb) {
     const url = `${endpointShift}/store`;
     axiosHit(url, params, 'post', callback, errCb);

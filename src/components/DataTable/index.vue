@@ -3,7 +3,7 @@
 		<Card noborder className="border-none">
 			<div
 				class="md:flex justify-between pb-6 md:space-y-0 space-y-3 items-center">
-				<h5>{{ title }}</h5>
+				<h5 class="capitalize">{{ title }}</h5>
 				<div class="flex gap-4">
 					<vue-button 
 						v-if="btnText"

@@ -38,7 +38,7 @@
             :leave-to="noFade ? '' : 'opacity-0 scale-95'"
           >
             <DialogPanel
-              class="w-full transform overflow-hidden rounded-md bg-white dark:bg-slate-800 text-left align-middle shadow-xl transition-all"
+              class="w-full transform overflow-hidden rounded-md bg-white text-left align-middle shadow-xl transition-all"
               :class="sizeClass"
             >
               <div
@@ -47,7 +47,8 @@
               >
                 <h2
                   v-if="title"
-                  class="capitalize leading-6 tracking-wider font-medium text-base text-white"
+                  class="capitalize leading-6 tracking-wider font-medium text-base"
+                  :class="titleClass"
                 >
                   {{ title }}
                 </h2>
@@ -56,8 +57,7 @@
                 </button>
               </div>
               <div
-                class="px-6 py-8"
-                :class="scrollContent ? 'overflow-y-auto max-h-[400px]' : ''"
+                class="h-[400px] p-11"
               >
                 <slot />
               </div>
@@ -173,6 +173,10 @@ export default defineComponent({
       type: String,
       default:
         "bg-slate-900 dark:bg-slate-800 dark:border-b dark:border-slate-700",
+    },
+    titleClass: {
+      type: String,
+      default: "text-white",
     },
     sizeClass: {
       type: String,

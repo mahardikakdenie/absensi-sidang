@@ -54,7 +54,7 @@ import division from '@/helpers/division';
 import projectsApi from '@/helpers/projects.js';
 import { useDataTableStore } from '@/store/data-table.js';
 import { computed, onBeforeUnmount, onMounted, ref, watch, watchEffect } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import ModalForm from '@/components/Modal/Form.vue';
 import userApi from '@/helpers/user';
 import divisionApi from '@/helpers/division';
@@ -63,12 +63,14 @@ import ModalConfirm from '@/components/Modal/Confirm.vue';
 import ModalUserAssign from '@/components/Modal/UserAssignation.vue';
 import ShiftCreationModal from '@/components/Modal/ShiftCreation.vue';
 import ProductDetailModal from '@/components/Modal/ProjectDetail.vue';
+import { useProjectStore } from '@/store/project';
 const userDummyImage =
 	'https://static.vecteezy.com/system/resources/previews/018/765/757/original/user-profile-icon-in-flat-style-member-avatar-illustration-on-isolated-background-human-permission-sign-business-concept-vector.jpg';
 
 const textModal = ref();
 const store = useDataTableStore();
 const route = useRoute();
+const router = useRouter();
 const toast = useToast();
 
 const user = computed(() => JSON.parse(localStorage.getItem('users')));
@@ -77,6 +79,8 @@ const projectId = ref();
 const isShiftModalVisible = ref(false);
 const isProductDetailModal = ref(false);
 const project = ref();
+
+const storeProject = useProjectStore();
 
 const headers = [
 	{
@@ -183,11 +187,17 @@ const actions = [
 		btnClass: 'btn btn-sm text-success-600',
 	},
     {
-        key: 'shift-creator',
-        icon: 'fluent:shifts-checkmark-20-regular',
-        tooltipText: 'Buat Shift',
+        key: 'add-users',
+        icon: 'mdi:users-add-outline',
+        tooltipText: 'Tambah Anggota Project',
         btnClass: 'btn btn-sm text-success-500',
-    }
+    },
+    {
+        key: 'shift-creator',
+        icon: 'fluent:shifts-add-24-regular',
+        tooltipText: 'Tugaskan Shift',
+        btnClass: 'btn btn-sm text-success-400',
+    },
 ];
 
 const form = ref(formConfig.map(createFormField));
@@ -210,7 +220,9 @@ const handleTypeAction = (value) => {
         divisionsIds.value = [value?.data?.division?.id];
         setFormData(value);
     } else if (value.key === 'assign') {
-        isModalAssignation.value = true;
+        // isModalAssignation.value = true;
+        router?.push(`/admin/project/${value?.data?.id}/${value?.data?.slug}`);
+        storeProject?.setSelectedProject(value?.data);
         usersAssignation.value = value?.data?.users;
         projectId.value = value?.data?.id;
         assignationUserDivisionId.value = value?.data?.devisionId;
@@ -221,7 +233,10 @@ const handleTypeAction = (value) => {
     } else if (value?.key === 'shift-creator') {
         isShiftModalVisible.value = true;
         projectId.value = value?.data?.id;
-    } 
+    } else if (value?.key === 'add-users') {
+        router?.push(`/admin/project/${value?.data?.id}/${value?.data?.slug}`);
+        storeProject?.setSelectedProject(value?.data);
+    }
     else if (value?.key !== 'add') {
         toggleModalConfirm();
         textModal.value = `Apakah anda yakin ingin mengubah status menjadi ${value?.key} di project ${value.data.name}`;
