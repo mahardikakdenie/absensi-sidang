@@ -60,7 +60,6 @@ import Modal from '@/components/modal'
 import VueSelect from '@/components/Select/VueSelect';
 import vSelect from 'vue-select';
 import VueButton from '@/components/Button';
-import Icon from '@/components/icon'
 import {ref} from 'vue'
 
 const props = defineProps({
