@@ -47,17 +47,17 @@
 											Waktu Lembur
 										</span>
 									</div>
-									<FormGroup label="Timein" name="d1">
+									<FormGroup label="Tanggal Dimulai" name="d1">
 										<flat-pickr
-											v-model="timeIn"
+											v-model="startdate"
 											class="form-control"
 											id="d1"
 											placeholder="Tanggal Di Mulai" />
 									</FormGroup>
 
-									<FormGroup label="Time Out" name="d1">
+									<FormGroup label="Tanggal SelesaiOut" name="d1">
 										<flat-pickr
-											v-model="timeOut"
+											v-model="targetdate"
 											class="form-control"
 											id="d1"
 											placeholder="Tanggal Selesai" />
@@ -94,7 +94,8 @@
 									<vue-button
 										text="Submit"
 										btn-class="btn-sm btn-primary"
-										@click="createShift" />
+										@click="insertShift" 
+									/>
 								</div>
 							</div>
 						</div>
@@ -180,6 +181,7 @@
 												text="Hapus Shift"
 												btn-class="btn-sm light btn-danger light"
 												icon-class="text-sm text-red-500"
+												@click="removeShift(shift.id)"
 											/>
 										</div>
 									</header>
@@ -210,6 +212,7 @@
 							</div>
 							<div>
 								<vue-button
+									v-if="selectedShift"
 									text="Tambah Anggota"
 									btn-class="btn-sm btn-primary btn light"
 									@click="addMember" 
@@ -222,7 +225,8 @@
 					<!-- Content -->
 					<div>
 						<div v-if="listUserVisible">
-							<div
+							<div v-if="userOptions.length > 0">
+								<div
 								v-for="(user, index) in userOptions"
 								:key="index"
 								class="border-b p-2 mt-2 grid grid-cols-12 hover:bg-gray-200 gap-3"
@@ -241,34 +245,10 @@
 										{{ user?.name }}
 									</span>
 								</div>
-								<div
-									class="col-span-3 flex items-center justify-end">
-									<vue-button
-										v-if="
-											user?.shift?.some(
-												(curr) =>
-													curr?.shift_id ===
-													selectedShift?.id
-											)
-										"
-										btn-class="btn btn-sm btn-light light"
-										btnTooltip="Hapus Anggota"
-										icon-class="text-red-500 text-lg"
-										icon="material-symbols:delete" />
-
-									<vue-button
-										v-if="
-											user?.shift?.every(
-												(curr) =>
-													curr?.shift_id !==
-													selectedShift?.id
-											)
-										"
-										btn-class="btn btn-sm btn-light light"
-										btnTooltip="Atur Shift"
-										icon-class="text-primary-500 text-lg"
-										icon="mdi:approve" />
-								</div>
+							</div>
+							</div>
+							<div class="flex justify-center p-2">
+								<span>Tidak ada Anggota</span>
 							</div>
 						</div>
 						<div v-else class="flex p-4 justify-center">
@@ -310,11 +290,15 @@ import { useDataTableStore } from '@/store/data-table';
 import { useToast } from 'vue-toastification';
 import { duplicateVar } from '@/constant/helpers';
 import { userDummyImage } from '@/constant/static';
-import { getDataShifts } from '@/helpers/shift';
+import { getDataShifts,createShift, deleteShift } from '@/helpers/shift';
 import FormGroup from '@/components/FromGroup';
+import { useProjectStore } from '@/store/project';
+import { useRoute, useRouter } from 'vue-router';
 
 const timeIn = ref();
 const timeOut = ref();
+const startdate = ref();
+const targetdate = ref();
 const typeShift = ref('');
 const users = ref([]);
 const store = useDataTableStore();
@@ -327,6 +311,9 @@ const rightTabs = [
 		key: 'anggota',
 	},
 ];
+
+const router = useRouter();
+const route = useRoute();
 
 const listUserVisible = ref(false);
 
@@ -344,10 +331,11 @@ const props = defineProps({
 	projectId: {
 		type: [String, Number],
 		default: null,
-	},
+	}
 });
 
 const selectedShift = ref();
+const storeProject = useProjectStore();
 
 watch(
 	() => selectedShift,
@@ -358,10 +346,12 @@ watch(
 	}
 );
 
+const project = computed(() => storeProject?.selectedProject)
+
 const fetchParams = computed(() => ({
 	entities: 'profile.medias, shift',
 	project_ids: props?.projectId ? [props?.projectId] : [],
-	shift_id: typeForm.value !== 'add' ? selectedShift?.value?.id : null,
+	shift_id: selectedShift?.value?.id,
 }));
 
 const emits = defineEmits(['submit', 'close']);
@@ -415,7 +405,6 @@ const getDataShift = () => {
 			isLoading.value = false;
 			const data = res?.data?.data;
 			shifts.value = data;
-			console.log('🚀 ~ callback ~ shifts.value:', shifts.value);
 		}
 	};
 	const err = (e) => {
@@ -425,16 +414,48 @@ const getDataShift = () => {
 	getDataShifts(params, callback, err);
 };
 
-const createShift = () => {
-	//
+const insertShift = () => {
+	const params = {
+		timeIn: timeIn.value,
+		timeOut: timeOut.value,
+		type: typeShift.value,
+		startdate: startdate.value,
+		targetdate: targetdate.value,
+		project_id: props?.projectId,
+	};
+	const callback = (res) => {
+		if (res?.data?.meta?.status) {
+			const data = res?.data?.data;
+			shifts.value.push(data);
+			isFormVisible.value = false;
+			getDataShift();
+		}
+	};
+	const err = () => {
+		console.log(e);
+		toast?.error('Gagal Membuat SHift');
+	};
+
+	createShift(params, callback, err);
+};
+
+const removeShift = (id) => {
+	const callback = (res) => {
+		if (res?.data?.meta?.status) {
+			getDataShift();
+		}
+	};
+	const err = (e) => {
+		console.log(e);
+	};
+
+	deleteShift(id, callback, err);
 };
 
 const titleUserTab = ref('');
 
 const addMember = (shift) => {
-	listUserVisible.value = true;
-	selectedShift.value = shift;
-	typeForm.value = 'add';
+	router?.push(`/admin/shift/${project?.value?.id}/${project?.value?.slug}?shift_id=${selectedShift?.value?.id}`);
 	titleUserTab.value = 'Tambah Pengguna';
 	getUserSelected();
 };
@@ -443,7 +464,7 @@ const setSelectedShift = (shift, index) => {
 	selectedShift.value = shift;
 	listUserVisible.value = true;
 	getUserSelected();
-	typeForm.value = 'delete'
+	typeForm.value = 'add'
 	memberPropertyText.value = `Shift ke ${index + 1}`;
 };
 
@@ -463,9 +484,9 @@ const submit = () => {
 onMounted(() => {
 	if (props?.activeModal) {
 		getDataShift();
-		getUserSelected();
-		timeIn.value = store?.typeAction?.data?.timeIn;
-		timeOut.value = store?.typeAction?.data?.timeOut;
+		// getUserSelected();
+		// timeIn.value = store?.typeAction?.data?.timeIn;
+		// timeOut.value = store?.typeAction?.data?.timeOut;
 	}
 });
 </script>

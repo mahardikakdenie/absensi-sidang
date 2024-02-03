@@ -233,9 +233,9 @@ const handleTypeAction = (value) => {
     } else if (value?.key === 'shift-creator') {
         isShiftModalVisible.value = true;
         projectId.value = value?.data?.id;
+        storeProject?.setSelectedProject(value?.data);
     } else if (value?.key === 'add-users') {
         router?.push(`/admin/project/${value?.data?.id}/${value?.data?.slug}`);
-        storeProject?.setSelectedProject(value?.data);
     }
     else if (value?.key !== 'add') {
         toggleModalConfirm();
