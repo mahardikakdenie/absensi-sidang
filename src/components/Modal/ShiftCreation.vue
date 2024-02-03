@@ -104,7 +104,7 @@
 						<!-- List SHift -->
 						<hr class="my-2" />
 						<div v-if="!isFormVisible" class="mt-4">
-							<div v-if="shifts.length > 0 && !isLoading">
+							<div v-if="shifts.length > 0">
 								<div
 									v-for="(shift, index) in shifts"
 									:key="index"
@@ -188,7 +188,7 @@
 								</div>
 							</div>
 							<div
-								v-else-if="shifts.length === 0 && !isLoading"
+								v-else-if="shifts.length === 0"
 								class="flex justify-center">
 								<span>Tidak ada shift</span>
 							</div>
@@ -225,7 +225,7 @@
 					<!-- Content -->
 					<div>
 						<div v-if="listUserVisible">
-							<div v-if="userOptions.length > 0">
+							<div v-if="userOptions.length > 0 && !isLoading">
 								<div
 								v-for="(user, index) in userOptions"
 								:key="index"
@@ -247,8 +247,11 @@
 								</div>
 							</div>
 							</div>
-							<div class="flex justify-center p-2">
+							<div v-else-if="userOptions?.length === 0 && !isLoading" class="flex justify-center p-2">
 								<span>Tidak ada Anggota</span>
+							</div>
+							<div v-else>
+								<page-loader />
 							</div>
 						</div>
 						<div v-else class="flex p-4 justify-center">
@@ -266,10 +269,6 @@
 					text="Cancel"
 					btn-class="btn-sm btn btn-danger"
 					@click="close" />
-				<VueButton
-					text="Submit"
-					btn-class="btn-sm btn btn-primary"
-					@click="submit" />
 			</template>
 		</modal>
 	</div>
@@ -395,14 +394,12 @@ const close = () => {
 };
 
 const getDataShift = () => {
-	isLoading.value = true;
 	const params = {
 		project_id: props?.projectId,
 		entities: 'projectShift, userShift.user.profile.medias',
 	};
 	const callback = (res) => {
 		if (res?.data?.meta?.status) {
-			isLoading.value = false;
 			const data = res?.data?.data;
 			shifts.value = data;
 		}
