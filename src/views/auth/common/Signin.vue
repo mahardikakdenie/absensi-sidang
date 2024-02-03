@@ -91,8 +91,8 @@ export default {
 		const router = useRouter();
 
 		const formValues = {
-			email: 'admin@mail.com',
-			password: '123456789',
+			email: '',
+			password: '',
 		};
 
 		const { handleSubmit } = useForm({
