@@ -230,7 +230,6 @@ export default {
 		const isDisabled = computed(() => store.isDisabledSearch);
 		const meta = computed(() => store.meta);
 		const pageChange = (event) => {
-			console.log('event => ', event);
 			meta.value.current_page = event;
 			store.setMeta(meta.value);
 		};

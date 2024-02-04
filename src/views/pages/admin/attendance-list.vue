@@ -7,10 +7,15 @@
     </card>
     <card>
         <data-table 
-            title="Attendance List" 
+            title="Attendance List"
+            :is-loading="isLoading"
         />
     </card>
-    <ModalAttendanceDetail :activeModal="isAttendanceModalVisible" :data="attendanceData" @close="isAttendanceModalVisible = false" />
+    <ModalAttendanceDetail 
+        :activeModal="isAttendanceModalVisible" 
+        :data="attendanceData" 
+        @close="isAttendanceModalVisible = false" 
+    />
 </div>
 </template>
 
@@ -85,12 +90,45 @@ const actions = [
 	},
 ];
 
+
+const perPage = ref(10);
+const currentPage = ref(1);
+
+/**
+ * Watches the `per_page` property in the `meta` object of the store and updates the `perPage` value accordingly.
+ *
+ * @param {Function} getter - A function that returns the value to be watched (e.g., `() => store?.meta?.per_page`).
+ * @param {Function} callback - A callback function to be executed when the watched value changes.
+ * @returns {void}
+ */
+ watch(
+	() => store?.meta?.per_page,
+	(value) => {
+		if (value) {
+			console.log("🚀 ~ value:", value)
+			perPage.value = value;
+			getDataAttendance();
+		}
+	}
+);
+
+ watch(
+	() => store?.meta?.current_page,
+	(value) => {
+		if (value) {
+			console.log("🚀 ~ value:", value)
+			currentPage.value = value;
+			getDataAttendance();
+		}
+	}
+);
+
 const meta = computed(() => store?.meta);
 const fetchParams = computed(() => ({
-    entities: 'project.division,user.profile.medias,media,user.roles.role,mediaProof',
+    entities: 'project.division,user.profile.medias,media,user.roles.role,mediaProof,shift',
     admin_mode: true,
-    paginate: meta?.per_page,
-    page: meta?.current_page,
+    paginate: perPage?.value,
+    page: currentPage?.value,
 }));
 
 const getDataAttendance = () => {

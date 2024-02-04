@@ -201,7 +201,7 @@ const getDataUser = () => {
         division_ids: divisionsIds?.value?.map(division => division?.devision_id),
     };
     const callback = (response) => {
-        if (response.data.meta.status) {
+        if (response?.data?.meta?.status) {
             isLoading.value = false;
             const data = response.data.data;
             users.value = data.map(user => {

@@ -38,7 +38,7 @@ import Card from '@/components/Card/index.vue';
 import DataTable from '@/components/DataTable/index.vue';
 import divisionApi from '@/helpers/division.js';
 import { useDataTableStore } from '@/store/data-table.js';
-import { computed, onBeforeUnmount, onMounted, ref, watch, watchEffect } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import ModalForm from '@/components/Modal/Form.vue';
 import userApi from '@/helpers/user.js';
 import { createFormField } from '@/constant/helpers';
@@ -51,7 +51,6 @@ const router = useRouter();
 const isLoading = ref(false);
 const isModalAssignationVisible = ref(false);
 
-const isLoadingPage = ref(false);
 
 const userDummyImage =
 	'https://static.vecteezy.com/system/resources/previews/018/765/757/original/user-profile-icon-in-flat-style-member-avatar-illustration-on-isolated-background-human-permission-sign-business-concept-vector.jpg';
@@ -146,16 +145,6 @@ const perPage = ref(10);
 const currentPage = ref(1);
 
 /**
- * Handles the watch callback by updating the `currentPage` value.
- *
- * @param {number} value - The value of the `current_page` property in the `meta` object of the store.
- * @returns {void}
- */
-const handleCurrentPageChange = (value) => {
-	currentPage.value = value;
-};
-
-/**
  * Watches the `current_page` property in the `meta` object of the store and updates the `currentPage` value accordingly.
  *
  * @param {Function} getter - A function that returns the value to be watched (e.g., `() => store?.meta?.current_page`).
@@ -165,7 +154,11 @@ const handleCurrentPageChange = (value) => {
 watch(
 	() => store?.meta?.current_page,
 	(value) => {
-		handleCurrentPageChange(value);
+		if (value) {
+			console.log("🚀 ~ value:", value)
+			currentPage.value = value;
+			getDivisions();
+		}
 	}
 );
 
@@ -185,17 +178,11 @@ watch(() => store?.navigate, (value) => {
 watch(
 	() => store?.meta?.per_page,
 	(value) => {
-		/**
-		 * Handles the watch callback by updating the `perPage` value.
-		 *
-		 * @param {number} value - The value of the `per_page` property in the `meta` object of the store.
-		 * @returns {void}
-		 */
-		const handlePerPageChange = (value) => {
+		if (value) {
+			console.log("🚀 ~ value:", value)
 			perPage.value = value;
-		};
-
-		handlePerPageChange(value);
+			getDivisions();
+		}
 	}
 );
 
@@ -241,35 +228,33 @@ watch(
 	}
 );
 
-const fetchParams = computed(() => ({
-	paginate: perPage?.value,
-	page: currentPage?.value,
-	division_ids: divisionsIds?.value,
-}))
-
 const getDivisions = () => {
 	isLoading.value = true;
 	const params = {
-		...fetchParams?.value,
+		paginate: perPage?.value,
+		page: currentPage?.value,
+		division_ids: divisionsIds?.value,
 		entities: 'users.user.profile.medias',
 	};
 	
 	const callback = (response) => {
-		isLoading.value = false;
-		const divisions = response?.data?.data;
-		const divisionMap = divisions.map((division) => ({
-			...division,
-			assignto: division?.users
-			?.filter((user) => user.type !== 'owner')
-			.map((user) => ({
-				id: user?.user?.id,
-				url: user?.user?.profile?.medias?.url ?? userDummyImage,
-				name: user?.user?.name,
-			})),
-		}));
-		store.setData(divisionMap);
-		const meta = response?.data?.meta;
-		store.setMeta(meta);
+		if (response?.data?.meta?.status) {
+			isLoading.value = false;
+			const divisions = response?.data?.data;
+			const meta = response?.data?.meta;
+			const divisionMap = divisions.map((division) => ({
+				...division,
+				assignto: division?.users
+				?.filter((user) => user.type !== 'owner')
+				.map((user) => ({
+					id: user?.user?.id,
+					url: user?.user?.profile?.medias?.url ?? userDummyImage,
+					name: user?.user?.name,
+				})),
+			}));
+			store.setMeta(meta);
+			store.setData(divisionMap);
+		}
 	};
 
 	const err = (e) => {
@@ -401,16 +386,12 @@ const getDataUser = () => {
 	userApi.getAllUsers(params, callback, err);
 };
 
-onBeforeUnmount(() => {
-	dataMounted();
-});
-
 const init = () => {
 	store?.setActions(actions);
 	checkCapabilities();
 };
 
-const dataMounted = onMounted(() => {
+onMounted(() => {
 	store.setHeaders(headers);
 	store.setNameConfig(null);
 	init();

@@ -211,6 +211,38 @@ watch(
 	}
 );
 
+const perPage = ref(10);
+const currentPage = ref(1);
+
+/**
+ * Watches the `per_page` property in the `meta` object of the store and updates the `perPage` value accordingly.
+ *
+ * @param {Function} getter - A function that returns the value to be watched (e.g., `() => store?.meta?.per_page`).
+ * @param {Function} callback - A callback function to be executed when the watched value changes.
+ * @returns {void}
+ */
+ watch(
+	() => store?.meta?.per_page,
+	(value) => {
+		if (value) {
+			console.log("🚀 ~ value:", value)
+			perPage.value = value;
+			getData();
+		}
+	}
+);
+
+ watch(
+	() => store?.meta?.current_page,
+	(value) => {
+		if (value) {
+			console.log("🚀 ~ value:", value)
+			currentPage.value = value;
+			getData();
+		}
+	}
+);
+
 const isModalAssignation = ref(false);
 const assignationUserDivisionId = ref();
 const usersAssignation = ref([]);
@@ -281,6 +313,8 @@ const onOpenModalAdd = () => {
 const getData = () => {
     isLoading.value = true;
 	const params = {
+        paginate: perPage?.value,
+        page: currentPage?.value,
         division_id: divisionId?.value ?? route?.query?.division_id,
 		division_ids: divisionsIds?.value ?? null,
         entities: 'users.user.profile.medias,users.user.roles.role,division,shift.shift',
@@ -343,6 +377,7 @@ const getSelectedDivisions = () => {
     const params = {
         typeGet: 'selected',
         division_ids: divisionsIds?.value,
+        paginate: 100,
     };    
     const callback = (res) => {
         const divisions = res?.data?.data;
