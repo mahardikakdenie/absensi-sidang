@@ -56,7 +56,7 @@
 </template>
 
 <script setup>
-import Modal from '@/components/modal'
+import Modal from '@/components/Modal';
 import VueSelect from '@/components/Select/VueSelect';
 import vSelect from 'vue-select';
 import VueButton from '@/components/Button';
