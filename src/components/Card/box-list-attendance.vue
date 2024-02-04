@@ -4,7 +4,9 @@
 			<card
 				v-for="(attendance, index) in attendances"
 				:key="index"
-				className="card-history bg-gradient-to-br from-gray-100 to-gray-200 hover:shadow-lg hover:transform hover:scale-105 transition-transform cursor-pointer p-1">
+				className="card-history bg-gradient-to-br from-gray-100 to-gray-200 hover:shadow-lg hover:transform hover:scale-105 transition-transform cursor-pointer p-1"
+                @onClick="showModal(attendance)"
+            >
 				<div class="flex justify-between items-center p-1">
 					<div class="flex items-center space-x-1">
 						<icon
@@ -69,6 +71,13 @@ import pageLoader from '../Loader/pageLoader.vue';
 const toast = useToast();
 const route = useRoute();
 
+const emits = defineEmits(['show-modal']);
+
+
+const showModal = (attendance) => {
+    emits('show-modal', attendance);
+};
+
 
 const attendances = ref([]);
 const isLoading = ref(false);
@@ -86,6 +95,7 @@ const getDataAttendanceLog = () => {
         page: page.value,
         projectId: projectId.value,
         summary: summary.value,
+		entities: 'project.division,user.profile.medias,media,user.roles.role,mediaProof',
     };
 	const callback = (response) => {
         if (response.data.meta.status) {

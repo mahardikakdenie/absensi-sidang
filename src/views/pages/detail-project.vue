@@ -2,14 +2,14 @@
 	<div>
 		<card title="Laporan Harian" class-name="my-4">
 			<div class="grid grid-cols-2 gap-4">
-				<vue-button
-					text="Clock In"
-					btnClass="btn btn-primary hover:light"
-					@click="setType('clockin')" />
-				<vue-button
-					text="Clock Out"
-					btnClass="btn btn-success hover:light"
-					@click="setType('clockout')" />
+			<!-- <vue-button
+				text="Clock In"
+				btnClass="btn btn-primary hover:light"
+				@click="setType('clockin')" />
+			<vue-button
+				text="Clock Out"
+				btnClass="btn btn-success hover:light"
+				@click="setType('clockout')" /> -->
 			</div>
 			<div class="mt-3">
 				<router-link

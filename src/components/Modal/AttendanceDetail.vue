@@ -22,7 +22,7 @@
 							<div>
 								<span class="text-sm">
 									Email : {{ data?.user?.email }}
-								</span>
+							</span>
 							</div>
 							<div>
 								<span class="text-sm">
@@ -91,6 +91,15 @@
 							</div>
 						</div>
 
+						<hr class="mt-6">
+						<div class="mt-6">
+							<div class="mb-3">
+								<span class="text-lg font-bold mb-2">
+									Detail Shift
+								</span>
+							</div>
+						</div>
+
 						<div v-if="false" class="grid grid-cols-2 mt-4 gap-2">
 							<vue-button
 								text="Approve"
@@ -126,7 +135,7 @@
 									</span>
 								</div>
 								<img
-									:src="data?.media_proof"
+									:src="data?.media_proof?.url"
 									class="w-3/4 mx-auto"
 									alt=""
 									srcset="" />
@@ -179,7 +188,7 @@ const emits = defineEmits(['close', 'submit']);
 const close = () => {
 	emits('close');
 };
-const data = computed(() => store?.typeAction?.data);
+const data = computed(() => store?.typeAction?.data || props?.data);
 const type = computed(() => store?.typeAction?.key);
 const submit = () => {
 	emits('submit', data?.value, type?.value);

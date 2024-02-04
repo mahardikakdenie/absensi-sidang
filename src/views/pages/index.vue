@@ -150,7 +150,6 @@ const getDataMyShift = () => {
             },
             shift_id: curr?.id,
         })).filter(curr => curr?.division?.status === 'publish');
-        console.log("🚀 ~ callback ~ projects.value:", projects.value);
     };
     const err = () => { 
         console.log(e);

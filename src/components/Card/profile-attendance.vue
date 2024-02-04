@@ -3,7 +3,7 @@
 		<div class="flex-col flex md:flex-row items-center">
 			<div class="flex-0 mr-6">
 				<div class="author-img w-[65px] h-[88px] rounded-[40px]">
-					<img :src="t1" alt="" class="w-full h-full object-cover" />
+					<img :src="profile?.profile?.medias?.url ?? userDummyImage" alt="" class="w-full h-full object-cover" />
 				</div>
 			</div>
 			<div class="flex-1 text-center md:text-start mt-2">
@@ -60,7 +60,6 @@
 
 <script setup>
 import Card from '@/components/Card';
-import t1 from '@/assets/images/all-img/t1.png';
 import VueBadge from '@/components/Badge/index.vue';
 import Icon from '@/components/Icon';
 import {getDataSummary} from '@/helpers/attendances.js';
@@ -69,6 +68,7 @@ import { computed, onBeforeMount, ref, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import PageLoader from '@/components/Loader/pageLoader.vue'
 import pageLoader from '@/components/Loader/pageLoader.vue';
+import { userDummyImage } from '@/constant/static';
 
 const props = defineProps({
 	type: {
