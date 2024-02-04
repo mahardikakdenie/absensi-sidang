@@ -102,7 +102,7 @@
 						</div>
 
 						<hr class="mt-6">
-						<div class="mt-6">
+						<div v-if="data?.shift" class="mt-6">
 							<div class="mb-3">
 								<span class="text-lg font-bold mb-2">
 									Detail Shift

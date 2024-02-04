@@ -204,6 +204,7 @@ const insertUserShift = (users) => {
     const params = {
         user_ids: users?.map(curr => curr?.id),
         shift_id: route?.query?.shift_id,
+        project_ids: [projectId?.value],
     };
     const callback = (res) => {
         if (res?.data?.data) {

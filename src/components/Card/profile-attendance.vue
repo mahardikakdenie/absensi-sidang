@@ -184,7 +184,7 @@ const getDataAttendanceSummary = () => {
             statistics.value[1].count = data.clockin;
             statistics.value[2].count = data.clockout;
             statistics.value[3].count = data.late;
-            statistics.value[4].count = 0;
+            statistics.value[4].count = data?.overtime;
         }
     };
 	

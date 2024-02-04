@@ -83,9 +83,9 @@
                                     </div>
                                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
                                         <vue-button text="Clock In" btn-class="btn btn-sm btn-success light"
-                                            @click="setType('clockin', project)" />
+                                            @click="setType('clockin', project, project?.shift_id)" />
                                         <vue-button text="Clock out" btn-class="btn btn-sm btn-danger light"
-                                            @click="setType('clockout', project)" />
+                                            @click="setType('clockout', project, project?.shift_id)" />
                                     </div>
                                 </div>
                             </div>
@@ -130,8 +130,8 @@ const router = useRouter();
 
 const isProjectFetching = ref(false);
 
-const setType = (type, project) => {
-    router.push(`/attendance/${type}/${project?.id}`)
+const setType = (type, project, shiftId) => {
+    router.push(`/attendance/${type}/${project?.id}?shift_id=${shiftId}`)
 };
 
 const getDataMyShift = () => {

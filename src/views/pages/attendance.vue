@@ -196,7 +196,7 @@ const SubmitAttendance = () => {
         action: route.params.type,
         time: formattedCurrentTime.value,
         full_address: fullAddress.value,
-        shiftId: shiftId?.value ?? route?.query?.shift_id,
+        shiftId: route?.query?.shift_id,
     };
 
     const callback = (response) => {
