@@ -3,6 +3,7 @@ import { defineStore } from "pinia";
 const __wrapper = {
     state: () => ({
         user: null || JSON.parse(localStorage.getItem('users')),
+        userOptions: [],
     }),
     actions: {
         setUser(user) {
@@ -10,6 +11,9 @@ const __wrapper = {
         },
         createUser(user) {
             this.user.push(user);
+        },
+        setUserOptions(user) {
+            this.userOptions = user;
         },
     },
 };

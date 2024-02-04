@@ -8,7 +8,7 @@
             >
 				<vSelect
 					placeholder="Pilih Users"
-					:options="users"
+					:options="userOptions"
                     multiple
                     v-model="userSelected"
                     @input="setUserSelected($event)"
@@ -46,6 +46,7 @@
                     @click="$emit('close')" 
                 />
                 <vue-button
+					:is-loading="isLoading"
                     text="Confirm"
                     btn-class="btn btn-primary light btn-sm"
                     @click="submit" 
@@ -60,7 +61,8 @@ import Modal from '@/components/Modal';
 import VueSelect from '@/components/Select/VueSelect';
 import vSelect from 'vue-select';
 import VueButton from '@/components/Button';
-import {ref} from 'vue'
+import {ref,computed} from 'vue';
+import { useUserStore } from '@/store/user';
 
 const props = defineProps({
 	activeModal: {
@@ -70,16 +72,24 @@ const props = defineProps({
     users: {
         type: Array,
         default: []
-    }
+    },
+	isLoading: {
+		type: Boolean,
+		default: false,
+	}
 });
 
 const userSelected = ref([]);
+
+const storeUser = useUserStore();
 
 const setUserSelected = (value) => {
     console.log('value -', value);
 }
 
 const emits = defineEmits('submit');
+
+const userOptions = computed(() => storeUser?.userOptions);
 
 const submit = () => {
     emits('submit', userSelected.value);

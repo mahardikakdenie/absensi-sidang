@@ -4,6 +4,7 @@
 			<data-table
 				title="Project"
 				btn-text="Buat Project"
+                :is-loading="isLoading"
 				@open-modal-add="onOpenModalAdd" 
             />
 		</card>
@@ -79,6 +80,7 @@ const projectId = ref();
 const isShiftModalVisible = ref(false);
 const isProductDetailModal = ref(false);
 const project = ref();
+const isLoading = ref(false);
 
 const storeProject = useProjectStore();
 
@@ -277,15 +279,17 @@ const onOpenModalAdd = () => {
 };
 
 const getData = () => {
+    isLoading.value = true;
 	const params = {
-		division_id: divisionId?.value ?? route?.query?.division_id,
+        division_id: divisionId?.value ?? route?.query?.division_id,
 		division_ids: divisionsIds?.value ?? null,
         entities: 'users.user.profile.medias,users.user.roles.role,division,shift.shift',
 	};
 	const callback = (response) => {
-		const projects = response?.data?.data;
+        const projects = response?.data?.data;
+        isLoading.value = false;
         const totalDate = (start, end) => {
-			const startDate = new Date(start);
+            const startDate = new Date(start);
 			const endDate = new Date(end);
 			const diffDays = endDate.getDate() - startDate.getDate();
 			return diffDays;

@@ -4,6 +4,7 @@
         <data-table 
             title="Akun"
             btn-text="Buat Akun"
+            :is-loading="isLoading"
             @open-modal-add="toogleModalUser"
         />
     </card>
@@ -39,6 +40,7 @@ const toast = useToast();
 const dataUser = computed(() => JSON.parse(localStorage.getItem('users')));
 const roles = computed(() => dataUser?.value?.roles);
 const divisionsIds = ref();
+const isLoading = ref(false);
 // Define Headers
 const headers = [
     {
@@ -190,6 +192,7 @@ const users = ref([]);
 const currentPage = ref(1);
 const perPage = ref(10);
 const getDataUser = () => {
+    isLoading.value = true;
     const params = {
         entities: 'roles.role,profile.medias',
         paginate: perPage.value,
@@ -199,6 +202,7 @@ const getDataUser = () => {
     };
     const callback = (response) => {
         if (response.data.meta.status) {
+            isLoading.value = false;
             const data = response.data.data;
             users.value = data.map(user => {
                 return {

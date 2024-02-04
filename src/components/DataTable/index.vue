@@ -8,6 +8,8 @@
 					<vue-button 
 						v-if="btnText"
 						:text="btnText"
+						:isDisabled="isLoading"
+						:is-loading="isLoading"
 						btn-class="btn btn-dark px-4 py-2"
 						@click="openModalAdd"
 					/>
@@ -22,7 +24,12 @@
 				</div>
 			</div>
 
+			<div v-if="isLoading">
+				<pageLoader />
+			</div>
+
 			<vue-good-table
+				v-else-if="!isLoading"
 				:columns="headers"
 				styleClass="vgt-table bordered centered"
 				:rows="datas"
@@ -96,6 +103,7 @@ import actionColumn from '@/components/DataTable/column/actions.vue';
 import ColumnStatus from '@/components/DataTable/column/status.vue';
 import ColumnAssign from '@/components/DataTable/column/assign.vue';
 import ColumnType from '@/components/DataTable/column/type.vue';
+import pageLoader from '../Loader/pageLoader.vue';
 import ColumnShift from '@/components/DataTable/column/shift.vue';
 import { duplicateVar } from '@/constant/helpers';
 const actions = [
@@ -179,6 +187,7 @@ export default {
 		ColumnAssign,
 		ColumnType,
 		ColumnShift,
+		pageLoader,
 	},
 
 	props: {
@@ -189,6 +198,10 @@ export default {
 		btnText: {
 			type: String,
 			default: ''
+		},
+		isLoading: {
+			type: Boolean,
+			default: false,
 		}
 	},
 

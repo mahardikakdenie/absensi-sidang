@@ -5,6 +5,7 @@
         <ModalAddUser 
             :active-modal="isModalUserVisible" 
             :users="userOptions"
+            :isLoading="isLoading"
             @close="isModalUserVisible = false"
             @submit="submit"
         />
@@ -32,12 +33,14 @@ import ModalAddUser from '@/components/Modal/add-user';
 import projectApi from '@/helpers/projects';
 import Confirm from '@/components/Modal/Confirm';
 import { addUserShift, deleteUserShift}  from '@/helpers/shift';
+import { useUserStore } from '@/store/user';
 
 const titlePage = ref('');
 const router = useRouter();
 const route = useRoute();
 const toast = useToast();
 const isModalUserVisible = ref(false);
+const storeUser = useUserStore();
 
 
 const store = useDataTableStore();
@@ -163,6 +166,7 @@ const getUserSelected = () => {
                 id: curr?.id,
             }))
             .filter(curr => !users.value.some(user => user?.id === curr?.id));
+            storeUser?.setUserOptions(userOptions.value);
 		}
 	};
 	const err = (e) => {
@@ -172,6 +176,7 @@ const getUserSelected = () => {
 	userApi.getUserSelected(params, callback, err);
 };
 
+const isLoading = ref(false);
 const submit = (users) => {
     if (route?.params?.type === 'project') {
         insertUserProject(users);
@@ -181,13 +186,15 @@ const submit = (users) => {
 }
 
 const insertUserProject = (users) => {
+    isLoading.value = true;
 	const params = {
-		user_ids: users.map(curr => curr?.id),
+        user_ids: users.map(curr => curr?.id),
 		project_id: projectId?.value,
 		// division_id: props?.divisionId,
 	};
 	const callback = (response) => {
-		if (response?.data?.meta?.status) {
+        if (response?.data?.meta?.status) {
+            isLoading.value = false;
             toast?.success('Berhasil Tambah Data');
             isModalUserVisible.value = false;
             getUsers();
@@ -201,6 +208,7 @@ const insertUserProject = (users) => {
 };
 
 const insertUserShift = (users) => {
+    isLoading.value = true;
     const params = {
         user_ids: users?.map(curr => curr?.id),
         shift_id: route?.query?.shift_id,
@@ -208,6 +216,7 @@ const insertUserShift = (users) => {
     };
     const callback = (res) => {
         if (res?.data?.data) {
+            isLoading.value = false;
             toast?.success('Berhasil Tambah Data');
             isModalUserVisible.value = false;
             getUsers();

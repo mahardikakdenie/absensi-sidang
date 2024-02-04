@@ -1,10 +1,12 @@
 <template>
-	<div v-if="!isLoading">
+	<div>
 		<card>
 			<data-table
 				title="Divisi"
 				:btn-text="textBtnCreate"
-				@open-modal-add="toogleModalForm('add')" />
+				:is-loading="isLoading"
+				@open-modal-add="toogleModalForm('add')" 
+			/>
 		</card>
 		<modal-form
 			:active-modal="isModalForm"
@@ -48,6 +50,8 @@ import ModalUserAssign from '@/components/Modal/UserAssignation.vue';
 const router = useRouter();
 const isLoading = ref(false);
 const isModalAssignationVisible = ref(false);
+
+const isLoadingPage = ref(false);
 
 const userDummyImage =
 	'https://static.vecteezy.com/system/resources/previews/018/765/757/original/user-profile-icon-in-flat-style-member-avatar-illustration-on-isolated-background-human-permission-sign-business-concept-vector.jpg';

@@ -24,6 +24,7 @@ import { getAllData, getDataSummary } from "@/helpers/attendances";
 import { useDataTableStore } from '@/store/data-table';
 const userDummyImage = 'https://static.vecteezy.com/system/resources/previews/018/765/757/original/user-profile-icon-in-flat-style-member-avatar-illustration-on-isolated-background-human-permission-sign-business-concept-vector.jpg';
 
+const isLoading = ref(false);
 
 const store = useDataTableStore();
 
@@ -93,10 +94,12 @@ const fetchParams = computed(() => ({
 }));
 
 const getDataAttendance = () => {
+    isLoading.value = true;
     const params = fetchParams?.value
     const callback = (res) => {
         const data = res?.data?.data;
         const meta = res?.data?.meta;
+        isLoading.value = false;
         const configMapping = data?.map(curr => ({
             ...curr,
             image: curr?.user?.profile?.medias?.url ?? userDummyImage,
