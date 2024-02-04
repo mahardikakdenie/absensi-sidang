@@ -11,10 +11,10 @@ const globalErrorHandler = (error) => {
 	const status = error.response.status;
 	const isTokenExpired = status === 401;
 	if (isTokenExpired || token === undefined || token === null) {
-		// localStorage.removeItem('token');
-		// const originalRequest = error.config;
-		// delete originalRequest.headers.Authorization;
-		// window.location = '/login';
+		localStorage.removeItem('token');
+		const originalRequest = error.config;
+		delete originalRequest.headers.Authorization;
+		window.location = '/login';
 	}
 	return Promise.reject(error);
 };
