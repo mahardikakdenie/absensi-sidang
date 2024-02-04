@@ -100,6 +100,7 @@ watch(() => store?.typeAction, (value) => {
     }
 })
 
+const users = ref();
 const getUsers = () => {
 	const params = {
 		project_ids: [projectId.value],
@@ -109,7 +110,7 @@ const getUsers = () => {
 	};
 
 	const callback = (res) => {
-		const users = res?.data?.data.map((user) => {
+		users.value = res?.data?.data.map((user) => {
 			return {
 				...user,
 				image: user?.profile?.medias?.url ?? userDummyImage,
@@ -117,7 +118,7 @@ const getUsers = () => {
 				status: user?.status ?? '-',
 			};
 		});
-		store?.setData(users);
+		store?.setData(users.value);
 	};
 
 	const err = (e) => {
@@ -137,8 +138,9 @@ const fetchParams = computed(() => {
         };
     } else if (route?.params?.type === 'shift') {
         params = {
-            // not_have_this_shift: [route?.query?.shift_id],
+            not_have_this_shift: [route?.query?.shift_id],
             project_ids: [projectId?.value],
+            // not_have_this_projects:[projectId.value],
         }
     }
 
@@ -159,7 +161,8 @@ const getUserSelected = () => {
                 ...curr,
                 label: curr?.name,
                 id: curr?.id,
-            }));
+            }))
+            .filter(curr => !users.value.some(user => user?.id === curr?.id));
 		}
 	};
 	const err = (e) => {

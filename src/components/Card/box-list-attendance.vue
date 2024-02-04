@@ -95,7 +95,7 @@ const getDataAttendanceLog = () => {
         page: page.value,
         projectId: projectId.value,
         summary: summary.value,
-		entities: 'project.division,user.profile.medias,media,user.roles.role,mediaProof',
+		entities: 'project.division,user.profile.medias,media,user.roles.role,mediaProof,shift',
     };
 	const callback = (response) => {
         if (response.data.meta.status) {

@@ -85,8 +85,18 @@
 								</span>
 							</div>
 							<div>
-								<span class="text-sm">
+								<span class="text-sm capitalize">
 									Status : {{ data?.status ?? 'late' }}
+								</span>
+							</div>
+							<div v-if="data?.date">
+								<span class="text-sm">
+									Tanggal Absen : {{ data?.date }}
+								</span>
+							</div>
+							<div v-if="data?.time">
+								<span class="text-sm">
+									Waktu Absen : {{convertToShortFormat(data?.time) }}
 								</span>
 							</div>
 						</div>
@@ -98,6 +108,22 @@
 									Detail Shift
 								</span>
 							</div>
+							<div>
+								<span class="text-sm">
+									Type : {{ data?.shift?.type ?? 'Reguler' }}
+								</span>
+							</div>
+							<div>
+								<span class="text-sm">
+									Waktu Masuk : {{ convertToShortFormat(data?.shift?.timeIn) }} WIB
+								</span>
+							</div>
+							<div>
+								<span class="text-sm">
+									Waktu Keluar: {{ convertToShortFormat(data?.shift?.timeOut) }} WIB
+								</span>
+							</div>
+							<div></div>
 						</div>
 
 						<div v-if="false" class="grid grid-cols-2 mt-4 gap-2">
@@ -150,12 +176,8 @@
 				<vue-button
 					text="Tutup"
 					btn-class="btn btn-dark btn-sm"
-					@click="$emit('close')" />
-				<!-- <vue-button
-                    text="Confirm"
-                    btn-class="btn btn-primary light btn-sm"
-                    @click="submit" 
-                /> -->
+					@click="$emit('close')" 
+				/>
 			</div>
 		</template>
 	</modal>
@@ -166,6 +188,7 @@ import Modal from '@/components/Modal/index.vue';
 import VueButton from '@/components/Button';
 import { useDataTableStore } from '@/store/data-table';
 import { computed } from 'vue';
+import { convertToShortFormat } from '@/constant/helpers';
 
 const store = useDataTableStore();
 

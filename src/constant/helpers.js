@@ -89,3 +89,9 @@ export const totalDate = (start, end) => {
 	const diffDays = endDate.getDate() - startDate.getDate();
 	return diffDays;
 };
+
+
+export const convertToShortFormat = (fullTime) => {
+    const [hours, minutes] = fullTime.split(':');
+    return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
+};

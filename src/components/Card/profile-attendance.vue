@@ -26,7 +26,7 @@
 		<div class="grid grid-cols-1 gap-5 mt-6">
 			<div class="xl:col-span-8 col-span-12">
 				<div
-					class="grid md:grid-cols-4 sm:grid-cols-2 grid-cols-2 gap-3">
+					class="grid md:grid-cols-5 sm:grid-cols-2 grid-cols-2 gap-3">
 					<div
 						v-for="(item, i) in statistics"
 						:key="i"
@@ -119,6 +119,15 @@ const attendanceSummary = ref([
 		percent: '11.67%  ',
 		icon: 'heroicons-outline:calculator',
 	},
+	{
+        key: 'lembut',
+		title: 'Lembur',
+		count: '$3,564',
+		bg: 'bg-warning-500',
+		text: 'text-warning-500',
+		percent: '11.67%  ',
+		icon: 'heroicons-outline:calculator',
+	},
 ]);
 
 const userSummary = ref([
@@ -149,6 +158,15 @@ const userSummary = ref([
 		percent: '11.67%  ',
 		icon: 'heroicons-outline:calculator',
 	},
+	{
+        key: 'lembut',
+		title: 'Lembur',
+		count: '$3,564',
+		bg: 'bg-warning-500',
+		text: 'text-warning-500',
+		percent: '11.67%  ',
+		icon: 'heroicons-outline:calculator',
+	},
 ]);
 
 const statistics = ref([]);
@@ -166,6 +184,7 @@ const getDataAttendanceSummary = () => {
             statistics.value[1].count = data.clockin;
             statistics.value[2].count = data.clockout;
             statistics.value[3].count = data.late;
+            statistics.value[4].count = 0;
         }
     };
 	
