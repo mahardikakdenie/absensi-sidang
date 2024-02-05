@@ -155,6 +155,7 @@ export default {
       default: 'p-6',
     },
   },
+  emits: ['on-click'],
   methods: {
     handleClick() {
       this.$emit('on-click');

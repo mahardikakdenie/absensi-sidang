@@ -31,6 +31,7 @@
 
 <script>
 import {useDataTableStore} from '@/store/data-table';
+import { useRoute } from 'vue-router';
 export default {
     props: {
         /**
@@ -45,13 +46,16 @@ export default {
     },
 
     setup(props) {
+        const route = useRoute();
         const store = useDataTableStore();
 
         const openModal = () => {
             const params = {
                 data: props?.data,
                 key: 'assign',
+                name: route?.name,
             }
+            console.log("🚀 ~ openModal ~ params.route?.name:", params.route?.name)
             store?.trigerAction(params)
         }
 

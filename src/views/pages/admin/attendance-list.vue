@@ -200,6 +200,7 @@ const getDataAttendanceSummary = () => {
 };
 
 watch(() => store?.typeAction, (value) => {
+    console.log(value);
     if (value?.key === 'name-table') {
         attendanceData.value = value?.data;
         isAttendanceModalVisible.value = true;

@@ -64,10 +64,10 @@ const headers = [
         label: 'Status',
         field: 'status'
     },
-    {
-        label: 'Actions',
-        field: 'actions',
-    }
+    // {
+    //     label: 'Actions',
+    //     field: 'actions',
+    // }
 ];
 
 const summaries = ref([
@@ -310,7 +310,7 @@ const close = () => {
 const submit = (form, type) => {
     form.value = form;
     const value = form?.value.map(curr => curr.value);
-    
+
     if (type === 'create') {
         createUser(value);
     } else if(type === 'update') {

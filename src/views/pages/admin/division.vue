@@ -155,7 +155,6 @@ watch(
 	() => store?.meta?.current_page,
 	(value) => {
 		if (value) {
-			console.log("🚀 ~ value:", value)
 			currentPage.value = value;
 			getDivisions();
 		}

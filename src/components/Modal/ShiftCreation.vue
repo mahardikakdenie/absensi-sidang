@@ -452,7 +452,7 @@ const removeShift = (id) => {
 const titleUserTab = ref('');
 
 const addMember = (shift) => {
-	router?.push(`/admin/shift/${project?.value?.id}/${project?.value?.slug ?? generateSlug(project?.value?.name)}?shift_id=${selectedShift?.value?.id}`);
+	router?.push(`/admin/shift/${project?.value?.id}/${project?.value?.slug && project?.value?.slug !== -1 ? project?.value?.slug : generateSlug(project?.value?.name)}?shift_id=${selectedShift?.value?.id}`);
 	titleUserTab.value = 'Tambah Pengguna';
 	getUserSelected();
 };

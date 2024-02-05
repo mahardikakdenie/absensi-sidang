@@ -7,10 +7,12 @@ const token = localStorage.getItem('token');
 
 const globalResponseHandler = response => response;
 
+console.log(window?.location.hostname);
+const hostname = window?.location?.hostname;
 const globalErrorHandler = (error) => {
 	const status = error.response.status;
 	const isTokenExpired = status === 401;
-	if (isTokenExpired || token === undefined || token === null) {
+	if ((isTokenExpired || token === undefined || token === null)) {
 		localStorage.removeItem('token');
 		const originalRequest = error.config;
 		delete originalRequest.headers.Authorization;

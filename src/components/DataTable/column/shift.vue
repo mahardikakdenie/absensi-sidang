@@ -13,6 +13,7 @@
 import {useDataTableStore} from '@/store/data-table';
 import VueBadge from '@/components/Badge';
 import { computed } from 'vue';
+import { useRoute } from 'vue-router';
 export default {
     props: {
         /**
@@ -32,6 +33,7 @@ export default {
 
     setup(props) {
         const store = useDataTableStore();
+        const route = useRoute();
 
         const openModal = () => {
             const shifts = props?.data?.shift;
@@ -39,7 +41,9 @@ export default {
                 data: props?.data,
                 key: 'shift-creator',
                 shifts,
+                name: route?.name,
             }
+            console.log("🚀 ~ openModal ~ params.route?.name:", params.route?.name)
             store?.trigerAction(params)
         };
 

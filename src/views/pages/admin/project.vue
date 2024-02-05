@@ -207,7 +207,9 @@ const form = ref(formConfig.map(createFormField));
 watch(
 	() => store?.typeAction,
 	(value) => {
-        handleTypeAction(value);
+        if (value && value?.name === 'Project') {
+            handleTypeAction(value);
+        }
 	}
 );
 
@@ -224,8 +226,7 @@ const currentPage = ref(1);
  watch(
 	() => store?.meta?.per_page,
 	(value) => {
-		if (value) {
-			console.log("🚀 ~ value:", value)
+		if (value && route?.path.includes('projects')) {
 			perPage.value = value;
 			getData();
 		}
@@ -235,8 +236,7 @@ const currentPage = ref(1);
  watch(
 	() => store?.meta?.current_page,
 	(value) => {
-		if (value) {
-			console.log("🚀 ~ value:", value)
+		if (value && route?.path.includes('projects')) {
 			currentPage.value = value;
 			getData();
 		}
@@ -255,8 +255,9 @@ const handleTypeAction = (value) => {
         setFormData(value);
     } else if (value.key === 'assign') {
         // isModalAssignation.value = true;
-        router?.push(`/admin/project/${value?.data?.id}/${value?.data?.slug ?? generateSlug(value?.data?.name)}`);
+        router?.push(`/admin/project/${value?.data?.id}/${generateSlug(value?.data?.name)}`);
         storeProject?.setSelectedProject(value?.data);
+        console.log("🚀 ~ handleTypeAction ~ value?.data?.slug && value?.data?.slug !== -1 ? value?.data?.slug : generateSlug(value?.data?.name):", generateSlug(value?.data?.name))
         usersAssignation.value = value?.data?.users;
         projectId.value = value?.data?.id;
         assignationUserDivisionId.value = value?.data?.devisionId;
@@ -269,7 +270,7 @@ const handleTypeAction = (value) => {
         projectId.value = value?.data?.id;
         storeProject?.setSelectedProject(value?.data);
     } else if (value?.key === 'add-users') {
-        router?.push(`/admin/project/${value?.data?.id}/${value?.data?.slug ?? generateSlug(value?.data?.name)}`);
+        router?.push(`/admin/project/${value?.data?.id}/${generateSlug(value?.data?.name)}`);
     }
     else if (value?.key !== 'add') {
         toggleModalConfirm();
@@ -310,7 +311,7 @@ const onOpenModalAdd = () => {
     });
 };
 
-const getData = () => {
+const getDataProjects = () => {
     isLoading.value = true;
 	const params = {
         paginate: perPage?.value,
@@ -349,7 +350,7 @@ const getData = () => {
 		console.warn('e => ', e);
 	};
 
-	projectsApi.getData(params, callback, err);
+	projectsApi.getDataProjects(params, callback, err);
 };
 const divisionsIds = ref();
 const checkProjectCapabilities = () => {
@@ -370,7 +371,7 @@ const checkProjectCapabilities = () => {
 	} else if (checkIsOnlyAdmin) {
 		divisionsIds.value = hasDivisions?.map((division) => division?.devision_id);
 	}
-	getData();
+	getDataProjects();
     getSelectedDivisions();
 };
 const getSelectedDivisions = () => {
@@ -399,7 +400,7 @@ const init = () => {
 	divisionId.value = query?.division_id;
 };
 
-const dataMounted = onMounted(() => {
+onMounted(() => {
 	checkProjectCapabilities();
 	init();
 	store.setHeaders(headers);
@@ -490,10 +491,6 @@ const onChangeProjectProcess = (physical_process, disbursement_of_funds) => {
 
     updateProject(params, params, 'confirm');
 };
-
-onBeforeUnmount(() => {
-	dataMounted();
-});
 </script>
 
 <style></style>

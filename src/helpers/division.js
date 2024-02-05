@@ -20,18 +20,39 @@ export default {
     },
     createDivision(params, callback, errCb) {
         const url = `${endpoint}/store`;
-        axiosHit(url, params, 'post', callback, errCb);
+        client.post(url, params)
+            .then(res => {
+                if (callback) callback(res);
+            }).catch(e => {
+                if (errCb) errCb(e);
+            });
     },
     updateDivision(id,params, callback, errCb) {
         const url = `${endpoint}/update/${id}`;
-        axiosHit(url, params, 'put', callback, errCb);
+        client.put(url, params)
+            .then(res => {
+                if (callback) callback(res);
+            }).catch(e => {
+                if (errCb) errCb(e);
+            });
     },
 
     deleteUserProject(id, callback, errCb) {
-        axiosHit(`user-division/${id}`, null, 'delete', callback, errCb);
+        // axiosHit(`user-division/${id}`, null, 'delete', callback, errCb);
+        client.delete(`user-division/${id}`)
+        .then(res => {
+            if (callback) callback(res);
+        }).catch(e => {
+            if (errCb) errCb(e);
+        });
     },
     
     insertUserProject(params, callback, errCb) {
-        axiosHit(`user-division`, params, 'post', callback, errCb);
+        client.post(`user-division`)
+        .then(res => {
+            if (callback) callback(res);
+        }).catch(e => {
+            if (errCb) errCb(e);
+        });
     },
 }

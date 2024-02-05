@@ -39,6 +39,7 @@ import VueButton from '@/components/Button';
 import VueBadge from '@/components/Badge';
 import { useDataTableStore } from "@/store/data-table.js";
 import { computed } from 'vue';
+import { useRoute } from 'vue-router';
 
 const props = defineProps({
     /**
@@ -66,6 +67,7 @@ const store = useDataTableStore();
 
 // Using a computed property to get configuration from the store
 const config = computed(() => store?.nameConfig);
+const route = useRoute();
 
 const emit = defineEmits(['name-action'])
 
@@ -73,7 +75,9 @@ const nameAction = () => {
     const params = {
 		key: 'name-table',
 		data: props?.data,
+        name: route?.name,
 	};
+	console.log("🚀 ~ nameAction ~ params.route?.name:", params.route?.name)
 	store?.trigerAction(params);
 };
 
@@ -85,7 +89,9 @@ const handleButtonClick = (icon) => {
     const params = {
 		key: icon,
 		data: props?.data,
+        name: route?.name,
 	};
+	console.log("🚀 ~ handleButtonClick ~ params.route?.name:", params.route?.name)
 	store?.trigerAction(params);
 };
 </script>

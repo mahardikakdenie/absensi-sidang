@@ -1,6 +1,11 @@
 <template>
 	<div>
-		<data-table :title="titlePage" btn-text="Tambah Anggota" @open-modal-add="isModalUserVisible = true" />
+		<data-table 
+            :title="titlePage" 
+            :is-loading="isLoading"
+            btn-text="Tambah Anggota" 
+            @open-modal-add="isModalUserVisible = true" 
+        />
 
         <ModalAddUser 
             :active-modal="isModalUserVisible" 
@@ -41,6 +46,7 @@ const route = useRoute();
 const toast = useToast();
 const isModalUserVisible = ref(false);
 const storeUser = useUserStore();
+const isLoading = ref(false);
 
 
 const store = useDataTableStore();
@@ -135,27 +141,31 @@ const currentPage = ref(1);
 
 const users = ref();
 const getUsers = () => {
+    isLoading.value = true;
 	const params = {
-		project_ids: [projectId.value],
+        project_ids: [projectId.value],
         entities: 'profile.medias, roles.role, projects, shift',
 		// not_have_this_projects:
         shift_id: route?.query?.shift_id,
         paginate: perPage?.value,
         page: currentPage?.value,
 	};
-
+    
 	const callback = (res) => {
-		users.value = res?.data?.data.map((user) => {
-			return {
-				...user,
-				image: user?.profile?.medias?.url ?? userDummyImage,
-				roles: user?.roles?.map((role) => role?.role?.name) ?? '-',
-				status: user?.status ?? '-',
-			};
-		});
-        const meta = res?.data?.meta;
-        store?.setMeta(meta);
-		store?.setData(users.value);
+        if (res?.data?.meta?.status) {
+            isLoading.value = false;
+                users.value = res?.data?.data.map((user) => {
+                return {
+                    ...user,
+                    image: user?.profile?.medias?.url ?? userDummyImage,
+                    roles: user?.roles?.map((role) => role?.role?.name) ?? '-',
+                    status: user?.status ?? '-',
+                };
+            });
+            const meta = res?.data?.meta;
+            store?.setMeta(meta);
+            store?.setData(users.value);
+        }
 	};
 
 	const err = (e) => {
@@ -199,7 +209,7 @@ const getUserSelected = () => {
                 label: curr?.name,
                 id: curr?.id,
             }))
-            .filter(curr => !users.value.some(user => user?.id === curr?.id));
+            .filter(curr => !users?.value?.some(user => user?.id === curr?.id));
             storeUser?.setUserOptions(userOptions.value);
 		}
 	};
@@ -210,7 +220,6 @@ const getUserSelected = () => {
 	userApi.getUserSelected(params, callback, err);
 };
 
-const isLoading = ref(false);
 const submit = (users) => {
     if (route?.params?.type === 'project') {
         insertUserProject(users);

@@ -17,6 +17,9 @@
 import VueButton from '@/components/Button';
 import { useDataTableStore } from '@/store/data-table';
 import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
 
 const props = defineProps({
 	data: {
@@ -43,7 +46,9 @@ const handleClick = (action) => {
 	const params = {
 		key: action?.key,
 		data: props?.data,
+		name: route?.name,
 	};
+	console.log("🚀 ~ handleClick ~ params.route?.name:", route?.name)
 	store?.trigerAction(params);
 };
 /**
