@@ -18,7 +18,7 @@
 			:sectionName="sectionName"
 		/>
 	</div>
-	<date-picker-section v-if="isDatePickerIsAvalaible" />
+	<!-- <date-picker-section v-if="isDatePickerIsAvalaible" /> -->
 </div>
 </template>
 <script>
