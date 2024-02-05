@@ -105,4 +105,4 @@ export const  generateSlug = (input) => {
         .replace(/\-\-+/g, '-')
         .replace(/^-+/, '')
         .replace(/-+$/, '');
-}
+};
