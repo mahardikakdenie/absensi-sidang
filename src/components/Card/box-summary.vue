@@ -2,9 +2,9 @@
 <div
     v-for="(item, i) in statistics"
     :key="i"
-    :class="[{'bg-opacity-50': item.key === route.query.summary}]"
+    :class="[{'bg-opacity-50': item?.key === route.query.summary}]"
     class="box-summary bg-primary-500"
-    @click.prevent="setFilterSummary(item.key)"
+    @click="setFilterSummary(item?.key)"
 >
     <div
         class="mx-auto h-6 w-6 flex items-center justify-center rounded-full bg-white text-lg mb-2"
@@ -45,7 +45,7 @@ const props = defineProps({
 });
 
 const setFilterSummary = (key) => {
-    router.replace({query: { ...route.query, summary: key }})
+    router.push({...route, query: { ...route.query, summary: key }});
 };
 </script>
 
