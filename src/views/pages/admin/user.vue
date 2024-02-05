@@ -12,6 +12,7 @@
         :active-modal="isModalAddUser"
         :fields="form"
         btn-text="Buat Akun"
+        :is-fetching="isFetching"
         @submit="submit"
         @close="close" 
     />
@@ -309,7 +310,7 @@ const close = () => {
 const submit = (form, type) => {
     form.value = form;
     const value = form?.value.map(curr => curr.value);
-   
+    
     if (type === 'create') {
         createUser(value);
     } else if(type === 'update') {
@@ -317,7 +318,9 @@ const submit = (form, type) => {
     }
 };
 
+const isFetching = ref(false);
 const createUser = (value) => {
+    isFetching.value = true;
     const params = {
         name: value[0],
         username: value[1],
@@ -326,6 +329,7 @@ const createUser = (value) => {
     };
     const callback = (res) => {
         if (res?.data?.meta?.status) {
+            isFetching.value = false;
             const data = res?.data?.data;
             const user = {
                 ...data,

@@ -108,6 +108,7 @@
 					text="Submit"
 					:is-disabled="!noErrors"
 					btn-class="btn btn-primary light btn-sm"
+					:is-loading="isFetching"
 					@click="submit" />
 			</div>
 		</div>
@@ -159,6 +160,10 @@ const props = defineProps({
 		type: String,
 		default: null,
 	},
+	isFetching: {
+		type: Boolean,
+		default: false
+	}
 });
 
 // Refs

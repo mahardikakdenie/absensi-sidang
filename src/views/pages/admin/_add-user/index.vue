@@ -103,6 +103,36 @@ watch(() => store?.typeAction, (value) => {
     }
 })
 
+const perPage = ref(10);
+const currentPage = ref(1);
+
+/**
+ * Watches the `per_page` property in the `meta` object of the store and updates the `perPage` value accordingly.
+ *
+ * @param {Function} getter - A function that returns the value to be watched (e.g., `() => store?.meta?.per_page`).
+ * @param {Function} callback - A callback function to be executed when the watched value changes.
+ * @returns {void}
+ */
+ watch(
+	() => store?.meta?.per_page,
+	(value) => {
+		if (value) {
+			perPage.value = value;
+			getUsers();
+		}
+	}
+);
+
+ watch(
+	() => store?.meta?.current_page,
+	(value) => {
+		if (value) {
+			currentPage.value = value;
+			getUsers();
+		}
+	}
+);
+
 const users = ref();
 const getUsers = () => {
 	const params = {
@@ -110,6 +140,8 @@ const getUsers = () => {
         entities: 'profile.medias, roles.role, projects, shift',
 		// not_have_this_projects:
         shift_id: route?.query?.shift_id,
+        paginate: perPage?.value,
+        page: currentPage?.value,
 	};
 
 	const callback = (res) => {
@@ -121,6 +153,8 @@ const getUsers = () => {
 				status: user?.status ?? '-',
 			};
 		});
+        const meta = res?.data?.meta;
+        store?.setMeta(meta);
 		store?.setData(users.value);
 	};
 
