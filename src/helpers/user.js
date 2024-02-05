@@ -26,7 +26,7 @@ export default {
     },
     createUser(params, cb, errCB) {
         // axiosHit(endpointUser, params, 'post', cb, errCB);
-        client.post(endpoint, params)
+        client.post(endpointUser, params)
             .then(res => {
                 cb(res);
             }).catch(e => {
