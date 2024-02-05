@@ -161,7 +161,7 @@
 									</span>
 								</div>
 								<img
-									:src="data?.media_proof?.url"
+									:src="data?.media_proof"
 									class="w-3/4 mx-auto"
 									alt=""
 									srcset="" />

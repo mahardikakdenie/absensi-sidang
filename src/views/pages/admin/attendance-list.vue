@@ -84,6 +84,7 @@ const headers = [
 	{ label: 'Name', field: 'name' },
 	{ label: 'Project Name', field: 'project' },
 	{ label: 'Full Address', field: 'full_address' },
+	{ label: 'Roles', field: 'roles' },
 	{ label: 'Type', field: 'type' },
 	{ label: 'Status', field: 'status' },
 ];
@@ -118,7 +119,6 @@ const currentPage = ref(1);
 	() => store?.meta?.per_page,
 	(value) => {
 		if (value) {
-			console.log("🚀 ~ value:", value)
 			perPage.value = value;
 			getDataAttendance();
 		}
@@ -165,7 +165,7 @@ const getDataAttendance = () => {
             image: curr?.user?.profile?.medias?.url ?? userDummyImage,
             name: curr?.user?.name,
             status: curr?.status ?? 'late',
-            roles: curr?.user?.roles ?? [],
+            roles: curr?.user?.roles?.map(role => role?.role?.name) ?? [],
             project: curr?.project?.name,
             type: curr?.type,
             full_address: curr?.full_address ?? '-',
