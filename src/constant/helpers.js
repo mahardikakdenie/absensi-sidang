@@ -95,3 +95,14 @@ export const convertToShortFormat = (fullTime) => {
     const [hours, minutes] = fullTime.split(':');
     return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
 };
+
+export const  generateSlug = (input) => {
+    return input
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, '-')
+        .replace(/[^\w\-]+/g, '')
+        .replace(/\-\-+/g, '-')
+        .replace(/^-+/, '')
+        .replace(/-+$/, '');
+}

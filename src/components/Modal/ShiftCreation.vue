@@ -287,7 +287,7 @@ import vSelect from 'vue-select';
 import projectApi from '@/helpers/projects';
 import { useDataTableStore } from '@/store/data-table';
 import { useToast } from 'vue-toastification';
-import { duplicateVar } from '@/constant/helpers';
+import { generateSlug } from '@/constant/helpers';
 import { userDummyImage } from '@/constant/static';
 import { getDataShifts,createShift, deleteShift } from '@/helpers/shift';
 import FormGroup from '@/components/FromGroup';
@@ -452,7 +452,7 @@ const removeShift = (id) => {
 const titleUserTab = ref('');
 
 const addMember = (shift) => {
-	router?.push(`/admin/shift/${project?.value?.id}/${project?.value?.slug}?shift_id=${selectedShift?.value?.id}`);
+	router?.push(`/admin/shift/${project?.value?.id}/${project?.value?.slug ?? generateSlug(project?.value?.name)}?shift_id=${selectedShift?.value?.id}`);
 	titleUserTab.value = 'Tambah Pengguna';
 	getUserSelected();
 };

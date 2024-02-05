@@ -50,7 +50,7 @@
 <script setup>
 import Card from '@/components/Card/index.vue';
 import DataTable from '@/components/DataTable/index.vue';
-import { createFormField, createOptionSelect } from '@/constant/helpers';
+import { createFormField, createOptionSelect, generateSlug } from '@/constant/helpers';
 import division from '@/helpers/division';
 import projectsApi from '@/helpers/projects.js';
 import { useDataTableStore } from '@/store/data-table.js';
@@ -255,7 +255,7 @@ const handleTypeAction = (value) => {
         setFormData(value);
     } else if (value.key === 'assign') {
         // isModalAssignation.value = true;
-        router?.push(`/admin/project/${value?.data?.id}/${value?.data?.slug}`);
+        router?.push(`/admin/project/${value?.data?.id}/${value?.data?.slug ?? generateSlug(value?.data?.name)}`);
         storeProject?.setSelectedProject(value?.data);
         usersAssignation.value = value?.data?.users;
         projectId.value = value?.data?.id;
@@ -269,7 +269,7 @@ const handleTypeAction = (value) => {
         projectId.value = value?.data?.id;
         storeProject?.setSelectedProject(value?.data);
     } else if (value?.key === 'add-users') {
-        router?.push(`/admin/project/${value?.data?.id}/${value?.data?.slug}`);
+        router?.push(`/admin/project/${value?.data?.id}/${value?.data?.slug ?? generateSlug(value?.data?.name)}`);
     }
     else if (value?.key !== 'add') {
         toggleModalConfirm();
