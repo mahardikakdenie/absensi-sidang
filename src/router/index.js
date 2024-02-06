@@ -29,7 +29,7 @@ router.beforeEach((to, from, next) => {
       query: { redirect: to.fullPath },
     });
   } else if (token && to.path === '/login') {
-    router.back();
+    router.push('/error');
   }
 
   next();

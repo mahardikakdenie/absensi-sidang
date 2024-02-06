@@ -33,18 +33,6 @@
 							</div>
 						</div>
 						<Signin />
-						<div
-							class="md:max-w-[345px] mx-auto font-normal text-slate-500 dark:text-slate-400 mt-12 uppercase text-sm">
-							Don’t have an account? Sign up
-							<router-link
-								to="/register"
-								class="text-slate-900 dark:text-white font-medium hover:underline">
-								Sign up
-							</router-link>
-						</div>
-					</div>
-					<div class="auth-footer text-center">
-						Copyright 2021, Dashboard All Rights Reserved.
 					</div>
 				</div>
 			</div>
