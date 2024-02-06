@@ -28,7 +28,7 @@
             title="User Assignation"
 			:active-modal="isModalAssignationVisible" 
 			:divisionId="divisionId"
-			@close="isModalAssignationVisible = false"  
+			@close="closeModalAssgn"  
 		/>
 	</div>
 </template>
@@ -383,6 +383,12 @@ const getDataUser = () => {
 	};
 
 	userApi.getAllUsers(params, callback, err);
+};
+
+const closeModalAssgn = () => {
+	isModalAssignationVisible.value = false;
+	getDivisions();
+	
 };
 
 const init = () => {

@@ -48,7 +48,7 @@ export default {
     },
     
     insertUserProject(params, callback, errCb) {
-        client.post(`user-division`)
+        client.post(`user-division`, params)
         .then(res => {
             if (callback) callback(res);
         }).catch(e => {
