@@ -33,6 +33,7 @@ import 'tippy.js/animations/shift-toward-subtle.css';
 import 'tippy.js/animations/shift-toward.css';
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/themes/light.css';
+import { VueReCaptcha, useReCaptcha } from 'vue-recaptcha-v3'
 
 const pinia = createPinia()
 
@@ -51,6 +52,7 @@ const app = createApp(App)
     .use(VueGoodTablePlugin)
     .use(VueApexCharts)
     .use(VCalendar)
+    .use(VueReCaptcha, { siteKey: '6LdtdXEpAAAAAIWc0qZNIBpGIirR1pjUt05GKWDC' })
 
 app.config.globalProperties.$store = {};
 app.mount("#app");
