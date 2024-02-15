@@ -120,7 +120,7 @@ export default {
 					const token = data.data.access_token?.token;
 					localStorage.setItem('token', token);
 					client.defaults.headers.Authorization = `Bearer ${token}`;
-					const isAdminMode = responseUser?.roles.some(curr => curr?.roleId === 1 || curr?.roleId === 3);
+					const isAdminMode = responseUser?.roles?.some(curr => curr?.roleId === "1" || curr?.roleId === "3");
 					if (isAdminMode) {
 						router?.push('/admin/division');
 					} else {

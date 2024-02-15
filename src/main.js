@@ -90,11 +90,11 @@ if (localStorage.semiDark === "true") {
     themeSettingsStore.semiDarkTheme = "semi-light";
 }
 // check loacl storege for menuLayout
-if (localStorage.menuLayout === "horizontal") {
-    themeSettingsStore.menuLayout = "horizontal";
-} else {
-    themeSettingsStore.menuLayout = "vertical";
-}
+themeSettingsStore.menuLayout = "vertical";
+// if (localStorage.menuLayout === "horizontal") {
+// } else {
+//     themeSettingsStore.menuLayout = "vertical";
+// }
 
 // check skin  for localstorage
 if (localStorage.skin === "bordered") {

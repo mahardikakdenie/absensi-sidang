@@ -159,6 +159,14 @@ const getDataMyShift = () => {
 
 const checkCapabilities = () => {
     const user = JSON.parse(localStorage.getItem('users'));
+    const roleCanAccess = ['admin', 'superadmin'];
+
+    const checkRoles = user?.roles?.some(curr => roleCanAccess.includes(curr?.role?.name));
+
+    if(checkRoles) {
+        router?.back();
+    }
+
     if (!user?.profile) {
         router.push('/on-boarding');
     }
