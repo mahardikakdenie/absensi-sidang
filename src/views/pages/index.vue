@@ -164,7 +164,7 @@ const checkCapabilities = () => {
     const checkRoles = user?.roles?.some(curr => roleCanAccess.includes(curr?.role?.name));
 
     if(checkRoles) {
-        router?.back();
+        router?.push('/admin/division');
     }
 
     if (!user?.profile) {
