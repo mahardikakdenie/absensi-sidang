@@ -18,7 +18,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const titleText = to?.name;
   const words = titleText?.split(" ");
-  const titlePage = words.join(" ");
+  const titlePage = words?.join(" ");
   document.title = "Absen  - " + titlePage;
   // 
   const token = localStorage.getItem('token');
