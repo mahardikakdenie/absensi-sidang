@@ -144,14 +144,14 @@ const formConfig = [
     {
         key: 'startdate',
         type: 'date',
-        label: 'Nasukan Tanggal Project Dimulai',
-        placeholder: 'Nasukan Tanggal Project Dimulai',
+        label: 'Masukan Tanggal Project Dimulai',
+        placeholder: 'Masukan Tanggal Project Dimulai',
     },
     {
         key: 'targetdate',
         type: 'date',
-        label: 'Nasukan Tanggal Project Berakhir/selesai',
-        placeholder: 'Nasukan Tanggal Project Berakhir/selesai',
+        label: 'Masukan Tanggal Project Berakhir/selesai',
+        placeholder: 'Masukan Tanggal Project Berakhir/selesai',
     },
 	{
 		key: 'description',
