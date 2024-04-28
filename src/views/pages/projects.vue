@@ -18,7 +18,7 @@
             </div>
 			<div v-else class="flex justify-center">
 				<div class="">
-					<span>Tidak ada Data</span>
+					<span>Tidak ada Data hubungi Admin Terkait</span>
 				</div>
 			</div>
 		</div>
