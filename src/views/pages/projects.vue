@@ -66,7 +66,7 @@ const getData = () => {
 		console.log('e => ', e);
 	};
 
-	projectApi.getData(params.value, callback, err);
+	projectApi.getDataProjects(params.value, callback, err);
 };
 
 onMounted(() => {
