@@ -282,7 +282,7 @@ const confirmDelete = (users) => {
 };
 
 const deleteProjectUser = (data) => {
-    const index = data?.projects.findIndex(curr => curr?.project_id === parseInt(projectId.value));
+    const index = data?.projects.findIndex(curr => parseInt(curr?.project_id) === parseInt(projectId.value));
     const relationId = data?.projects?.[index]?.id;
     const callback = (res) => {
         if (res?.data?.data) {
