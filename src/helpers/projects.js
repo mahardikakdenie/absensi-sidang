@@ -56,7 +56,7 @@ export default {
 	deleteUserProject(id, callback, errCb) {
 		// axiosHit(`user-project/${id}`, null, 'delete', callback, errCb);
 		client
-			.delete(`user-project/${id}`, params)
+			.delete(`user-project/${id}`)
 			.then((res) => {
 				if (callback) callback(res);
 			})
