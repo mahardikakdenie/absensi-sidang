@@ -19,8 +19,7 @@ router.beforeEach((to, from, next) => {
   const titleText = to?.name;
   const words = titleText?.split(" ");
   const titlePage = words?.join(" ");
-  // document.title = "Absen  - " + titlePage;
-  document.title = "Absen  - ";
+  document.title = "Absen  - " + titlePage;
   // 
   const token = localStorage.getItem('token');
   const isHaveRecord = to.matched.some((record) => record.meta.requiresAuth);
