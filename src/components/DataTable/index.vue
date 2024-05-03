@@ -21,6 +21,7 @@
 						prependIcon="heroicons-outline:search"
 						merged 
 					/>
+					<date-picker-section v-if="isDateVisible" @set-date="(date) => $emit('set-date', date)"/>
 				</div>
 			</div>
 
@@ -106,6 +107,7 @@ import ColumnType from '@/components/DataTable/column/type.vue';
 import pageLoader from '../Loader/pageLoader.vue';
 import ColumnShift from '@/components/DataTable/column/shift.vue';
 import { duplicateVar } from '@/constant/helpers';
+import DatePickerSection from '@/components/Breadcrumbs/DatePicker.vue';
 const actions = [
 	{
 		name: 'view',
@@ -188,6 +190,7 @@ export default {
 		ColumnType,
 		ColumnShift,
 		pageLoader,
+		DatePickerSection
 	},
 
 	props: {
@@ -200,6 +203,10 @@ export default {
 			default: ''
 		},
 		isLoading: {
+			type: Boolean,
+			default: false,
+		},
+		isDateVisible: {
 			type: Boolean,
 			default: false,
 		}

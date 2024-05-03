@@ -6,9 +6,11 @@
         </div>
     </card>
     <card>
-        <data-table 
+        <data-table
             title="Attendance List"
             :is-loading="isLoading"
+            isDateVisible
+            @set-date="setDate"
         />
     </card>
     <ModalAttendanceDetail 
@@ -29,6 +31,7 @@ import { getAllData, getDataSummary } from "@/helpers/attendances";
 import { useDataTableStore } from '@/store/data-table';
 import { useRoute } from 'vue-router';
 const userDummyImage = 'https://static.vecteezy.com/system/resources/previews/018/765/757/original/user-profile-icon-in-flat-style-member-avatar-illustration-on-isolated-background-human-permission-sign-business-concept-vector.jpg';
+
 
 const isLoading = ref(false);
 
@@ -138,6 +141,13 @@ const currentPage = ref(1);
 const route = useRoute();
 const meta = computed(() => store?.meta);
 const summary = computed(() => route?.query?.summary);
+const filterDate = ref(null);
+
+const setDate = (date) => {
+    filterDate.value = date;
+    getDataAttendance();
+    getDataAttendanceSummary();
+};
 
 watch(() => summary.value, (value) => {
     if (summary) {
@@ -151,6 +161,8 @@ const fetchParams = computed(() => ({
     paginate: perPage?.value,
     page: currentPage?.value,
     summary: summary.value,
+    since: filterDate?.value,
+    until: filterDate?.value,
 }));
 
 const getDataAttendance = () => {
@@ -184,6 +196,11 @@ const getDataAttendance = () => {
 };
 
 const getDataAttendanceSummary = () => {
+    const params = {
+        admin_mode: true,
+        since: filterDate?.value,
+        until: filterDate?.value,
+    };
     const callback = (res) => {
         const data = res?.data?.data;
         statistics.value[0].count = data?.all ?? 0;
@@ -196,7 +213,7 @@ const getDataAttendanceSummary = () => {
         console.log(e);
     }
 
-    getDataSummary({admin_mode: true}, callback, err);
+    getDataSummary(params, callback, err);
 };
 
 watch(() => store?.typeAction, (value) => {

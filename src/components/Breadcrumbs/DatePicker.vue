@@ -8,7 +8,7 @@
         >
 			<div>
 				<div
-					class="date-btn inline-flex btn btn-md whitespace-nowrap space-x-2 rtl:space-x-reverse cursor-pointer bg-white dark:bg-slate-800 dark:text-slate-300 btn-md h-min text-sm font-normal text-slate-900"
+					class="date-btn border inline-flex btn btn-md whitespace-nowrap space-x-2 rtl:space-x-reverse cursor-pointer bg-white dark:bg-slate-800 dark:text-slate-300 btn-md h-min text-sm font-normal text-slate-900"
 					@click="clear">
 					<span class="text-lg"
 						><Icon icon="heroicons:calendar"
@@ -26,7 +26,7 @@
         >
 			<div>
 				<div
-					class="date-btn inline-flex btn btn-md whitespace-nowrap space-x-2 rtl:space-x-reverse cursor-pointer bg-white dark:bg-slate-800 dark:text-slate-300 btn-md h-min text-sm font-normal text-slate-900"
+					class="date-btn inline-flex btn btn-md whitespace-nowrap space-x-2 rtl:space-x-reverse cursor-pointer bg-white dark:bg-slate-800 dark:text-slate-300 btn-md h-min text-sm font-normal text-slate-900 border border-red-500"
 					@click="clear">
 					<span class="text-lg"
 						><Icon icon="heroicons-outline:filter"
@@ -39,7 +39,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import VueTailwindDatePicker from 'vue-tailwind-datepicker';
 import Icon from '@/components/Icon';
 
@@ -54,7 +54,16 @@ const dateValue = ref({
 	startDate: '',
 	endDate: '',
 });
+
 const dateValue2 = ref('');
+
+const emits = defineEmits(['set-date']);
+
+watch(dateValue,(date) => {
+	if (date && date?.startDate && date?.endDate) {
+		emits('set-date', date);
+	}
+});
 
 const weeklyDate = computed(() => dateValue?.value?.startDate && dateValue?.value?.endDate ? getWeeklyDate(dateValue) : 'Selected Range Date');
 const getWeeklyDate = (date) => {
