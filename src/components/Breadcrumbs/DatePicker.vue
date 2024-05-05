@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="flex sm:space-x-4 space-x-2 sm:justify-end items-center md:mb-6 mb-4 rtl:space-x-reverse">
+		class="flex sm:space-x-4 space-x-2 sm:justify-end items-center tl:space-x-reverse">
 		<VueTailwindDatePicker
             v-if="typeSelectInput === 'range'"
             v-model="dateValue" 

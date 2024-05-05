@@ -68,6 +68,16 @@ const router = [
                     showDatePicker: true,
                     requiresAuth: true,
                 }
+            },
+            {
+                name: 'Admin File Manager',
+                path: 'file-manager',
+                component: () => import('@/views/pages/admin/file-manager.vue'),
+                meta: {
+                    groupParent: 'File Manager',
+                    showDatePicker: false,
+                    requiresAuth: true,
+                }
             }
         ],
     }

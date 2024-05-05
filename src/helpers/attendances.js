@@ -35,4 +35,15 @@ export const getDataSummary = (params, callback, errCallback) => {
     .catch(e => {
         if (errCallback) errCallback(e);
     })
+
 }
+
+export const exportAttendance = (params, callback, errCallback) => {
+    const url = `/export`;
+    client.get(url, {params}).then(res => {
+        if (callback) callback(res);
+    })
+    .catch(e => {
+        if (errCallback) errCallback(e);
+    })
+};

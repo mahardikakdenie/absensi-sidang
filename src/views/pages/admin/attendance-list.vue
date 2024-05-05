@@ -10,13 +10,23 @@
             title="Attendance List"
             :is-loading="isLoading"
             isDateVisible
+            is-export
             @set-date="setDate"
+            @export-data="openModalDownload(exportLink)"
         />
     </card>
     <ModalAttendanceDetail 
         :activeModal="isAttendanceModalVisible" 
         :data="attendanceData" 
         @close="isAttendanceModalVisible = false" 
+    />
+    <DownloadFileModal 
+        :active-modal="isDownloadVisible" 
+        title="Export Data Kehadiran"
+        :since="filterDate?.startDate"
+        :until="filterDate?.endDate"
+        @close="isDownloadVisible = false"
+        @submit="exportData"
     />
 </div>
 </template>
@@ -29,16 +39,35 @@ import ModalAttendanceDetail from '@/components/Modal/AttendanceDetail.vue';
 import { computed, onMounted, ref, watch } from 'vue';
 import { getAllData, getDataSummary } from "@/helpers/attendances";
 import { useDataTableStore } from '@/store/data-table';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
+import DownloadFileModal from '@/components/Modal/DownloadFIle.vue';
+import { downloadFile } from '@/constant/helpers';
+import dayjs from 'dayjs';
+import {
+    exportAttendance
+} from '@/helpers/attendances';
 const userDummyImage = 'https://static.vecteezy.com/system/resources/previews/018/765/757/original/user-profile-icon-in-flat-style-member-avatar-illustration-on-isolated-background-human-permission-sign-business-concept-vector.jpg';
 
+const date = {
+    startDate: dayjs().format('YYYY-MM-DD'),
+    endDate: dayjs().subtract(30, 'day').format('YYYY-MM-DD') 
+}
+
+const router = useRouter();
+const route = useRoute();
 
 const isLoading = ref(false);
+const filterDate = ref(date);
 
 const store = useDataTableStore();
 
 const attendanceData = ref();
 const isAttendanceModalVisible = ref(false);
+const isDownloadVisible = ref(false);
+
+const openModalDownload = () => {
+    isDownloadVisible.value = !isDownloadVisible.value;
+};
 
 const statistics = ref([
     {
@@ -84,7 +113,7 @@ const statistics = ref([
 ]);
 
 const headers = [
-	{ label: 'Name', field: 'name' },
+    { label: 'Name', field: 'name' },
 	{ label: 'Project Name', field: 'project' },
 	{ label: 'Full Address', field: 'full_address' },
 	{ label: 'Roles', field: 'roles' },
@@ -93,14 +122,14 @@ const headers = [
 ];
 
 const actions = [
-	{
-		key: 'draft',
+    {
+        key: 'draft',
 		icon: 'fluent-mdl2:unpublish-content',
 		tooltipText: 'Ubah Status menjadi draft/unpublish',
 		btnClass: 'btn btn-sm text-danger-400',
 	},
 	{
-		key: 'publish',
+        key: 'publish',
 		icon: 'fluent-mdl2:publish-content',
 		tooltipText: 'Ubah Status menjadi publish',
 		btnClass: 'btn btn-sm text-success-600',
@@ -118,33 +147,37 @@ const currentPage = ref(1);
  * @param {Function} callback - A callback function to be executed when the watched value changes.
  * @returns {void}
  */
- watch(
-	() => store?.meta?.per_page,
+watch(
+    () => store?.meta?.per_page,
 	(value) => {
-		if (value) {
-			perPage.value = value;
+        if (value) {
+            perPage.value = value;
 			getDataAttendance();
 		}
 	}
 );
 
- watch(
-	() => store?.meta?.current_page,
+watch(
+    () => store?.meta?.current_page,
 	(value) => {
-		if (value) {
-			console.log("🚀 ~ value:", value)
-			currentPage.value = value;
+        if (value) {
+            currentPage.value = value;
 			getDataAttendance();
 		}
 	}
 );
-const route = useRoute();
 const meta = computed(() => store?.meta);
 const summary = computed(() => route?.query?.summary);
-const filterDate = ref(null);
+
+const initQuery = () => {
+    const query = route?.query;
+    filterDate.value.startDate = query?.since;
+    filterDate.value.endDate = query?.until;
+};
 
 const setDate = (date) => {
     filterDate.value = date;
+    router?.replace({ query: { ...route?.query, since: dayjs(filterDate?.value?.startDate).format('YYYY-MM-DD'), until: dayjs(filterDate?.value?.endDate).format('YYYY-MM-DD') } })
     getDataAttendance();
     getDataAttendanceSummary();
 };
@@ -161,8 +194,8 @@ const fetchParams = computed(() => ({
     paginate: perPage?.value,
     page: currentPage?.value,
     summary: summary.value,
-    since: filterDate?.value,
-    until: filterDate?.value,
+    since: filterDate?.value?.startDate,
+    until: filterDate?.value?.endDate,
 }));
 
 const getDataAttendance = () => {
@@ -191,15 +224,15 @@ const getDataAttendance = () => {
     const err = (e) => {
         console.log(e);
     }
-
+    
     getAllData(params, callback, err);
 };
 
 const getDataAttendanceSummary = () => {
     const params = {
         admin_mode: true,
-        since: filterDate?.value,
-        until: filterDate?.value,
+        since: filterDate?.value?.startDate,
+        until: filterDate?.value?.endDate,
     };
     const callback = (res) => {
         const data = res?.data?.data;
@@ -224,7 +257,24 @@ watch(() => store?.typeAction, (value) => {
     }
 });
 
+const exportData = () => {
+    const params = {
+        since: filterDate?.value?.startDate,
+        until: filterDate?.value?.endDate,
+        admin_mode: true,
+    };
+
+    const callback = (res) => {
+        const data = res.data?.data;
+        const exportLink = ref(`${import.meta.env.VITE_AUTH_API_URL}/export-data/${data?.file?.file_name}`);
+        downloadFile(exportLink);
+    }
+    
+    exportAttendance(params, callback);
+};
+
 onMounted(() => {
+    initQuery();
     store?.setHeaders(headers);
     store?.setActions(actions);
     store?.setNameConfig(null);

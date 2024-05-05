@@ -41,6 +41,12 @@ export const menuItems = [
 		link: '/admin/attendance-list',
 		allowedRoles: ['superadmin', 'admin'],
 	},
+	{
+		title: 'Download Manager',
+		icon: 'el:download',
+		link: '/admin/file-manager',
+		allowedRoles: ['superadmin', 'admin'],
+	},
 	// Attendance System
 	{
 		link: null,

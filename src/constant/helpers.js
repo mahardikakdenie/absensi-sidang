@@ -106,3 +106,18 @@ export const  generateSlug = (input) => {
         .replace(/^-+/, '')
         .replace(/-+$/, '');
 };
+
+/**
+ * Download File URL
+ */
+export const downloadFile = (url, newTab) => {
+	const a = document.createElement('a');
+	if (newTab) {
+		a.target = '_blank';
+	}
+	a.href = url;
+	a.download = url.substr(url.lastIndexOf('/') + 1);
+	document.body.appendChild(a);
+	a.click();
+	document.body.removeChild(a);
+};

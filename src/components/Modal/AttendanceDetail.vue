@@ -3,7 +3,8 @@
 		:active-modal="activeModal"
 		:title="`Detail Kehadiran ${data?.project}`"
 		sizeClass="max-w-full"
-		@close="close">
+		@close="close"
+	>
 		<div>
 			<div class="modal-content bg-white p-4">
 				<div class="grid grid-cols-12">

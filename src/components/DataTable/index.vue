@@ -5,23 +5,29 @@
 				class="md:flex justify-between pb-6 md:space-y-0 space-y-3 items-center">
 				<h5 class="capitalize">{{ title }}</h5>
 				<div class="flex gap-4">
-					<vue-button 
+					<vue-button
 						v-if="btnText"
 						:text="btnText"
 						:isDisabled="isLoading"
 						:is-loading="isLoading"
 						btn-class="btn btn-dark px-4 py-2"
-						@click="openModalAdd"
-					/>
+						@click="openModalAdd" />
 					<InputGroup
 						:disabled="isDisabled"
 						v-model="searchTerm"
 						placeholder="Search"
 						type="text"
 						prependIcon="heroicons-outline:search"
-						merged 
+						merged />
+					<date-picker-section
+						v-if="isDateVisible"
+						@set-date="(date) => $emit('set-date', date)" />
+					<vue-button
+						v-if="isExport"
+						text="Export Data"
+						btn-class="btn btn-success"
+						@click="$emit('export-data')" 
 					/>
-					<date-picker-section v-if="isDateVisible" @set-date="(date) => $emit('set-date', date)"/>
 				</div>
 			</div>
 
@@ -52,16 +58,30 @@
 					selectAllByGroup: true, // when used in combination with a grouped table, add a checkbox in the header row to check/uncheck the entire group
 				}">
 				<template v-slot:table-row="props">
-					<column-name v-if="props.column.field === 'name'" :data="props.row" />
-					<column-role v-if="props.column.field === 'roles'" :data="props.row" />
-					<column-status v-if="props.column.field === 'status'" :data="props.row" />
-					<action-column v-if="props.column.field === 'actions'" :data="props.row" />
-					<ColumnAssign v-if="props.column.field === 'assign'"  :data="props.row" />
-					<ColumnType v-if="props.column.field === 'type'"  :data="props.row" />
-					<ColumnShift v-if="props.column.field === 'shift'"  :data="props.row" />
+					<column-name
+						v-if="props.column.field === 'name'"
+						:data="props.row" />
+					<column-role
+						v-if="props.column.field === 'roles'"
+						:data="props.row" />
+					<column-status
+						v-if="props.column.field === 'status'"
+						:data="props.row" />
+					<action-column
+						v-if="props.column.field === 'actions'"
+						:data="props.row" />
+					<ColumnAssign
+						v-if="props.column.field === 'assign'"
+						:data="props.row" />
+					<ColumnType
+						v-if="props.column.field === 'type'"
+						:data="props.row" />
+					<ColumnShift
+						v-if="props.column.field === 'shift'"
+						:data="props.row" />
 					<div v-if="isRowNotModify(props)">
 						<span class="normal-case">
-							{{  props.row[props.column.field]  }}
+							{{ props.row[props.column.field] }}
 						</span>
 					</div>
 				</template>
@@ -76,10 +96,9 @@
 							:perPageChanged="props.perPageChanged"
 							enableSearch
 							enableSelect
-							:options="options" 
+							:options="options"
 							@page-changed="pageChange"
-							@change-per-page="onChangePerPage"
-						/>
+							@change-per-page="onChangePerPage" />
 					</div>
 				</template>
 			</vue-good-table>
@@ -96,7 +115,7 @@ import Pagination from '@/components/Pagination';
 import { MenuItem } from '@headlessui/vue';
 import { advancedTable } from '@/constant/basic-tablle-data';
 import VueButton from '@/components/Button';
-import columnName from '@/components/DataTable/column/name.vue'
+import columnName from '@/components/DataTable/column/name.vue';
 import { useDataTableStore } from '@/store/data-table.js';
 import { computed } from 'vue';
 import columnRole from '@/components/DataTable/column/roles.vue';
@@ -190,7 +209,7 @@ export default {
 		ColumnType,
 		ColumnShift,
 		pageLoader,
-		DatePickerSection
+		DatePickerSection,
 	},
 
 	props: {
@@ -200,7 +219,7 @@ export default {
 		},
 		btnText: {
 			type: String,
-			default: ''
+			default: '',
 		},
 		isLoading: {
 			type: Boolean,
@@ -209,7 +228,11 @@ export default {
 		isDateVisible: {
 			type: Boolean,
 			default: false,
-		}
+		},
+		isExport: {
+			type: Boolean,
+			default: false,
+		},
 	},
 
 	data() {
@@ -246,7 +269,13 @@ export default {
 		};
 
 		const isRowNotModify = (props) => {
-			const forbiddenFields = ['name', 'roles', 'status', 'type', 'shift'];
+			const forbiddenFields = [
+				'name',
+				'roles',
+				'status',
+				'type',
+				'shift',
+			];
 			return !forbiddenFields.includes(props.column.field);
 		};
 
@@ -258,7 +287,7 @@ export default {
 			meta,
 			pageChange,
 			onChangePerPage,
-		}
+		};
 	},
 };
 </script>
