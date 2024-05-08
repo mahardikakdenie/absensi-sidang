@@ -93,8 +93,8 @@ export default {
 		const form = ref();
 		const alertText = ref('');
 		form.value = {
-			name: user?.name,
-			email: user?.email,
+			name: user?.name ?? '',
+			email: user?.email ?? '',
 			phoneNumber: user?.profile?.phoneNumber ?? '',
 			address: user?.profile?.address ?? '',
 		};
