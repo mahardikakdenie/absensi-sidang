@@ -1,31 +1,17 @@
 <template>
 	<div class="space-y-5">
         <VueAllert type="success" dismissible icon="akar-icons:double-check">
-            Selamat datang, {{dataUser?.name}}! Akun Anda telah berhasil terdaftar di sistem kami. Untuk dapat mengakses sistem dengan lebih baik, mohon segera lengkapi profil Anda. Terima kasih atas kerjasama Anda.
+            Selamat datang, {{form?.name}}! Akun Anda telah berhasil terdaftar di sistem kami. Untuk dapat mengakses sistem dengan lebih baik, mohon segera lengkapi profil Anda. Terima kasih atas kerjasama Anda.
         </VueAllert>
 		<Card title="Profile">
 			<div class="">
 				<InputField
-					v-model="dataUser.name"
+					v-model="form.name"
 					label="Nama"
 					placeholder="Masukan Nama"
 				/>
-				<!-- <InputField
-					v-model="dataUser.password"
-					label="Password"
-					placeholder="Masukan Password"
-					type="password"
-					hasicon
-				/>
 				<InputField
-					v-model="dataUser.name"
-					label="Konfirmasi Password"
-					placeholder="Konfirmasi Password"
-					type="password"
-					hasicon
-				/> -->
-				<InputField
-					v-model="dataUser.email"
+					v-model="form.email"
 					label="Email"
 					placeholder="Masukan Email"
 				/>
