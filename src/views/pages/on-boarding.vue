@@ -29,7 +29,7 @@
 				<DropZoneVue @upload="upload" />
 			</div>
 			<div class="flex justify-end mt-3">
-				<vue-button text="Update" btn-class="btn-sm btn btn-dark" @click="submit" />
+				<vue-button text="Update" btn-class="btn-sm btn btn-dark" :is-loading="isLoading" @click="submit" />
 			</div>
 		</Card>
 	</div>
@@ -78,6 +78,7 @@ export default {
 		const dataUser = user;
 		const form = ref();
 		const alertText = ref('');
+		const isLoading = ref(false);
 		form.value = {
 			name: user?.name ?? '',
 			email: user?.email ?? '',
@@ -145,9 +146,11 @@ export default {
 				mediaId: mediaId?.value,
 				password: password?.value ?? null,
 			}
+			isLoading.value = true;
 			const callback = (res) => {
 				if (res?.data?.meta?.status) {
 					toast?.success('Update Profile Berhasil');
+					isLoading.value = false;
 					router?.push('/');
 					store.setUser(res?.data?.data);
 				}
@@ -170,6 +173,7 @@ export default {
 			onInputGender,
 			password,
 			confirmPassword,
+			isLoading,
 		}
 	},
 };
