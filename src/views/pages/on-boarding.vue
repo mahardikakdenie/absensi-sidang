@@ -74,7 +74,7 @@ export default {
 		const router = useRouter();
 		const route = useRoute();
 		const store = useUserStore();
-		const user =  JSON.parse(localStorage.getItem('users')) || store?.user;
+		const user =  store?.user || JSON.parse(localStorage.getItem('users'));
 		const dataUser = user;
 		const form = ref();
 		const alertText = ref('');
@@ -98,6 +98,7 @@ export default {
 			const callback = (res) => {
 				if (res?.data?.meta?.status) {
 					const data = res?.data?.data;
+					store.setUser(data);
 					localStorage.setItem('users', JSON.stringify(data));
 				}
 			};
@@ -127,6 +128,7 @@ export default {
 		
 		watch(() => route?.path, () => {
 			checkCapabilities();
+			getMe();
 		})
 
 		onMounted(() => {
@@ -147,6 +149,7 @@ export default {
 				if (res?.data?.meta?.status) {
 					toast?.success('Update Profile Berhasil');
 					router?.push('/');
+					store.setUser(res?.data?.data);
 				}
 			};
 			const err = (e) => {};

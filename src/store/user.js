@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 
 const __wrapper = {
     state: () => ({
-        user: null || JSON.parse(localStorage.getItem('users')),
+        user: JSON.parse(localStorage.getItem('users')),
         userOptions: [],
     }),
     actions: {
