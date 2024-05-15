@@ -5,8 +5,6 @@
 		<Textinput label="Password" type="password" placeholder="8+ characters, 1 capitat letter " name="password"
 			v-model="password" hasicon classInput="h-[48px]" />
 
-		<!-- <reCaptcha /> -->
-
 		<vue-button text="SIgn In" btn-class="btn btn-dark block w-full text-center" :is-loading="isLoading"
 			:is-Disabled="isLoading" @click.prevent="onSubmit" />
 	</form>
