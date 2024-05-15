@@ -5,11 +5,6 @@
 		<Textinput label="Password" type="password" placeholder="8+ characters, 1 capitat letter " name="password"
 			v-model="password" hasicon classInput="h-[48px]" />
 
-		<div class="flex justify-between">
-			<router-link to="/forgot-password"
-				class="text-sm text-slate-800 dark:text-slate-400 leading-6 font-medium">Forgot Password?</router-link>
-		</div>
-
 		<!-- <reCaptcha /> -->
 
 		<vue-button text="SIgn In" btn-class="btn btn-dark block w-full text-center" :is-loading="isLoading"
