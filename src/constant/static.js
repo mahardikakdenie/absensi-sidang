@@ -66,6 +66,18 @@ export const menuItems = [
 		link: '/divisions',
 		allowedRoles: ['user', 'user_admin'],
 	},
+	{
+		isHeader: true,
+		title: 'Pengaturan',
+		link: null,
+		allowedRoles: ['user', 'user_admin', 'admin', 'superadmin'],
+	},
+	{
+		title: 'Logout',
+		icon: 'material-symbols:logout',
+		link: '/logout',
+		allowedRoles: ['user', 'user_admin', 'admin', 'superadmin'],
+	}
 ];
 
 export const topMenu = [
