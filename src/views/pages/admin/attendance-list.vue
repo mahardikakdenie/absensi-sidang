@@ -194,8 +194,8 @@ const fetchParams = computed(() => ({
     paginate: perPage?.value,
     page: currentPage?.value,
     summary: summary.value,
-    since: filterDate?.value?.startDate,
-    until: filterDate?.value?.endDate,
+    since: dayjs(filterDate?.value?.startDate).format('YYYY-MM-DD'),
+    until: dayjs(filterDate?.value?.endDate).format('YYYY-MM-DD'),
 }));
 
 const getDataAttendance = () => {
@@ -231,8 +231,8 @@ const getDataAttendance = () => {
 const getDataAttendanceSummary = () => {
     const params = {
         admin_mode: true,
-        since: filterDate?.value?.startDate,
-        until: filterDate?.value?.endDate,
+        since: dayjs(filterDate?.value?.startDate).format('YYYY-MM-DD'),
+        until: dayjs(filterDate?.value?.endDate).format('YYYY-MM-DD'),
     };
     const callback = (res) => {
         const data = res?.data?.data;
@@ -259,8 +259,8 @@ watch(() => store?.typeAction, (value) => {
 
 const exportData = () => {
     const params = {
-        since: filterDate?.value?.startDate,
-        until: filterDate?.value?.endDate,
+        since: dayjs(filterDate?.value?.startDate).format('YYYY-MM-DD'),
+        until: dayjs(filterDate?.value?.endDate).format('YYYY-MM-DD'),
         admin_mode: true,
     };
 

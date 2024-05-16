@@ -159,7 +159,7 @@ const getDataMyShift = () => {
 
 const checkCapabilities = () => {
     const user = JSON.parse(localStorage.getItem('users'));
-    const roleCanAccess = ['admin', 'superadmin'];
+    const roleCanAccess = [];
 
     const checkRoles = user?.roles?.some(curr => roleCanAccess.includes(curr?.role?.name));
 
