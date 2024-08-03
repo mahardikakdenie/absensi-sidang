@@ -78,6 +78,16 @@ const router = [
                     showDatePicker: false,
                     requiresAuth: true,
                 }
+            },
+            {
+                name: 'Payroll',
+                path: 'payroll',
+                component: () => import('@/views/pages/admin/payroll.vue'),
+                meta: {
+                    groupParent: 'Admin Payroll',
+                    showDatePicker: false,
+                    requiresAuth: true,
+                }
             }
         ],
     }

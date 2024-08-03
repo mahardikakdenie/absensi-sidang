@@ -27,13 +27,13 @@ export const menuItems = [
 		title: 'Project',
 		icon: 'eos-icons:project-outlined',
 		link: '/admin/project',
-		allowedRoles: ['superadmin', 'admin'],
+		allowedRoles: ['superadmin'],
 	},
 	{
 		title: 'Akun',
 		icon: 'mdi:user-outline',
 		link: '/admin/user',
-		allowedRoles: ['superadmin', 'admin'],
+		allowedRoles: ['superadmin'],
 	},
 	{
 		title: 'Catatan Absensi',
@@ -45,6 +45,12 @@ export const menuItems = [
 		title: 'Download Manager',
 		icon: 'el:download',
 		link: '/admin/file-manager',
+		allowedRoles: ['superadmin', 'admin'],
+	},
+	{
+		title: 'Payroll',
+		icon: 'grommet-icons:projects',
+		link: '/admin/payroll',
 		allowedRoles: ['superadmin', 'admin'],
 	},
 	// Attendance System
@@ -77,7 +83,7 @@ export const menuItems = [
 		icon: 'material-symbols:logout',
 		link: '/logout',
 		allowedRoles: ['user', 'user_admin', 'admin', 'superadmin'],
-	}
+	},
 ];
 
 export const topMenu = [
