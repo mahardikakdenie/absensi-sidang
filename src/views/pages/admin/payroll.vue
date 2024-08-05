@@ -39,11 +39,19 @@ const headers = [
     },
     {
         label: 'Salary',
-        field: 'salary'
+        field: 'basic_salary'
     },
     {
-        label: 'Type Bpjs',
-        field: 'bpjs'
+        label: 'NPWP',
+        field: 'npwp'
+    },
+    {
+        label: 'PTKP',
+        field: 'ptkp'
+    },
+    {
+        label: 'pph21',
+        field: 'pph21'
     },
     {
         label: 'Status',
@@ -203,9 +211,10 @@ const calculatePPh21 = (netIncome, PTKP) => {
 
     return pph21;
 }
+
 const getPTKP = (status, tanggungan) => {
-    const PTKP_BASE = 54000000; // TK/0
-    const TANGGUNGAN_INCREMENT = 4500000; // Per tanggungan
+    const PTKP_BASE = 54000000; // TK/0 54K
+    const TANGGUNGAN_INCREMENT = 4500000; // Per tanggungan 45k
 
     let ptkp = PTKP_BASE;
 
@@ -216,7 +225,18 @@ const getPTKP = (status, tanggungan) => {
     ptkp += TANGGUNGAN_INCREMENT * Math.min(tanggungan, 3); // Maksimum 3 tanggungan
 
     return ptkp;
-}
+};
+
+const basicSalary = [7000000, 8000000, 6000000];
+const tanggunagn = [0,1,2];
+const getBasic = (index = 0) => {
+    let i = index;
+    if (i > 2) {
+        i = 0;
+    }
+
+    return basicSalary[i];
+};
 const users = ref([]);
 const currentPage = ref(1);
 const perPage = ref(10);
@@ -233,19 +253,22 @@ const getDataUser = () => {
         if (response?.data?.meta?.status) {
             isLoading.value = false;
             const data = response.data.data;
-            users.value = data?.map(user => {
+            users.value = data?.map((user, userindex) => {
                 return {
                     ...user,
                     image: user?.profile?.medias?.url ?? userDummyImage,
                     roles: user?.roles?.map(role => role?.role?.name) ?? '-',
                     status: user?.status ?? '-',
-                    salary: 7000,
+                    basic_salary: getBasic(userindex),
+                    salary: 8000000,
+                    pph21: calculatePPh21(getBasic(userindex), 0),
                     bpjs: 'Kelas I',
                     npwp: '65.175.958.9-429.000',
                     bpjs_k: 70000,
                     jht_e: 140000,
                     status: "Tidak Kawin",
                     tanggungan: 0,
+                    ptkp: getPTKP('TK', 0),
                 }
             });
             store.setMeta(response.data.meta);

@@ -73,6 +73,12 @@ export const menuItems = [
 		allowedRoles: ['user', 'user_admin'],
 	},
 	{
+		title: 'Slip Gaji',
+		icon: 'eos-icons:project-outlined',
+		link: '/slip',
+		allowedRoles: ['user'],
+	},
+	{
 		isHeader: true,
 		title: 'Pengaturan',
 		link: null,

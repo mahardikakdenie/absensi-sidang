@@ -3,7 +3,7 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import('@/views/auth/login/index.vue'),
+    component: () => import('@/views/auth/login.vue'),
   },
   {
     path: '/logout',
@@ -30,6 +30,14 @@ const routes = [
         name: 'List Divisi',
         path: '/divisions',
         component: () => import('@/views/pages/divisions'),
+        meta: {
+          requiresAuth: true,
+        }
+      },
+      {
+        name: 'Slip',
+        path: '/slip',
+        component: () => import('@/views/pages/slip.vue'),
         meta: {
           requiresAuth: true,
         }
